@@ -3,7 +3,8 @@ import type { Monster } from '../../types';
 export const griffin: Monster = {
   id: 'griffin',
   name: 'Griffin',
-  deckSizes: { 1: 8, 2: 12, 3: 16 },
+  level: 2,
+  deckSize: 12,
   baseAbility: {
     name: 'Aerial Predator',
     description: 'The Griffin attacks from above. +1 attack when it acts first.',

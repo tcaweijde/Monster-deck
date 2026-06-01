@@ -28,7 +28,8 @@ function makeMonster(overrides: Partial<Monster> = {}): Monster {
   return {
     id: 'test',
     name: 'Test Monster',
-    deckSizes: { 1: 5, 2: 8, 3: 12 },
+    level: 1,
+    deckSize: 5,
     baseAbility,
     cardPool: [],
     ...overrides,

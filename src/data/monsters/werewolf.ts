@@ -3,7 +3,8 @@ import type { Monster } from '../../types';
 export const werewolf: Monster = {
   id: 'werewolf',
   name: 'Werewolf',
-  deckSizes: { 1: 10, 2: 14, 3: 18 },
+  level: 2,
+  deckSize: 10,
   baseAbility: {
     name: 'Regeneration',
     description: 'At the start of each round, return the top card from the discard pile to the bottom of the deck.',

@@ -6,11 +6,11 @@ interface PlayerDamageInputProps {
 }
 
 export function PlayerDamageInput({ maxDamage, onApply }: PlayerDamageInputProps) {
-  const [damage, setDamage] = useState(1);
+  const [damage, setDamage] = useState(0);
 
   const handleApply = () => {
     onApply(damage);
-    setDamage(1);
+    setDamage(0);
   };
 
   return (
@@ -18,7 +18,7 @@ export function PlayerDamageInput({ maxDamage, onApply }: PlayerDamageInputProps
       <div className="text-sm text-gray-400 uppercase font-semibold">Player Damage</div>
       <div className="flex items-center justify-center gap-4">
         <button
-          onClick={() => setDamage((d) => Math.max(1, d - 1))}
+          onClick={() => setDamage((d) => Math.max(0, d - 1))}
           className="w-12 h-12 rounded-lg bg-gray-700 hover:bg-gray-600 text-xl font-bold text-gray-200 transition-colors"
         >
           -
@@ -33,10 +33,9 @@ export function PlayerDamageInput({ maxDamage, onApply }: PlayerDamageInputProps
       </div>
       <button
         onClick={handleApply}
-        disabled={maxDamage === 0}
-        className="w-full py-3 rounded-lg bg-red-700 hover:bg-red-600 disabled:bg-gray-700 disabled:text-gray-500 text-white font-semibold transition-colors"
+        className="w-full py-3 rounded-lg bg-red-700 hover:bg-red-600 text-white font-semibold transition-colors"
       >
-        Apply {damage} Damage
+        {damage === 0 ? 'Skip (0 damage)' : `Apply ${damage} Damage`}
       </button>
     </div>
   );

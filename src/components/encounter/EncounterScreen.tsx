@@ -1,7 +1,6 @@
 import { useEncounterStore } from '../../store/encounterStore';
 import { AbilityPanel } from './AbilityPanel';
 import { DeckTracker } from './DeckTracker';
-import { InitiativeDisplay } from './InitiativeDisplay';
 import { MonsterCardDisplay } from './MonsterCardDisplay';
 import { PlayerDamageInput } from './PlayerDamageInput';
 import { DiscardAlert } from './DiscardAlert';
@@ -12,12 +11,11 @@ export function EncounterScreen() {
   const deck = useEncounterStore((s) => s.deck);
   const discardPile = useEncounterStore((s) => s.discardPile);
   const currentCard = useEncounterStore((s) => s.currentCard);
-  const isMonsterFirst = useEncounterStore((s) => s.isMonsterFirst);
+  const turn = useEncounterStore((s) => s.turn);
   const phase = useEncounterStore((s) => s.phase);
   const lastDiscardTriggered = useEncounterStore((s) => s.lastDiscardTriggered);
   const flipMonsterCard = useEncounterStore((s) => s.flipMonsterCard);
   const applyPlayerDamage = useEncounterStore((s) => s.applyPlayerDamage);
-  const nextRound = useEncounterStore((s) => s.nextRound);
   const resetToSetup = useEncounterStore((s) => s.resetToSetup);
 
   if (!monster) return null;
@@ -26,35 +24,48 @@ export function EncounterScreen() {
     <div className="min-h-screen flex flex-col p-4 space-y-4 max-w-lg mx-auto">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-amber-500">{monster.name}</h1>
-        <button
-          onClick={resetToSetup}
-          className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-        >
-          Quit
-        </button>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-gray-500">Lv.{monster.level}</span>
+          <button
+            onClick={resetToSetup}
+            className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+          >
+            Quit
+          </button>
+        </div>
       </div>
 
       <AbilityPanel monster={monster} />
-      <InitiativeDisplay isMonsterFirst={isMonsterFirst} />
       <DeckTracker deckSize={deck.length} discardSize={discardPile.length} />
 
-      <div className="flex-1 flex flex-col justify-center py-4">
-        <MonsterCardDisplay
-          currentCard={currentCard}
-          deckEmpty={deck.length === 0}
-          onFlip={flipMonsterCard}
-        />
+      <div
+        className={`text-center py-2 px-4 rounded-lg text-sm font-semibold ${
+          turn === 'monster'
+            ? 'bg-red-900/40 text-red-300'
+            : 'bg-green-900/40 text-green-300'
+        }`}
+      >
+        {turn === 'monster' ? "Monster's turn" : "Player's turn"}
       </div>
 
-      <div className="space-y-3">
-        <PlayerDamageInput maxDamage={deck.length} onApply={applyPlayerDamage} />
-        {currentCard && (
-          <button
-            onClick={nextRound}
-            className="w-full py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold transition-colors"
-          >
-            Next Round
-          </button>
+      <div className="flex-1 flex flex-col justify-center py-4">
+        {turn === 'monster' ? (
+          <MonsterCardDisplay
+            currentCard={null}
+            deckEmpty={deck.length === 0}
+            onFlip={flipMonsterCard}
+          />
+        ) : (
+          <>
+            <MonsterCardDisplay
+              currentCard={currentCard}
+              deckEmpty={deck.length === 0}
+              onFlip={flipMonsterCard}
+            />
+            <div className="mt-6">
+              <PlayerDamageInput maxDamage={deck.length} onApply={applyPlayerDamage} />
+            </div>
+          </>
         )}
       </div>
 

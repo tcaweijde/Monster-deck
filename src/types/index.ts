@@ -23,12 +23,11 @@ export interface MonsterAbility {
   trigger: AbilityTrigger;
 }
 
-export type MonsterLevel = 1 | 2 | 3;
-
 export interface Monster {
   id: string;
   name: string;
-  deckSizes: Record<MonsterLevel, number>;
+  level: number;
+  deckSize: number;
   baseAbility: MonsterAbility;
   secondaryAbility?: MonsterAbility;
   discardAbility?: MonsterAbility;
@@ -37,10 +36,9 @@ export interface Monster {
 
 export interface EncounterState {
   monster: Monster;
-  level: MonsterLevel;
   deck: MonsterCard[];
   discardPile: MonsterCard[];
   currentCard: RevealedCard | null;
-  isMonsterFirst: boolean;
+  turn: 'monster' | 'player';
   phase: 'setup' | 'playing' | 'victory';
 }

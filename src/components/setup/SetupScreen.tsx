@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import type { Monster, MonsterLevel } from '../../types';
+import type { Monster } from '../../types';
 import { useEncounterStore } from '../../store/encounterStore';
 import { MonsterPicker } from './MonsterPicker';
-import { LevelPicker } from './LevelPicker';
 
 export function SetupScreen() {
   const [selectedMonster, setSelectedMonster] = useState<Monster | null>(null);
-  const [selectedLevel, setSelectedLevel] = useState<MonsterLevel | null>(null);
+  const [playerHasTrail, setPlayerHasTrail] = useState(false);
   const startEncounter = useEncounterStore((s) => s.startEncounter);
 
   const handleStart = () => {
-    if (selectedMonster && selectedLevel) {
-      startEncounter(selectedMonster.id, selectedLevel);
+    if (selectedMonster) {
+      startEncounter(selectedMonster.id, playerHasTrail);
     }
   };
 
@@ -24,20 +23,30 @@ export function SetupScreen() {
         <MonsterPicker selected={selectedMonster} onSelect={setSelectedMonster} />
 
         {selectedMonster && (
-          <LevelPicker
-            monster={selectedMonster}
-            selected={selectedLevel}
-            onSelect={setSelectedLevel}
-          />
-        )}
+          <>
+            <button
+              onClick={() => setPlayerHasTrail((v) => !v)}
+              className={`w-full p-4 rounded-lg border-2 text-left transition-colors ${
+                playerHasTrail
+                  ? 'border-green-500 bg-green-500/10'
+                  : 'border-gray-700 bg-gray-800/50 hover:border-gray-500'
+              }`}
+            >
+              <div className="font-semibold text-gray-200">Trail token</div>
+              <div className="text-sm text-gray-400 mt-1">
+                {playerHasTrail
+                  ? 'Player starts first'
+                  : 'Monster starts first (default)'}
+              </div>
+            </button>
 
-        {selectedMonster && selectedLevel && (
-          <button
-            onClick={handleStart}
-            className="w-full py-4 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-lg transition-colors"
-          >
-            Start Encounter
-          </button>
+            <button
+              onClick={handleStart}
+              className="w-full py-4 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-lg transition-colors"
+            >
+              Start Encounter
+            </button>
+          </>
         )}
       </div>
     </div>

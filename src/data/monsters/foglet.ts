@@ -3,7 +3,8 @@ import type { Monster } from '../../types';
 export const foglet: Monster = {
   id: 'foglet',
   name: 'Foglet',
-  deckSizes: { 1: 8, 2: 10, 3: 14 },
+  level: 1,
+  deckSize: 8,
   baseAbility: {
     name: 'Fog Cloak',
     description: 'The Foglet has Shield 1 on every attack.',

@@ -27,7 +27,10 @@ export function MonsterPicker({ selected, onSelect }: MonsterPickerProps) {
             }`}
           >
             <div className="font-bold text-lg text-gray-100">{monster.name}</div>
-            <div className="text-sm text-gray-400 mt-1">{monster.baseAbility.name}</div>
+            <div className="text-sm text-gray-400 mt-1">
+              Level {monster.level} — {monster.deckSize} cards
+            </div>
+            <div className="text-sm text-gray-500 mt-1">{monster.baseAbility.name}</div>
           </button>
         ))}
       </div>
