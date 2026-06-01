@@ -15,6 +15,8 @@ interface EncounterStore {
 
   startEncounter: (monsterId: string, playerFirst?: boolean) => void;
   flipMonsterCard: () => void;
+  discardOne: () => void;
+  passTurn: () => void;
   applyPlayerDamage: (damage: number) => void;
   resetToSetup: () => void;
 }
@@ -56,6 +58,29 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       lastDiscardTriggered: false,
       turn: 'player',
       phase: result.remainingDeck.length === 0 ? 'victory' : 'playing',
+    });
+  },
+
+  discardOne: () => {
+    const { deck, discardPile, monster } = get();
+    if (deck.length === 0) return;
+
+    const result = applyDamage(deck, 1);
+    const hasDiscardAbility = !!monster?.discardAbility;
+
+    set({
+      deck: result.remainingDeck,
+      discardPile: [...discardPile, ...result.discardedCards],
+      lastDiscardTriggered: hasDiscardAbility,
+      phase: result.remainingDeck.length === 0 ? 'victory' : 'playing',
+    });
+  },
+
+  passTurn: () => {
+    set({
+      currentCard: null,
+      lastDiscardTriggered: false,
+      turn: 'monster',
     });
   },
 

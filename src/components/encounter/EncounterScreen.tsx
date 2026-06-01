@@ -2,7 +2,6 @@ import { useEncounterStore } from '../../store/encounterStore';
 import { AbilityPanel } from './AbilityPanel';
 import { DeckTracker } from './DeckTracker';
 import { MonsterCardDisplay } from './MonsterCardDisplay';
-import { PlayerDamageInput } from './PlayerDamageInput';
 import { DiscardAlert } from './DiscardAlert';
 import { VictoryOverlay } from './VictoryOverlay';
 
@@ -15,7 +14,8 @@ export function EncounterScreen() {
   const phase = useEncounterStore((s) => s.phase);
   const lastDiscardTriggered = useEncounterStore((s) => s.lastDiscardTriggered);
   const flipMonsterCard = useEncounterStore((s) => s.flipMonsterCard);
-  const applyPlayerDamage = useEncounterStore((s) => s.applyPlayerDamage);
+  const discardOne = useEncounterStore((s) => s.discardOne);
+  const passTurn = useEncounterStore((s) => s.passTurn);
   const resetToSetup = useEncounterStore((s) => s.resetToSetup);
 
   if (!monster) return null;
@@ -49,24 +49,14 @@ export function EncounterScreen() {
       </div>
 
       <div className="flex-1 flex flex-col justify-center py-4">
-        {turn === 'monster' ? (
-          <MonsterCardDisplay
-            currentCard={null}
-            deckEmpty={deck.length === 0}
-            onFlip={flipMonsterCard}
-          />
-        ) : (
-          <>
-            <MonsterCardDisplay
-              currentCard={currentCard}
-              deckEmpty={deck.length === 0}
-              onFlip={flipMonsterCard}
-            />
-            <div className="mt-6">
-              <PlayerDamageInput maxDamage={deck.length} onApply={applyPlayerDamage} />
-            </div>
-          </>
-        )}
+        <MonsterCardDisplay
+          currentCard={currentCard}
+          deckEmpty={deck.length === 0}
+          turn={turn}
+          onFlip={flipMonsterCard}
+          onSwipeDamage={discardOne}
+          onPass={passTurn}
+        />
       </div>
 
       {monster.discardAbility && (
