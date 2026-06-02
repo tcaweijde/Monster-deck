@@ -114,7 +114,7 @@ export function MonsterCardDisplay({
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
-        className={`w-full h-[32rem] rounded-xl border-2 flex flex-col items-center justify-end pb-4 select-none ${
+        className={`w-full h-[38rem] rounded-xl border-2 flex flex-col items-center justify-end pb-4 select-none ${
           deckEmpty
             ? 'border-gray-700 bg-gray-800/30'
             : isPlayerTurn
