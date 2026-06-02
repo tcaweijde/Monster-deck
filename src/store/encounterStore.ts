@@ -3,6 +3,7 @@ import type { Monster, MonsterCard, RevealedCard } from '../types';
 import { generateDeck } from '../engine/deck';
 import { flipCard, applyDamage } from '../engine/combat';
 import { getMonsterById } from '../data/monsters';
+import { GENERIC_CARDS } from '../data/genericCards';
 
 interface EncounterStore {
   monster: Monster | null;
@@ -34,7 +35,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
     const monster = getMonsterById(monsterId);
     if (!monster) throw new Error(`Monster "${monsterId}" not found`);
 
-    const deck = generateDeck(monster);
+    const deck = generateDeck(monster, undefined, GENERIC_CARDS);
 
     set({
       monster,
@@ -56,7 +57,6 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       currentCard: result.revealed,
       deck: result.remainingDeck,
       lastDiscardTriggered: false,
-      turn: 'player',
       phase: result.remainingDeck.length === 0 ? 'victory' : 'playing',
     });
   },
@@ -77,10 +77,18 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
   },
 
   passTurn: () => {
+    const { turn, currentCard, monster, discardPile } = get();
+    const fullPool = [...(monster?.cardPool ?? []), ...GENERIC_CARDS];
+    const revealedMonsterCard =
+      turn === 'monster' && currentCard
+        ? fullPool.find((card) => card.id === currentCard.cardId)
+        : undefined;
+
     set({
+      discardPile: revealedMonsterCard ? [...discardPile, revealedMonsterCard] : discardPile,
       currentCard: null,
       lastDiscardTriggered: false,
-      turn: 'monster',
+      turn: turn === 'monster' ? 'player' : 'monster',
     });
   },
 

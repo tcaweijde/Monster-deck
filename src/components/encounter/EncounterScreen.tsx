@@ -53,6 +53,7 @@ export function EncounterScreen() {
           currentCard={currentCard}
           deckEmpty={deck.length === 0}
           turn={turn}
+          cardFrontImages={monster.cardFrontImages}
           onFlip={flipMonsterCard}
           onSwipeDamage={discardOne}
           onPass={passTurn}
