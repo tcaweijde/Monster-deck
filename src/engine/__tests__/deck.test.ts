@@ -125,8 +125,9 @@ describe('generateDeck', () => {
   describe('real monster data', () => {
     it('should generate a valid griffin deck from real data', async () => {
       const { griffin } = await import('../../data/monsters/griffin');
-      const deck = generateDeck(griffin, zeroRng);
-      expect(deck).toHaveLength(griffin.deckSize);
+      const monster = { ...griffin, deckSize: griffin.cardPool.length };
+      const deck = generateDeck(monster, zeroRng);
+      expect(deck).toHaveLength(monster.deckSize);
       const poolIds = new Set(griffin.cardPool.map((c) => c.id));
       for (const card of deck) {
         expect(poolIds.has(card.id)).toBe(true);
@@ -135,8 +136,9 @@ describe('generateDeck', () => {
 
     it('should generate a valid werewolf deck from real data', async () => {
       const { werewolf } = await import('../../data/monsters/werewolf');
-      const deck = generateDeck(werewolf, zeroRng);
-      expect(deck).toHaveLength(werewolf.deckSize);
+      const monster = { ...werewolf, deckSize: werewolf.cardPool.length };
+      const deck = generateDeck(monster, zeroRng);
+      expect(deck).toHaveLength(monster.deckSize);
     });
   });
 });

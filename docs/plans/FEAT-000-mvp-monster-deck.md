@@ -15,7 +15,7 @@ Build a client-side-only web app using React + TypeScript + Vite that replaces t
 
 1. **Client-side only (no backend).** This is a single-player personal tool, not a service. All game data is static and known at build time. A backend adds deployment complexity, hosting cost, and latency for zero benefit. Ship a static site.
 
-2. **React + TypeScript + Vite.** React because Thomas works at Info Support (a .NET/Java/JS shop) and React is the dominant frontend framework in that ecosystem -- minimizing learning curve for a side project. TypeScript for type safety on the card data model (the most complex part of the app). Vite for fast dev experience and zero-config deployment.
+2. **React + TypeScript + Vite.** React because Thomas works at a company (a .NET/Java/JS shop) and React is the dominant frontend framework in that ecosystem -- minimizing learning curve for a side project. TypeScript for type safety on the card data model (the most complex part of the app). Vite for fast dev experience and zero-config deployment.
 
 3. **Zustand for state management.** The encounter state (deck, discard pile, current card, abilities, deck size) is the core of the app. Zustand is minimal, TypeScript-friendly, and avoids Redux boilerplate. A single `useEncounterStore` manages all encounter state. No global state needed beyond the active encounter.
 

@@ -17,6 +17,10 @@ export const werewolf: Monster = {
     { id: 'werewolf-04', top: { attack: 1, effect: 'Bleed 2' }, bottom: { attack: 3 } }
   ],
   cardFrontImages: [
-    '/images/werewolf/card-front-1.png',
+    '/images/werewolf/card-front-1.svg',
+    '/images/werewolf/card-front-2.svg',
+    '/images/werewolf/card-front-3.svg',
+    '/images/werewolf/card-front-4.svg',
+    '/images/werewolf/card-front-5.svg',
   ],
 };

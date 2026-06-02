@@ -44,3 +44,23 @@ export interface EncounterState {
   turn: 'monster' | 'player';
   phase: 'setup' | 'playing' | 'victory';
 }
+
+export type LocationType = 'water' | 'mountain' | 'woods';
+
+export interface Location {
+  id: number; // 1–18
+  name: string;
+  type: LocationType;
+}
+
+export interface BoardSlot {
+  locationType: LocationType; // permanent for this slot's lifetime
+  locationId: number; // FK → Location.id; matches locationType
+  monsterId: string; // FK → Monster.id; unique across all slots
+  level: 1 | 2 | 3; // board-assigned level; escalates on defeat
+  status: 'active' | 'encountering';
+}
+
+export interface BoardState {
+  slots: [BoardSlot, BoardSlot, BoardSlot]; // always exactly 3
+}

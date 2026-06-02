@@ -27,6 +27,10 @@ export const foglet: Monster = {
     { id: 'foglet-04', top: { attack: 2 }, bottom: { attack: 2, effect: 'Shield 1' } },
   ],
   cardFrontImages: [
-    '/images/foglet/card-front-1.png',
+    '/images/foglet/card-front-1.svg',
+    '/images/foglet/card-front-2.svg',
+    '/images/foglet/card-front-3.svg',
+    '/images/foglet/card-front-4.svg',
+    '/images/foglet/card-front-5.svg',
   ],
 };

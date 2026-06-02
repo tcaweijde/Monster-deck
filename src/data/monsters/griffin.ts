@@ -27,6 +27,10 @@ export const griffin: Monster = {
     { id: 'griffin-04', top: { attack: 4 }, bottom: { attack: 2, effect: 'Shield 1' } },
   ],
   cardFrontImages: [
-    '/images/griffin/card-front-1.png',
+    '/images/griffin/card-front-1.svg',
+    '/images/griffin/card-front-2.svg',
+    '/images/griffin/card-front-3.svg',
+    '/images/griffin/card-front-4.svg',
+    '/images/griffin/card-front-5.svg',
   ],
 };

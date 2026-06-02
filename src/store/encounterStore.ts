@@ -57,7 +57,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       currentCard: result.revealed,
       deck: result.remainingDeck,
       lastDiscardTriggered: false,
-      phase: result.remainingDeck.length === 0 ? 'victory' : 'playing',
+      phase: 'playing',
     });
   },
 
@@ -77,18 +77,21 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
   },
 
   passTurn: () => {
-    const { turn, currentCard, monster, discardPile } = get();
+    const { turn, currentCard, monster, discardPile, deck } = get();
     const fullPool = [...(monster?.cardPool ?? []), ...GENERIC_CARDS];
     const revealedMonsterCard =
       turn === 'monster' && currentCard
         ? fullPool.find((card) => card.id === currentCard.cardId)
         : undefined;
 
+    const newDiscardPile = revealedMonsterCard ? [...discardPile, revealedMonsterCard] : discardPile;
+
     set({
-      discardPile: revealedMonsterCard ? [...discardPile, revealedMonsterCard] : discardPile,
+      discardPile: newDiscardPile,
       currentCard: null,
       lastDiscardTriggered: false,
       turn: turn === 'monster' ? 'player' : 'monster',
+      phase: deck.length === 0 ? 'victory' : 'playing',
     });
   },
 

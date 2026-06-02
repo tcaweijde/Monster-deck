@@ -1,4 +1,5 @@
 import { useEncounterStore } from '../../store/encounterStore';
+import { useBoardStore } from '../../store/boardStore';
 import { AbilityPanel } from './AbilityPanel';
 import { DeckTracker } from './DeckTracker';
 import { MonsterCardDisplay } from './MonsterCardDisplay';
@@ -18,16 +19,31 @@ export function EncounterScreen() {
   const passTurn = useEncounterStore((s) => s.passTurn);
   const resetToSetup = useEncounterStore((s) => s.resetToSetup);
 
+  const activeSlotIndex = useBoardStore((s) => s.activeSlotIndex);
+  const boardSlots = useBoardStore((s) => s.board?.slots);
+  const handleVictory = useBoardStore((s) => s.handleVictory);
+  const clearActiveSlot = useBoardStore((s) => s.clearActiveSlot);
+
   if (!monster) return null;
+
+  const displayLevel =
+    activeSlotIndex !== null
+      ? (boardSlots?.[activeSlotIndex]?.level ?? monster.level)
+      : monster.level;
+
+  const handleQuit = () => {
+    clearActiveSlot();
+    resetToSetup();
+  };
 
   return (
     <div className="h-dvh overflow-hidden flex flex-col p-4 space-y-4 max-w-lg mx-auto">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-amber-500">{monster.name}</h1>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-500">Lv.{monster.level}</span>
+          <span className="text-sm text-gray-500">Lv.{displayLevel}</span>
           <button
-            onClick={resetToSetup}
+            onClick={handleQuit}
             className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           >
             Quit
@@ -50,7 +66,7 @@ export function EncounterScreen() {
       <div className="flex-1 min-h-0 flex flex-col py-4">
         <MonsterCardDisplay
           currentCard={currentCard}
-          deckEmpty={deck.length === 0}
+          deckEmpty={deck.length === 0 && !currentCard}
           turn={turn}
           cardFrontImages={monster.cardFrontImages}
           onFlip={flipMonsterCard}
@@ -64,11 +80,15 @@ export function EncounterScreen() {
       )}
 
       {phase === 'victory' && (
-        <VictoryOverlay monsterName={monster.name} onNewEncounter={resetToSetup} />
+        <VictoryOverlay
+          monsterName={monster.name}
+          onClose={() => {
+            handleVictory();
+            resetToSetup();
+          }}
+        />
       )}
       <DeckTracker deckSize={deck.length} discardSize={discardPile.length} />
-
     </div>
-    
   );
 }
