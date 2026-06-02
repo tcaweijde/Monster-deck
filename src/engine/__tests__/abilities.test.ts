@@ -32,6 +32,7 @@ function makeMonster(overrides: Partial<Monster> = {}): Monster {
     deckSize: 5,
     baseAbility,
     cardPool: [],
+    cardFrontImages: [],
     ...overrides,
   };
 }
