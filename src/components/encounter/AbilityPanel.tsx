@@ -10,7 +10,7 @@ export function AbilityPanel({ monster }: AbilityPanelProps) {
   const showDiscardAbility = hasDiscardTrigger(monster);
 
   return (
-    <div className="bg-gray-800/80 rounded-lg p-4 space-y-2">
+    <div className="bg-gray-800/80 rounded-lg p-4 space-y-1">
       <h3 className="text-sm font-semibold text-amber-400 uppercase tracking-wide">
         Abilities
       </h3>

@@ -36,7 +36,6 @@ export function EncounterScreen() {
       </div>
 
       <AbilityPanel monster={monster} />
-      <DeckTracker deckSize={deck.length} discardSize={discardPile.length} />
 
       <div
         className={`text-center py-2 px-4 rounded-lg text-sm font-semibold ${
@@ -48,7 +47,7 @@ export function EncounterScreen() {
         {turn === 'monster' ? "Monster's turn" : "Player's turn"}
       </div>
 
-      <div className="flex-1 flex flex-col justify-center py-4">
+      <div className="flex-1 flex flex-col py-4">
         <MonsterCardDisplay
           currentCard={currentCard}
           deckEmpty={deck.length === 0}
@@ -67,6 +66,9 @@ export function EncounterScreen() {
       {phase === 'victory' && (
         <VictoryOverlay monsterName={monster.name} onNewEncounter={resetToSetup} />
       )}
+      <DeckTracker deckSize={deck.length} discardSize={discardPile.length} />
+
     </div>
+    
   );
 }
