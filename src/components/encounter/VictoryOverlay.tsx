@@ -11,7 +11,7 @@ export function VictoryOverlay({ monsterName, onNewEncounter }: VictoryOverlayPr
         <p className="text-gray-300 text-lg">{monsterName} defeated</p>
         <button
           onClick={onNewEncounter}
-          className="w-full py-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-lg transition-colors"
+          className="w-full py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-lg transition-colors"
         >
           New Encounter
         </button>

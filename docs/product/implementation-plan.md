@@ -58,7 +58,7 @@ All core encounter mechanics are implemented and tested (111 tests passing).
 
 ## What's Next
 
-### Phase 1: Playtesting & Bug Fixes (current)
+### Phase 1: Playtesting & Bug Fixes 
 
 Playtest the app in a browser and fix issues that come up.
 
@@ -68,7 +68,7 @@ Playtest the app in a browser and fix issues that come up.
 - Fix any UX or logic bugs found during playtesting
 - Verify mobile layout works on phone/tablet screen sizes (browser dev tools)
 
-### Phase 2: Real Monster Data
+### Phase 2: Real Monster Data (current)
 
 The current card values and ability text are approximations. Replace with real data from the physical game.
 
