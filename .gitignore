@@ -33,3 +33,6 @@ dist-ssr
 .gitmodules
 .ripgreprc
 .mcp.json
+
+# Copilot agent memory
+.claude/agent-memory/
