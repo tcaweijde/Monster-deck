@@ -21,7 +21,7 @@ export function EncounterScreen() {
   if (!monster) return null;
 
   return (
-    <div className="min-h-screen flex flex-col p-4 space-y-4 max-w-lg mx-auto">
+    <div className="h-dvh overflow-hidden flex flex-col p-4 space-y-4 max-w-lg mx-auto">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-amber-500">{monster.name}</h1>
         <div className="flex items-center gap-3">
@@ -47,7 +47,7 @@ export function EncounterScreen() {
         {turn === 'monster' ? "Monster's turn" : "Player's turn"}
       </div>
 
-      <div className="flex-1 flex flex-col py-4">
+      <div className="flex-1 min-h-0 flex flex-col py-4">
         <MonsterCardDisplay
           currentCard={currentCard}
           deckEmpty={deck.length === 0}
