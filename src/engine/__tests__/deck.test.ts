@@ -17,6 +17,7 @@ const testMonster: Monster = {
   deckSize: 8,
   baseAbility: { name: 'Base', description: 'Base ability', trigger: 'passive' },
   cardPool: POOL_16,
+  cardFrontImages: []
 };
 
 const tightMonster: Monster = {
