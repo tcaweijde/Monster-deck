@@ -66,7 +66,7 @@ export function EncounterScreen() {
       <div className="flex-1 min-h-0 flex flex-col py-4">
         <MonsterCardDisplay
           currentCard={currentCard}
-          deckEmpty={deck.length === 0}
+          deckEmpty={deck.length === 0 && !currentCard}
           turn={turn}
           cardFrontImages={monster.cardFrontImages}
           onFlip={flipMonsterCard}

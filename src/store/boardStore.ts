@@ -28,6 +28,9 @@ interface BoardStore {
    * then clears activeSlotIndex.
    */
   handleVictory: () => void;
+
+  /** Clears the board and returns to the welcome screen. */
+  endGame: () => void;
 }
 
 export const useBoardStore = create<BoardStore>()(
@@ -68,6 +71,10 @@ export const useBoardStore = create<BoardStore>()(
 
         const newBoard = spawnReplacement(board, activeSlotIndex, MONSTERS);
         set({ board: newBoard, activeSlotIndex: null });
+      },
+
+      endGame: () => {
+        set({ board: null, activeSlotIndex: null });
       },
     }),
     {

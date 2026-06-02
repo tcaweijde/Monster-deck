@@ -6,6 +6,7 @@ import { BoardSlotCard } from './BoardSlotCard';
 export function BoardScreen() {
   const board = useBoardStore((s) => s.board);
   const setActiveSlot = useBoardStore((s) => s.setActiveSlot);
+  const endGame = useBoardStore((s) => s.endGame);
   const startEncounter = useEncounterStore((s) => s.startEncounter);
 
   if (!board) return null;
@@ -21,7 +22,15 @@ export function BoardScreen() {
 
   return (
     <div className="min-h-screen flex flex-col p-6 space-y-6 max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold text-amber-500">Board</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-amber-500">Board</h1>
+        <button
+          onClick={endGame}
+          className="text-sm text-gray-400 hover:text-red-400 transition-colors"
+        >
+          End Game
+        </button>
+      </div>
       <p className="text-sm text-gray-400">Tap a monster to begin the encounter.</p>
       <div className="space-y-3">
         {board.slots.map((slot, i) => (
