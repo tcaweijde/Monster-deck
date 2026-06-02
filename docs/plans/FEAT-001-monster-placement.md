@@ -14,7 +14,7 @@ This plan implements a persistent board layer that sits above the existing encou
 
 ## Key Design Decisions
 
-1. **`BoardSlot.level` is fully independent of `Monster.level`.** The two are unrelated concepts. `Monster.level` (e.g., foglet = 1, griffin = 2) reflects the monster's design tier; `BoardSlot.level` (1/2/3) is the board assignment that escalates on defeat. `initBoard` assigns levels 1, 2, 3 to the three slots and picks any 3 distinct monsters — it does not filter by `Monster.level`. This is confirmed by SC-008 (pool of exactly 3 monsters, replacement selected regardless of intrinsic level) and by the current data (griffin and werewolf both have `level: 2`).
+1. **`BoardSlot.level` is fully independent of `Monster.level`.** The two are unrelated concepts. `Monster.level` (e.g., foglet = 1, griffin = 2) reflects the monster's design tier; `BoardSlot.level` (1/2/3) is the board assignment that escalates on defeat. `initBoard` assigns levels 1, 2, 3 to the three slots and picks any 3 distinct monsters per level. This is confirmed by SC-008 (pool of exactly 3 monsters, replacement selected regardless of intrinsic level) and by the current data (griffin and werewolf both have `level: 2`).
 
 2. **`boardStore` is independent of `encounterStore`.** Stores do not import each other. The component layer (specifically `BoardScreen`, `EncounterScreen`, and `App.tsx`) calls both stores and orchestrates transitions. This keeps both stores unit-testable in isolation and avoids circular dependencies.
 

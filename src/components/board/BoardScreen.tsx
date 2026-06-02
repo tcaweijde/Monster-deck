@@ -35,7 +35,7 @@ export function BoardScreen() {
       <div className="space-y-3">
         {board.slots.map((slot, i) => (
           <BoardSlotCard
-            key={slot.locationType}
+            key={i}
             slot={slot}
             monsterName={getMonsterName(slot.monsterId)}
             onStartEncounter={() => handleSlotTap(i as 0 | 1 | 2)}
