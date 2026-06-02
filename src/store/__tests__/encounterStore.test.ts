@@ -18,6 +18,7 @@ const MOCK_MONSTER: Monster = {
   secondaryAbility: { name: 'Screech', description: 'Causes fear.', trigger: 'passive' },
   discardAbility: { name: 'Frenzy', description: 'Retaliates when damaged.', trigger: 'discard' },
   cardPool: MOCK_CARDS,
+  cardFrontImages: ['griffin-1.png', 'griffin-2.png'],
 };
 
 const MOCK_MONSTER_NO_DISCARD: Monster = {
