@@ -98,7 +98,7 @@ export function MonsterCardDisplay({
     : `url(${currentCard ? getCardFrontImage(currentCard.cardId, cardFrontImages) : CARD_BACK_IMAGE})`;
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center h-full">
       <motion.div
         drag={isPlayerTurn ? 'x' : false}
         dragConstraints={isPlayerTurn ? { left: 0, right: 0 } : undefined}
@@ -114,11 +114,11 @@ export function MonsterCardDisplay({
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
-        className={`w-full h-[34rem] rounded-xl border-2 flex flex-col items-center justify-end pb-4 select-none ${
+        className={`w-full h-full max-h-[32rem] rounded-xl border-2 flex flex-col items-center justify-end pb-4 select-none ${
           deckEmpty
             ? 'border-gray-700 bg-gray-800/30'
             : isPlayerTurn
-              ? 'border-amber-500/50 cursor-grab active:cursor-grabbing touch-pan-y'
+              ? 'border-amber-500/50 cursor-grab active:cursor-grabbing touch-none'
               : 'border-gray-500 hover:border-amber-500 cursor-pointer'
         }`}
         whileTap={!isPlayerTurn && !deckEmpty ? { scale: 0.95 } : {}}
@@ -130,7 +130,7 @@ export function MonsterCardDisplay({
           <span className="text-gray-600 text-lg">No cards left</span>
         ) : currentCard ? (
           <div className="text-center flex flex-col items-center bg-black/70 rounded-lg px-4 py-2 w-full">
-            <div className="text-5xl font-bold text-red-400">{currentCard.chosenHalf.attack}</div>
+            <div className="text-3xl sm:text-5xl font-bold text-red-400">{currentCard.chosenHalf.attack}</div>
             <div className="text-sm text-gray-300 uppercase mt-1">Attack</div>
             {currentCard.chosenHalf.effect && (
               <div className="text-sm text-amber-300 bg-amber-500/20 rounded-lg px-3 py-1.5 mt-3">
