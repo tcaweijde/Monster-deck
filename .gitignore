@@ -34,5 +34,7 @@ dist-ssr
 .ripgreprc
 .mcp.json
 
-# Copilot agent memory
+# Copilot agent files
 .claude/agent-memory/
+.claude/agents/
+.claude/skills/
