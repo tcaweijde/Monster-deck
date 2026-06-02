@@ -4,9 +4,10 @@ import { shuffle } from './shuffle';
 export function generateDeck(
   monster: Monster,
   rng?: () => number,
+  genericCards: MonsterCard[] = [],
 ): MonsterCard[] {
   const size = monster.deckSize;
-  const pool = monster.cardPool;
+  const pool = [...monster.cardPool, ...genericCards];
 
   if (pool.length < size) {
     throw new Error(

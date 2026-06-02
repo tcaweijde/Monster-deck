@@ -144,9 +144,9 @@ describe('encounterStore', () => {
       expect(useEncounterStore.getState().deck).toHaveLength(3);
     });
 
-    it('should switch turn to player', () => {
+    it('should keep turn on monster after reveal', () => {
       act(() => { useEncounterStore.getState().flipMonsterCard(); });
-      expect(useEncounterStore.getState().turn).toBe('player');
+      expect(useEncounterStore.getState().turn).toBe('monster');
     });
 
     it('should do nothing when flipCard returns null (empty deck)', () => {
@@ -237,11 +237,16 @@ describe('encounterStore', () => {
       expect(useEncounterStore.getState().turn).toBe('monster');
 
       act(() => { useEncounterStore.getState().flipMonsterCard(); });
+      expect(useEncounterStore.getState().turn).toBe('monster');
+
+      act(() => { useEncounterStore.getState().passTurn(); });
       expect(useEncounterStore.getState().turn).toBe('player');
+      expect(useEncounterStore.getState().discardPile).toHaveLength(1);
 
       act(() => { useEncounterStore.getState().applyPlayerDamage(3); });
       expect(useEncounterStore.getState().phase).toBe('victory');
       expect(useEncounterStore.getState().deck).toHaveLength(0);
+      expect(useEncounterStore.getState().discardPile).toHaveLength(4);
     });
 
     it('should alternate turns across multiple flip-damage cycles', () => {
@@ -249,11 +254,42 @@ describe('encounterStore', () => {
       expect(useEncounterStore.getState().turn).toBe('monster');
 
       act(() => { useEncounterStore.getState().flipMonsterCard(); });
+      expect(useEncounterStore.getState().turn).toBe('monster');
+
+      act(() => { useEncounterStore.getState().passTurn(); });
       expect(useEncounterStore.getState().turn).toBe('player');
+      expect(useEncounterStore.getState().discardPile).toHaveLength(1);
 
       act(() => { useEncounterStore.getState().applyPlayerDamage(1); });
       expect(useEncounterStore.getState().turn).toBe('monster');
       expect(useEncounterStore.getState().phase).toBe('playing');
+      expect(useEncounterStore.getState().discardPile).toHaveLength(2);
+    });
+  });
+
+  describe('passTurn', () => {
+    it('should toggle turn from monster to player, clear currentCard, and discard the revealed attack card', () => {
+      act(() => { useEncounterStore.getState().startEncounter('test-griffin'); });
+      act(() => { useEncounterStore.getState().flipMonsterCard(); });
+
+      expect(useEncounterStore.getState().currentCard).not.toBeNull();
+      act(() => { useEncounterStore.getState().passTurn(); });
+
+      const state = useEncounterStore.getState();
+      expect(state.turn).toBe('player');
+      expect(state.currentCard).toBeNull();
+      expect(state.discardPile).toHaveLength(1);
+      expect(state.discardPile[0].id).toBe(MOCK_CARDS[0].id);
+    });
+
+    it('should toggle turn from player to monster', () => {
+      act(() => { useEncounterStore.getState().startEncounter('test-griffin'); });
+      act(() => { useEncounterStore.getState().flipMonsterCard(); });
+      act(() => { useEncounterStore.getState().passTurn(); });
+
+      expect(useEncounterStore.getState().turn).toBe('player');
+      act(() => { useEncounterStore.getState().passTurn(); });
+      expect(useEncounterStore.getState().turn).toBe('monster');
     });
   });
 

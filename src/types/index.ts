@@ -32,6 +32,8 @@ export interface Monster {
   secondaryAbility?: MonsterAbility;
   discardAbility?: MonsterAbility;
   cardPool: MonsterCard[];
+  /** Images shown on the card front face. One is picked per card based on the card's position. */
+  cardFrontImages: string[];
 }
 
 export interface EncounterState {
