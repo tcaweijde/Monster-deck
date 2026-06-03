@@ -41,10 +41,10 @@ export function EncounterScreen() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-amber-500">{monster.name}</h1>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-500">Lv.{displayLevel}</span>
+          <span className="text-sm text-stone-500">Lv.{displayLevel}</span>
           <button
             onClick={handleQuit}
-            className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+            className="text-sm text-stone-400 hover:text-stone-200 transition-colors"
           >
             Quit
           </button>
@@ -57,7 +57,7 @@ export function EncounterScreen() {
         className={`text-center py-2 px-4 rounded-lg text-sm font-semibold ${
           turn === 'monster'
             ? 'bg-red-900/40 text-red-300'
-            : 'bg-green-900/40 text-green-300'
+            : 'bg-amber-900/30 text-amber-200'
         }`}
       >
         {turn === 'monster' ? "Monster's turn" : "Player's turn"}

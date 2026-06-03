@@ -17,7 +17,7 @@ export function SetupScreen() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 space-y-8">
       <h1 className="text-3xl sm:text-4xl font-bold text-amber-500">Monster Deck</h1>
-      <p className="text-gray-400 text-center">The Witcher Old World — Digital Opponent</p>
+      <p className="text-stone-400 text-center">The Witcher Old World — Digital Opponent</p>
 
       <div className="w-full max-w-lg space-y-8">
         <MonsterPicker selected={selectedMonster} onSelect={setSelectedMonster} />
@@ -29,11 +29,11 @@ export function SetupScreen() {
               className={`w-full p-4 rounded-lg border-2 text-left transition-colors ${
                 playerHasTrail
                   ? 'border-green-500 bg-green-500/10'
-                  : 'border-gray-700 bg-gray-800/50 hover:border-gray-500'
+                  : 'border-stone-700 bg-stone-800/50 hover:border-stone-500'
               }`}
             >
-              <div className="font-semibold text-gray-200">Trail token</div>
-              <div className="text-sm text-gray-400 mt-1">
+              <div className="font-semibold text-stone-200">Trail token</div>
+              <div className="text-sm text-stone-400 mt-1">
                 {playerHasTrail
                   ? 'Player starts first'
                   : 'Monster starts first (default)'}

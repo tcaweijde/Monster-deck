@@ -26,12 +26,12 @@ export function BoardScreen() {
         <h1 className="text-2xl font-bold text-amber-500">Board</h1>
         <button
           onClick={endGame}
-          className="text-sm text-gray-400 hover:text-red-400 transition-colors"
+          className="text-sm text-stone-400 hover:text-red-400 transition-colors"
         >
           End Game
         </button>
       </div>
-      <p className="text-sm text-gray-400">Tap a monster to begin the encounter.</p>
+      <p className="text-sm text-stone-400">Tap a monster to begin the encounter.</p>
       <div className="flex-1 min-h-0 flex flex-col gap-3">
         {board.slots.map((slot, i) => (
           <BoardSlotCard
