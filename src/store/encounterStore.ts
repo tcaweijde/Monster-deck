@@ -3,7 +3,6 @@ import type { Monster, MonsterCard, RevealedCard } from '../types';
 import { generateDeck } from '../engine/deck';
 import { flipCard, applyDamage } from '../engine/combat';
 import { getMonsterById } from '../data/monsters';
-import { GENERIC_CARDS } from '../data/genericCards';
 
 interface EncounterStore {
   monster: Monster | null;
@@ -35,7 +34,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
     const monster = getMonsterById(monsterId);
     if (!monster) throw new Error(`Monster "${monsterId}" not found`);
 
-    const deck = generateDeck(monster, undefined, GENERIC_CARDS);
+    const deck = generateDeck(monster, undefined);
 
     set({
       monster,
@@ -78,7 +77,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
 
   passTurn: () => {
     const { turn, currentCard, monster, discardPile, deck } = get();
-    const fullPool = [...(monster?.cardPool ?? []), ...GENERIC_CARDS];
+    const fullPool = [...(monster?.cardPool ?? [])];
     const revealedMonsterCard =
       turn === 'monster' && currentCard
         ? fullPool.find((card) => card.id === currentCard.cardId)

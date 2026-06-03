@@ -114,7 +114,7 @@ export function MonsterCardDisplay({
 
   return (
     <div className="flex flex-col items-center h-full">
-      <div className="relative w-full h-full max-h-[32rem]">
+      <div className="relative h-full aspect-[283/438] max-w-full mx-auto">
         {stackCount >= 2 && (
           <div
             className="absolute inset-0 rounded-xl border-2 border-gray-600/40"
