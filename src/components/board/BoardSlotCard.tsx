@@ -26,7 +26,7 @@ export function BoardSlotCard({ slot, monsterName, onStartEncounter }: BoardSlot
       className={`relative w-full text-left rounded-xl border-2 overflow-hidden flex-1 min-h-0 transition-colors ${
         isEncountering
           ? 'border-red-700 opacity-60'
-          : 'border-gray-700 hover:border-amber-600'
+          : 'border-stone-700 hover:border-amber-600'
       }`}
     >
       {/* Background image */}
@@ -38,7 +38,7 @@ export function BoardSlotCard({ slot, monsterName, onStartEncounter }: BoardSlot
       />
 
       {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-stone-950/30 to-stone-950/80" />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col justify-between h-full p-4">

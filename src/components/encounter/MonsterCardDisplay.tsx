@@ -117,13 +117,13 @@ export function MonsterCardDisplay({
       <div className="relative h-full aspect-[283/438] max-w-full mx-auto">
         {stackCount >= 2 && (
           <div
-            className="absolute inset-0 rounded-xl border-2 border-gray-600/40"
+            className="absolute inset-0 rounded-xl border-2 border-stone-600/40"
             style={{ ...cardBackStyle, transform: 'translate(-8px, -8px)', opacity: 0.35 }}
           />
         )}
         {stackCount >= 1 && (
           <div
-            className="absolute inset-0 rounded-xl border-2 border-gray-500/50"
+            className="absolute inset-0 rounded-xl border-2 border-stone-500/50"
             style={{ ...cardBackStyle, transform: 'translate(-4px, -4px)', opacity: 0.6 }}
           />
         )}
@@ -144,10 +144,10 @@ export function MonsterCardDisplay({
           }}
           className={`absolute inset-0 rounded-xl border-2 flex flex-col items-center justify-end pb-4 select-none ${
             deckEmpty
-              ? 'border-gray-700 bg-gray-800/30'
+              ? 'border-stone-700 bg-stone-800/30'
               : isPlayerTurn
                 ? 'border-amber-500/50 cursor-grab active:cursor-grabbing touch-none'
-                : 'border-gray-500 hover:border-amber-500 cursor-pointer'
+                : 'border-stone-500 hover:border-amber-500 cursor-pointer'
           }`}
           whileTap={!isPlayerTurn && !deckEmpty ? { scale: 0.95 } : {}}
           animate={isFlipping ? { rotateY: 90 } : justRevealed ? { rotateY: [90, 0] } : { rotateY: 0 }}
@@ -155,14 +155,15 @@ export function MonsterCardDisplay({
           onAnimationComplete={() => setJustRevealed(false)}
         >
           {deckEmpty ? (
-            <span className="text-gray-600 text-lg">No cards left</span>
+            <span className="text-stone-600 text-lg">No cards left</span>
           ) : currentCard ? (
-            <div className="text-center flex flex-col items-center bg-black/70 rounded-lg px-4 py-2 w-full">
-              <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">
+            <div className="text-center flex flex-col items-center bg-stone-950/80 rounded-lg px-4 py-2 w-full">
+              <div className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-1">
                 {currentCard.chosenHalf.name}
               </div>
-              <div className="text-3xl sm:text-5xl font-bold text-red-400">{currentCard.chosenHalf.attack}</div>
-              <div className="text-sm text-gray-300 uppercase mt-1">Attack</div>
+              {currentCard.chosenHalf.attack && (
+                <div className="text-3xl sm:text-5xl font-bold text-red-400">{currentCard.chosenHalf.attack} damage</div>
+              )}
               {currentCard.chosenHalf.effect && (
                 <div className="text-sm text-amber-300 bg-amber-500/20 rounded-lg px-3 py-1.5 mt-3">
                   {currentCard.chosenHalf.effect}
@@ -170,14 +171,14 @@ export function MonsterCardDisplay({
               )}
             </div>
           ) : isPlayerTurn ? (
-            <div className="text-center bg-black/70 rounded-lg px-4 py-2 w-full">
-              <div className="text-2xl font-bold text-green-300 mb-1">Your turn</div>
-              <span className="text-gray-200 text-sm">Swipe to deal damage</span>
+            <div className="text-center bg-stone-950/80 rounded-lg px-4 py-2 w-full">
+              <div className="text-2xl font-bold text-amber-200 mb-1">Your turn</div>
+              <span className="text-stone-200 text-sm">Swipe to deal damage</span>
             </div>
           ) : (
-            <div className="text-center bg-black/70 rounded-lg px-4 py-2 w-full">
-              <div className="text-4xl mb-2 text-gray-100">?</div>
-              <span className="text-gray-200 text-sm">Tap to flip</span>
+            <div className="text-center bg-stone-950/80 rounded-lg px-4 py-2 w-full">
+              <div className="text-4xl mb-2 text-stone-100">?</div>
+              <span className="text-stone-200 text-sm">Tap to flip</span>
             </div>
           )}
         </motion.div>
