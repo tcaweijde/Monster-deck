@@ -1,10 +1,10 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { useBoardStore } from './store/boardStore';
 import { BoardWelcomeScreen } from './components/board/BoardWelcomeScreen';
 import { BoardScreen } from './components/board/BoardScreen';
 import { EncounterScreen } from './components/encounter/EncounterScreen';
 
-const slideUp = {
+const slideUp: Variants = {
   initial: { y: '100%', opacity: 0 },
   animate: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 320, damping: 32 } },
   exit:    { y: '100%', opacity: 0, transition: { duration: 0.25, ease: 'easeIn' } },
