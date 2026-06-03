@@ -23,7 +23,7 @@
 | Field           | Value                                                                          |
 | --------------- | ------------------------------------------------------------------------------ |
 | Feature ID      | FEAT-002                                                                       |
-| Status          | Draft                                                                          |
+| Status          | Implemented                                                                    |
 | Author          | Thomas                                                                         |
 | Created         | 2026-06-03                                                                     |
 | Last updated    | 2026-06-03                                                                     |
@@ -151,8 +151,8 @@ Then the cards are drawn from the single shared generic card pool
 | Attribute | Type    | Constraints           | Description                                    |
 | --------- | ------- | --------------------- | ---------------------------------------------- |
 | name      | string  | required, max 40 chars | Display name: always "Charge" (top) or "Bite" (bottom) for generic cards |
-| attack    | integer | required, ≥ 0         | Attack value from the physical card             |
-| effect    | string  | optional              | Ability text, e.g. "Shield 1", "Bleed 1"       |
+| attack    | integer | optional, ≥ 0         | Attack value from the physical card; absent when the half is effect-only |
+| effect    | string  | optional              | Ability text; at least one of `attack` or `effect` must be present      |
 
 > **Forward constraint:** Monster Trail (FEAT-004) introduces cards with only one
 > half. The `name` field should be added to `CardHalf` but the `top`/`bottom`
@@ -174,9 +174,10 @@ Then the cards are drawn from the single shared generic card pool
 
 ### 5.3 Domain Rules and Invariants
 
-- **Real values required**: Every card in the generic pool must have non-placeholder attack values transcribed from the physical game
+- **Real values required**: Every card in the generic pool must have attack values and/or effect text transcribed from the physical game; no placeholder values permitted
 - **Half names are fixed for generic cards**: Top half is always "Charge"; bottom half is always "Bite"
 - **Half name required**: `CardHalf.name` must not be empty
+- **Each half must have content**: At least one of `attack` or `effect` must be present on every half
 - **Pool size invariant**: The generic pool must contain enough unique cards to satisfy the largest base-game deck size (L3 = up to 20 cards)
 - **Shared pool, not copied**: Each monster's `cardPool` references the shared pool (or a filtered subset), not a duplicate definition
 
@@ -187,7 +188,7 @@ Then the cards are drawn from the single shared generic card pool
 | ID      | Category    | Requirement                                                                            |
 | ------- | ----------- | -------------------------------------------------------------------------------------- |
 | NFR-001 | Performance | Card data is static and bundled; card display must render instantaneously on flip      |
-| NFR-002 | Correctness | Attack values and effect text are transcribed from the physical game; deviation is a bug |
+| NFR-002 | Correctness | Attack values and effect text are transcribed from the physical game; deviation is a bug. **Satisfied: all 20 cards verified against physical game cards.** |
 
 ---
 
@@ -199,6 +200,7 @@ Then the cards are drawn from the single shared generic card pool
 | EC-2 | Generic pool has fewer cards than a monster's `deckSize`         | `generateDeck` already throws — no change to existing guard           |
 | EC-3 | Effect text is long (e.g. multi-word ability)                    | UI wraps or truncates gracefully; no layout overflow                   |
 | EC-4 | New monster added without updating its `cardPool` to shared pool | Linting / code review catches it; no runtime fallback needed           |
+| EC-5 | A half has neither `attack` nor `effect`                        | Caught by the pool invariant test; TypeScript alone does not enforce this combination |
 
 ---
 

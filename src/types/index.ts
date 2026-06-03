@@ -1,7 +1,7 @@
 export interface CardHalf {
   /** Display name of this half. "Charge" for top, "Bite" for bottom on generic cards. */
   name: string;
-  attack: number;
+  attack?: number;
   effect?: string;
 }
 

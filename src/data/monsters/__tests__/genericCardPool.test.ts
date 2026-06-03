@@ -24,12 +24,23 @@ describe('GENERIC_CARD_POOL', () => {
     }
   });
 
-  it('every half has a non-negative integer attack value', () => {
+  it('every half has a non-negative integer attack value when present', () => {
     for (const card of GENERIC_CARD_POOL) {
-      expect(card.top.attack).toBeGreaterThanOrEqual(0);
-      expect(Number.isInteger(card.top.attack)).toBe(true);
-      expect(card.bottom.attack).toBeGreaterThanOrEqual(0);
-      expect(Number.isInteger(card.bottom.attack)).toBe(true);
+      if (card.top.attack !== undefined) {
+        expect(card.top.attack).toBeGreaterThanOrEqual(0);
+        expect(Number.isInteger(card.top.attack)).toBe(true);
+      }
+      if (card.bottom.attack !== undefined) {
+        expect(card.bottom.attack).toBeGreaterThanOrEqual(0);
+        expect(Number.isInteger(card.bottom.attack)).toBe(true);
+      }
+    }
+  });
+
+  it('every half has attack or effect (never empty)', () => {
+    for (const card of GENERIC_CARD_POOL) {
+      expect(card.top.attack !== undefined || card.top.effect !== undefined).toBe(true);
+      expect(card.bottom.attack !== undefined || card.bottom.effect !== undefined).toBe(true);
     }
   });
 
