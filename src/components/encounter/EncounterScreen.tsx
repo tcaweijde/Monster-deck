@@ -67,6 +67,7 @@ export function EncounterScreen() {
         <MonsterCardDisplay
           currentCard={currentCard}
           deckEmpty={deck.length === 0 && !currentCard}
+          deckSize={deck.length}
           turn={turn}
           cardFrontImages={monster.cardFrontImages || []}
           onFlip={flipMonsterCard}

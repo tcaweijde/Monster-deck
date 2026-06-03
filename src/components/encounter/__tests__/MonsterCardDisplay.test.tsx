@@ -18,6 +18,7 @@ function makeRevealedCard(
 const noop = () => {};
 const baseProps = {
   deckEmpty: false,
+  deckSize: 5,
   turn: 'player' as const,
   cardFrontImages: [],
   onFlip: noop,
