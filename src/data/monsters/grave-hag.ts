@@ -13,6 +13,6 @@ export const graveHag: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/grave-hag/1.jpg',
+    '/images/monsters/grave-hag/1.jpg',
   ],
 };

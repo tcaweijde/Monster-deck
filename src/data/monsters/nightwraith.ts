@@ -13,6 +13,6 @@ export const nightwraith: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/nightwraith/1.jpg',
+    '/images/monsters/nightwraith/1.jpg',
   ],
 };

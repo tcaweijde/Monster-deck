@@ -13,6 +13,6 @@ export const werewolf: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/werewolf/1.jpg',
+    '/images/monsters/werewolf/1.jpg',
   ],
 };

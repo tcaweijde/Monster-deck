@@ -13,6 +13,6 @@ export const ekimmara: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/ekimmara/1.jpg',
+    '/images/monsters/ekimmara/1.jpg',
   ],
 };

@@ -21,7 +21,7 @@ export function BoardScreen() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col p-6 space-y-6 max-w-lg mx-auto">
+    <div className="h-dvh flex flex-col p-6 gap-4 max-w-lg mx-auto overflow-hidden">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-amber-500">Board</h1>
         <button
@@ -32,7 +32,7 @@ export function BoardScreen() {
         </button>
       </div>
       <p className="text-sm text-gray-400">Tap a monster to begin the encounter.</p>
-      <div className="space-y-3">
+      <div className="flex-1 min-h-0 flex flex-col gap-3">
         {board.slots.map((slot, i) => (
           <BoardSlotCard
             key={i}

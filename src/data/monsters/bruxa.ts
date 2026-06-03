@@ -13,6 +13,6 @@ export const bruxa: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/bruxa/1.jpg',
+    '/images/monsters/bruxa/1.jpg',
   ],
 };

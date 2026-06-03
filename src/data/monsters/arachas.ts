@@ -13,6 +13,6 @@ export const arachas: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/arachas/1.jpg',
+    '/images/monsters/arachas/1.jpg',
   ],
 };
