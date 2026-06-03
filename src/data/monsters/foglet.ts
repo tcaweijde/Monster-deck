@@ -13,6 +13,6 @@ export const foglet: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/foglet/1.jpg',
+    '/images/monsters/foglet/1.jpg',
   ],
 };

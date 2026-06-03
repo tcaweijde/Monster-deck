@@ -13,6 +13,6 @@ export const ghoulsNest: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/ghouls-nest/1.jpg',
+    '/images/monsters/ghouls-nest/1.jpg',
   ],
 };

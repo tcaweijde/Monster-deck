@@ -13,6 +13,6 @@ export const glustyworp: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/glustyworp/1.jpg',
+    '/images/monsters/glustyworp/1.jpg',
   ],
 };

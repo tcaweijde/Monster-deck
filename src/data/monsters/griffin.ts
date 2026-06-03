@@ -13,6 +13,6 @@ export const griffin: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/griffin/1.jpg',
+    '/images/monsters/griffin/1.jpg',
   ],
 };

@@ -13,6 +13,6 @@ export const whispess: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/whispess/1.jpg',
+    '/images/monsters/whispess/1.jpg',
   ],
 };

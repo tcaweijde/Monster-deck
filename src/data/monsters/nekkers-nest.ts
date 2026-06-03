@@ -13,6 +13,6 @@ export const nekkersNest: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/nekkers-nest/1.jpg',
+    '/images/monsters/nekkers-nest/1.jpg',
   ],
 };

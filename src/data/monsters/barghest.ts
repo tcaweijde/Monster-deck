@@ -13,6 +13,6 @@ export const barghest: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/barghest/1.jpg',
+    '/images/monsters/barghest/1.jpg',
   ],
 };

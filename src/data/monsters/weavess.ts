@@ -13,6 +13,6 @@ export const weavess: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/weavess/1.jpg',
+    '/images/monsters/weavess/1.jpg',
   ],
 };

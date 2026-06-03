@@ -54,6 +54,8 @@ export interface Location {
   id: number; // 1–18
   name: string;
   type: LocationType;
+  /** Path to location background image, relative to public/. Falls back to generic if absent. */
+  image?: string;
 }
 
 export interface BoardSlot {

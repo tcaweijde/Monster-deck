@@ -13,6 +13,6 @@ export const harpy: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/harpy/1.jpg',
+    '/images/monsters/harpy/1.jpg',
   ],
 };

@@ -13,6 +13,6 @@ export const manticore: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/manticore/1.jpg',
+    '/images/monsters/manticore/1.jpg',
   ],
 };
