@@ -9,8 +9,8 @@ import type { MonsterCard } from '../../types';
 function makeCard(id: string, topAttack = 1, bottomAttack = 2): MonsterCard {
   return {
     id,
-    top: { attack: topAttack, effect: `top-effect-${id}` },
-    bottom: { attack: bottomAttack, effect: `bottom-effect-${id}` },
+    top: { name: 'Charge', attack: topAttack, effect: `top-effect-${id}` },
+    bottom: { name: 'Bite', attack: bottomAttack, effect: `bottom-effect-${id}` },
   };
 }
 

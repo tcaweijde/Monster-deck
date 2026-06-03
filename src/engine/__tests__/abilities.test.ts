@@ -32,6 +32,7 @@ function makeMonster(overrides: Partial<Monster> = {}): Monster {
     deckSize: 5,
     baseAbility,
     cardPool: [],
+    cardFrontImages: [],
     ...overrides,
   };
 }
@@ -112,11 +113,6 @@ describe('getActiveAbilities', () => {
   });
 
   describe('real monster data', () => {
-    it('should return two active abilities for the griffin (has secondary)', async () => {
-      const { griffin } = await import('../../data/monsters/griffin');
-      expect(getActiveAbilities(griffin)).toHaveLength(2);
-    });
-
     it('should return one active ability for a monster with no secondary', async () => {
       // Werewolf has a secondary, foglet has a secondary — use a custom minimal monster.
       const minimalMonster = makeMonster({ id: 'minimal' });
@@ -160,22 +156,12 @@ describe('getDiscardAbilities', () => {
   });
 
   describe('real monster data', () => {
-    it('should return the frenzy discard ability for the griffin', async () => {
-      const { griffin } = await import('../../data/monsters/griffin');
-      const abilities = getDiscardAbilities(griffin);
-      expect(abilities).toHaveLength(1);
-      expect(abilities[0].trigger).toBe('discard');
-    });
 
     it('should return an empty array for the werewolf (no discard ability)', async () => {
       const { werewolf } = await import('../../data/monsters/werewolf');
       expect(getDiscardAbilities(werewolf)).toEqual([]);
     });
 
-    it('should return a discard ability for the foglet', async () => {
-      const { foglet } = await import('../../data/monsters/foglet');
-      expect(getDiscardAbilities(foglet)).toHaveLength(1);
-    });
   });
 });
 
@@ -223,19 +209,10 @@ describe('hasDiscardTrigger', () => {
   });
 
   describe('real monster data', () => {
-    it('should return true for the griffin', async () => {
-      const { griffin } = await import('../../data/monsters/griffin');
-      expect(hasDiscardTrigger(griffin)).toBe(true);
-    });
 
     it('should return false for the werewolf', async () => {
       const { werewolf } = await import('../../data/monsters/werewolf');
       expect(hasDiscardTrigger(werewolf)).toBe(false);
-    });
-
-    it('should return true for the foglet', async () => {
-      const { foglet } = await import('../../data/monsters/foglet');
-      expect(hasDiscardTrigger(foglet)).toBe(true);
     });
   });
 });

@@ -5,7 +5,7 @@ import type { Monster, MonsterCard } from '../../types';
 const zeroRng = () => 0;
 
 function makeCard(id: string): MonsterCard {
-  return { id, top: { attack: 1 }, bottom: { attack: 2 } };
+  return { id, top: { name: 'Charge', attack: 1 }, bottom: { name: 'Bite', attack: 2 } };
 }
 
 const POOL_16 = Array.from({ length: 16 }, (_, i) => makeCard(`card-${String(i + 1).padStart(2, '0')}`));

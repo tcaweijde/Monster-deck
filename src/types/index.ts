@@ -1,10 +1,13 @@
 export interface CardHalf {
+  /** Display name of this half. "Charge" for top, "Bite" for bottom on generic cards. */
+  name: string;
   attack: number;
   effect?: string;
 }
 
 export interface MonsterCard {
   id: string;
+  // FEAT-004: top and bottom will become optional to support single-half Monster Trail cards.
   top: CardHalf;
   bottom: CardHalf;
 }
@@ -33,7 +36,7 @@ export interface Monster {
   discardAbility?: MonsterAbility;
   cardPool: MonsterCard[];
   /** Images shown on the card front face. One is picked per card based on the card's position. */
-  cardFrontImages: string[];
+  cardFrontImages?: string[];
 }
 
 export interface EncounterState {

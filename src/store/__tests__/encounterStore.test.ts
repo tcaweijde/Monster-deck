@@ -3,10 +3,10 @@ import { act, renderHook } from '@testing-library/react';
 import type { Monster, MonsterCard, RevealedCard } from '../../types';
 
 const MOCK_CARDS: MonsterCard[] = [
-  { id: 'c-01', top: { attack: 3, effect: 'Shield 1' }, bottom: { attack: 2 } },
-  { id: 'c-02', top: { attack: 2 }, bottom: { attack: 4, effect: 'Bleed 1' } },
-  { id: 'c-03', top: { attack: 1 }, bottom: { attack: 3 } },
-  { id: 'c-04', top: { attack: 4 }, bottom: { attack: 1 } },
+  { id: 'c-01', top: { name: 'Charge', attack: 3, effect: 'Shield 1' }, bottom: { name: 'Bite', attack: 2 } },
+  { id: 'c-02', top: { name: 'Charge', attack: 2 },                     bottom: { name: 'Bite', attack: 4, effect: 'Bleed 1' } },
+  { id: 'c-03', top: { name: 'Charge', attack: 1 },                     bottom: { name: 'Bite', attack: 3 } },
+  { id: 'c-04', top: { name: 'Charge', attack: 4 },                     bottom: { name: 'Bite', attack: 1 } },
 ];
 
 const MOCK_MONSTER: Monster = {
