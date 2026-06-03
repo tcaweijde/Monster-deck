@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { MONSTERS } from '../index';
 import { GENERIC_CARD_POOL } from '../genericCardPool';
 

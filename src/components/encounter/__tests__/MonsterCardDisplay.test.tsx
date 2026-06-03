@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MonsterCardDisplay } from '../MonsterCardDisplay';
 import type { RevealedCard } from '../../../types';

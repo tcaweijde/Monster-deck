@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { GENERIC_CARD_POOL } from '../genericCardPool';
 
 const MAX_BASE_GAME_DECK_SIZE = 19; // leshen / troll
