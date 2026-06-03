@@ -2,10 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import type { RevealedCard } from '../../types';
 
-const CARD_BACK_IMAGE = `${import.meta.env.BASE_URL}images/card-back.png`;
+const BASE = import.meta.env.BASE_URL ?? '/';
+const CARD_BACK_IMAGE = `${BASE}images/card-back.png`;
 
 function resolvePublicUrl(path: string): string {
-  return `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
+  return `${BASE}${path.replace(/^\//, '')}`;
 }
 
 interface MonsterCardDisplayProps {
@@ -19,6 +20,7 @@ interface MonsterCardDisplayProps {
 }
 
 function getCardFrontImage(cardId: string, images: string[]): string {
+  if (images.length === 0) return '';
   const num = parseInt(cardId.split('-').pop() ?? '0', 10);
   return resolvePublicUrl(images[num % images.length]);
 }
@@ -130,6 +132,9 @@ export function MonsterCardDisplay({
           <span className="text-gray-600 text-lg">No cards left</span>
         ) : currentCard ? (
           <div className="text-center flex flex-col items-center bg-black/70 rounded-lg px-4 py-2 w-full">
+            <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">
+              {currentCard.chosenHalf.name}
+            </div>
             <div className="text-3xl sm:text-5xl font-bold text-red-400">{currentCard.chosenHalf.attack}</div>
             <div className="text-sm text-gray-300 uppercase mt-1">Attack</div>
             {currentCard.chosenHalf.effect && (

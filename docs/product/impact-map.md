@@ -112,6 +112,9 @@ Adds monster-specific cards, weaknesses, and richer discard mechanics from the M
 | F6.2 Monster weaknesses | Each monster has one or more weaknesses (e.g., silver, fire) visible during the encounter | I3 | Player needs to know which attack types are effective | FEAT-005 |
 | F6.3 Monster-specific discard trigger | Abilities that fire specifically when a monster-specific card is discarded | I2, I3 | Extension of F3.3 — more precise trigger conditions for Trail monsters | FEAT-006 |
 | F6.4 Monster-specific card art | Unique artwork per monster-specific card | I2 | Visual richness; could-have dependent on art availability | FEAT-007 |
+| F6.5 New attack types | Cards can carry a typed attack (e.g., silver, fire, poison) that interacts with monster weaknesses | I2, I3 | Required to make weakness (F6.2) mechanically meaningful at the card level | FEAT-011 |
+| F6.6 New card types | Monster Trail introduces new card archetypes beyond standard attack cards (e.g., special, event) | I2, I3 | Expands encounter variety and faithfully represents the Trail expansion's card set | FEAT-012 |
+| F6.7 Special attacks | Cards with multiple ability definitions — e.g., a card that triggers differently depending on context | I2, I3 | Needed to represent Trail cards that have compound or conditional effects | FEAT-013 |
 
 ### Epic 7: Legendary Monsters
 
@@ -129,6 +132,17 @@ Adds the Wild Hunt expansion as a major new epic. Scope to be defined.
 | Feature | Description | Impact | Rationale | Roadmap |
 |---------|-------------|--------|-----------|---------|
 | F8.1 Wild Hunt expansion | New monster types, mechanics, and board interactions from the Wild Hunt expansion | I1, I2, I3 | Significant content and mechanic expansion | FEAT-010 (needs spec) |
+
+### Epic 9: Skellige Expansion
+
+Extends the board with 3 new Skellige locations, a permanent lair for the boss monster Dagon, and a random encounter mechanic for off-board fights.
+
+| Feature | Description | Impact | Rationale | Roadmap |
+|---------|-------------|--------|-----------|---------|
+| F9.1 Skellige locations | 3 new named locations added to the board location pool | I1 | Expands the board variety available during setup | FEAT-SKELLIGE-001 |
+| F9.2 Dagon's Lair | A permanent dedicated board location that always hosts the monster Dagon; never replaced | I2, I3 | Unique boss encounter site — distinct from the normal rotating monster placement | FEAT-SKELLIGE-002 |
+| F9.3 Dagon monster data | Card definitions, abilities, and art for Dagon | I2, I3 | Content required to make Dagon's Lair functional | FEAT-SKELLIGE-003 |
+| F9.4 Random encounter | Player can trigger a fight against a random monster not currently on the board; one-off, no board state impact | I1, I2 | Adds an opportunistic encounter option without disrupting active board monsters | FEAT-SKELLIGE-004 |
 
 ---
 
@@ -173,6 +187,18 @@ The product fails without every feature listed here. Each one was challenged and
 | 2 | Monster weaknesses | FEAT-005 | 🔲 Todo |
 | 3 | Monster-specific discard-trigger abilities | FEAT-006 | 🔲 Todo |
 | 4 | Monster-specific card art | FEAT-007 | 🔲 Could-have |
+| 5 | New attack types | FEAT-011 | 🔲 Todo |
+| 6 | New card types | FEAT-012 | 🔲 Todo |
+| 7 | Special attacks | FEAT-013 | 🔲 Todo |
+
+### 1.2 — Skellige Expansion
+
+| # | Feature | FEAT | Status |
+|---|---------|------|--------|
+| 1 | Skellige locations | FEAT-SKELLIGE-001 | 🔲 Todo |
+| 2 | Dagon's Lair | FEAT-SKELLIGE-002 | 🔲 Todo |
+| 3 | Dagon monster data | FEAT-SKELLIGE-003 | 🔲 Todo |
+| 4 | Random encounter | FEAT-SKELLIGE-004 | 🔲 Todo |
 
 ### 2.0 — Legendary Monsters
 
@@ -191,9 +217,6 @@ The product fails without every feature listed here. Each one was challenged and
 
 | Feature | Why parked |
 |---------|-----------|
-| New card types | Expands content, not core mechanics. |
-| New attack types | Same. |
-| Special attacks | Same. |
 | Multiplayer group support | Different persona entirely. Solo play comes first. |
 
 ---
