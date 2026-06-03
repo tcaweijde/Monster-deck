@@ -22,7 +22,7 @@ All core encounter mechanics are implemented and tested (111 tests passing).
 | Layer | Files | Status |
 |-------|-------|--------|
 | Types | `src/types/index.ts` | Done |
-| Monster data | `src/data/monsters/` (griffin, werewolf, foglet + registry) | Done — placeholder values |
+| Monster data | `src/data/monsters/` (griffin, werewolf, foglet, rotfiend + registry) | In progress — placeholder card values (see #25) |
 | Game engine | `src/engine/` (shuffle, deck, combat, abilities) | Done |
 | State store | `src/store/encounterStore.ts` | Done |
 | Setup UI | `src/components/setup/` (MonsterPicker, SetupScreen) | Done |
@@ -68,15 +68,22 @@ Playtest the app in a browser and fix issues that come up.
 - Fix any UX or logic bugs found during playtesting
 - Verify mobile layout works on phone/tablet screen sizes (browser dev tools)
 
-### Phase 2: Real Monster Data (current)
+### Phase 2: Real Monster Data
 
-The current card values and ability text are approximations. Replace with real data from the physical game.
+Replace placeholder card values and ability text with real data from the physical game. Tracked in [#25](https://github.com/tcaweijde/Monster-deck/issues/25).
 
-**Steps:**
-- Cross-reference each monster file with the physical cards
-- Update attack values, effects, and ability descriptions in `src/data/monsters/griffin.ts`, `werewolf.ts`, `foglet.ts`
-- Verify deck sizes match the physical game
-- Add any missing card effects or ability nuances
+**Monsters:**
+
+| Monster | Ability | Cards |
+|---------|---------|-------|
+| Griffin | placeholder | placeholder |
+| Werewolf | placeholder | placeholder |
+| Foglet | placeholder | placeholder |
+| Rotfiend | ✅ done | placeholder |
+
+**Notes:**
+- Special/event cards are out of scope until the `MonsterCard` type is extended to support them
+- Each card pool must have >= deckSize entries
 
 **Files:** `src/data/monsters/*.ts`
 
