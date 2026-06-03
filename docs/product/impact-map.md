@@ -174,8 +174,8 @@ The product fails without every feature listed here. Each one was challenged and
 | # | Feature | FEAT | Status |
 |---|---------|------|--------|
 | 1 | Monster placement logic | FEAT-001 | ✅ Done |
-| 2 | Generic card data + Charge/Bite display | FEAT-002 | 🔲 Todo |
-| 3 | Monster art on attack cards | FEAT-003 | 🔲 Todo |
+| 2 | Generic card data + Charge/Bite display | FEAT-002 | ✅ Done |
+| 3 | Monster art on attack cards | FEAT-003 | ✅ Done |
 | 4 | Swipe animations | — | ✅ Shipped |
 | 5 | Card turning animations | — | ✅ Shipped |
 

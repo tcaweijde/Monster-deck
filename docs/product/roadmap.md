@@ -23,8 +23,8 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | FEAT-000 | Swipe & flip animations | Shipped | ✅ Done |
 | FEAT-000 | GitHub Pages deployment | Shipped | ✅ Done |
 | FEAT-001 | Monster Placement | 1.0 | ✅ Done |
-| FEAT-002 | Generic Card Data + Charge/Bite Display | 1.0 | 🔲 Todo |
-| FEAT-003 | Monster Art on Attack Cards | 1.0 | 🔲 Todo |
+| FEAT-002 | Generic Card Data + Charge/Bite Display | 1.0 | ✅ Done |
+| FEAT-003 | Monster Art on Attack Cards | 1.0 | ✅ Done |
 | FEAT-004 | Monster-Specific Attack Cards | 1.1 | 🔲 Todo |
 | FEAT-005 | Monster Weaknesses | 1.1 | 🔲 Todo |
 | FEAT-006 | Monster-Specific Discard-Trigger Abilities | 1.1 | 🔲 Todo |
@@ -51,6 +51,9 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | Monster data (4 monsters) | Griffin, Werewolf, Foglet, Rotfiend — abilities correct, generic card values placeholder |
 | Swipe & flip animations | Framer Motion — swipe to deal damage, tap to flip card |
 | GitHub Pages deployment | App accessible on mobile at the table |
+| FEAT-001 Monster Placement | 3-monster board, location assignment, persistence, replacement spawning |
+| FEAT-002 Generic Card Data + Charge/Bite Display | 20-card shared pool with real values; Charge/Bite label shown on flip; `CardHalf.attack` optional for effect-only halves |
+| FEAT-003 Monster Art on Attack Cards | Card front images for all 29 base-game monsters; `cardFrontImages` paths aligned to `1.jpg` convention |
 
 ---
 
@@ -67,16 +70,17 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 - Board state persisted to `localStorage` — survives app refresh
 - Spec: [`docs/specs/FEAT-001-monster-placement.md`](../specs/FEAT-001-monster-placement.md) · Plan: [`docs/plans/FEAT-001-monster-placement.md`](../plans/FEAT-001-monster-placement.md)
 
-### FEAT-002 — Generic Card Data + Charge/Bite Display *(M)*
+### ✅ FEAT-002 — Generic Card Data + Charge/Bite Display *(M)*
 - Fill in real attack values and effect text for all shared (generic) monster attack cards
 - Reveal the top/bottom half of each card (Charge / Bite) — currently resolved by internal RNG; the result should now be displayed to the player
 - All 20+ monsters use the same generic card pool; this benefits every monster in the app at once
+- Spec: [`docs/specs/FEAT-002-generic-card-data-and-half-display.md`](../specs/FEAT-002-generic-card-data-and-half-display.md)
 
-### FEAT-003 — Monster Art on Attack Cards *(M)*
+### ✅ FEAT-003 — Monster Art on Attack Cards *(M)*
 - Display monster artwork on the revealed card during an encounter
 - One image per monster (not per card)
-- Assets stored in `public/monsters/`, referenced via a new `artworkUrl` field on `Monster`
-- Highest user-visible polish item for 1.0
+- Assets stored in `public/images/<monster>/`, referenced via `cardFrontImages` on `Monster`
+- All 29 base-game monsters have artwork
 
 ---
 
