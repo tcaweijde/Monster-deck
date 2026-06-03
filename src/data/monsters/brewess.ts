@@ -13,6 +13,6 @@ export const brewess: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/brewess/card-front-1.png',
+    '/images/brewess/1.jpg',
   ],
 };

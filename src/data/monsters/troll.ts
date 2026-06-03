@@ -13,6 +13,6 @@ export const troll: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/troll/card-front-1.png',
+    '/images/troll/1.jpg',
   ],
 };

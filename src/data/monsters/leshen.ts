@@ -13,6 +13,6 @@ export const leshen: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/leshen/card-front-1.png',
+    '/images/leshen/1.jpg',
   ],
 };

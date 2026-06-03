@@ -13,6 +13,6 @@ export const rotfiend: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/rotfiend/card-front-1.png',
+    '/images/rotfiend/1.jpg',
   ],
 };

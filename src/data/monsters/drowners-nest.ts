@@ -13,6 +13,6 @@ export const drownersNest: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/drowners-nest/card-front-1.png',
+    '/images/drowners-nest/1.jpg',
   ],
 };

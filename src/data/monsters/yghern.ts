@@ -13,6 +13,6 @@ export const yghern: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/yghern/card-front-1.png',
+    '/images/yghern/1.jpg',
   ],
 };

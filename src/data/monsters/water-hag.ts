@@ -13,6 +13,6 @@ export const waterHag: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/water-hag/card-front-1.png',
+    '/images/water-hag/1.jpg',
   ],
 };

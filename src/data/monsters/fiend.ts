@@ -13,6 +13,6 @@ export const fiend: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/fiend/card-front-1.png',
+    '/images/fiend/1.png',
   ],
 };

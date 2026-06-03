@@ -13,6 +13,6 @@ export const penitent: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/penitent/card-front-1.png',
+    '/images/penitent/1.jpg',
   ],
 };

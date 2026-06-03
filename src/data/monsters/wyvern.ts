@@ -13,6 +13,6 @@ export const wyvern: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/wyvern/card-front-1.png',
+    '/images/wyvern/1.jpg',
   ],
 };

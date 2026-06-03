@@ -13,6 +13,6 @@ export const striga: Monster = {
   },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
-    '/images/striga/card-front-1.png',
+    '/images/striga/1.jpeg',
   ],
 };
