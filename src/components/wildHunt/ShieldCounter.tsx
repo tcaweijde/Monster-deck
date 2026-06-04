@@ -1,3 +1,6 @@
+const BASE = import.meta.env.BASE_URL ?? '/';
+const SHIELD_IMG = `${BASE}images/monsters/wild-hunt/shield.png`;
+
 interface ShieldCounterProps {
   count: number;
   onAdd: () => void;
@@ -13,7 +16,7 @@ interface ShieldCounterProps {
 export function ShieldCounter({ count, onAdd, onRemove, compact = false }: ShieldCounterProps) {
   if (compact) {
     return (
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <button
           onClick={onRemove}
           disabled={count <= 0}
@@ -21,9 +24,9 @@ export function ShieldCounter({ count, onAdd, onRemove, compact = false }: Shiel
         >
           −
         </button>
-        <span className="text-sm font-bold text-blue-300 min-w-[1.5rem] text-center">
-          🛡 {count}
-        </span>
+        <span className="text-sm font-bold text-white min-w-[1rem] text-center">{count}</span>
+        <img src={SHIELD_IMG} alt="shields" className="w-5 h-5 object-contain" />
+
         <button
           onClick={onAdd}
           className="w-6 h-6 rounded bg-stone-700 text-stone-300 hover:bg-stone-600 text-sm font-bold leading-none"
@@ -35,10 +38,13 @@ export function ShieldCounter({ count, onAdd, onRemove, compact = false }: Shiel
   }
 
   return (
-    <div className="flex-1 rounded-lg bg-stone-800 border border-stone-600 p-3 text-center">
+    <div
+      className="flex-1 rounded-lg border border-stone-600 p-3 text-center flex flex-col items-center justify-center gap-1 bg-center bg-contain bg-no-repeat"
+      style={{ backgroundImage: `url(${SHIELD_IMG})`, backgroundColor: 'rgba(28,25,23,0.85)', backgroundBlendMode: 'multiply' }}
+    >
       <p className="text-xs text-stone-400 uppercase tracking-wide">Shields</p>
-      <p className="text-2xl font-bold text-blue-400">{count}</p>
-      <div className="flex justify-center gap-2 mt-1">
+      <span className="text-2xl font-bold text-white">{count}</span>
+      <div className="flex justify-center gap-2">
         <button
           onClick={onRemove}
           disabled={count <= 0}

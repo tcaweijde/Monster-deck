@@ -183,27 +183,26 @@ export function WildHuntBoardScreen() {
         {houndSlots.length > 0 && (
           <div className="rounded-lg bg-stone-900/80 border border-stone-700 p-4 space-y-2">
             <p className="text-xs text-stone-400 uppercase tracking-wide font-semibold">
-              Active Hounds ({houndSlots.length}/3)
+              Active Hounds ({houndSlots.length})
             </p>
             {houndSlots.map((hound) => (
-              <div
+              <button
                 key={hound.id}
-                className="flex items-center justify-between bg-stone-950/60 rounded-lg px-3 py-2"
+                onClick={() => setActiveHound(hound)}
+                className="relative w-full h-16 rounded-lg overflow-hidden flex items-center px-3 gap-2 text-left"
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">🐺</span>
-                  <span className="text-stone-200 font-semibold">Hound</span>
-                  <span className="text-xs bg-red-800/60 text-red-300 border border-red-700/50 rounded px-1.5 py-0.5 font-bold">
-                    Lv.{hound.level}
-                  </span>
-                </div>
-                <button
-                  onClick={() => setActiveHound(hound)}
-                  className="text-xs text-red-300 hover:text-red-200 border border-red-800/60 hover:border-red-600 rounded px-2 py-1 transition-colors"
-                >
-                  ⚔️ Fight
-                </button>
-              </div>
+                {/* Background image */}
+                <div
+                  className="absolute inset-0 bg-cover bg-top"
+                  style={{ backgroundImage: `url(${BASE}images/monsters/wild-hunt/hound/${hound.level}.jpg)` }}
+                />
+                <div className="absolute inset-0 bg-stone-950/50" />
+                {/* Content */}
+                <span className="relative text-xs bg-red-800/70 text-red-200 border border-red-600/60 rounded px-1.5 py-0.5 font-bold">
+                  Lv.{hound.level}
+                </span>
+                <span className="relative text-xs text-stone-300 font-semibold">Tap to fight</span>
+              </button>
             ))}
           </div>
         )}

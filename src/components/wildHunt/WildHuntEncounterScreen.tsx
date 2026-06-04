@@ -4,6 +4,7 @@ import type { WildHuntSpecialCard } from '../../types/wildHunt';
 import { MonsterCardDisplay } from '../encounter/MonsterCardDisplay';
 import { AbilityPanel } from '../encounter/AbilityPanel';
 import { DeckTracker } from '../encounter/DeckTracker';
+import { ShieldCounter } from './ShieldCounter';
 
 const BASE = import.meta.env.BASE_URL ?? '/';
 const BG = `${BASE}images/monsters/wild-hunt/background.jpg`;
@@ -28,6 +29,7 @@ export function WildHuntEncounterScreen() {
 
   const shieldCount = useWildHuntStore((s) => s.shieldCount);
   const absorbDamage = useWildHuntStore((s) => s.absorbDamage);
+  const gainShields = useWildHuntStore((s) => s.gainShields);
   const triggerVictory = useWildHuntStore((s) => s.triggerVictory);
   const resetWildHunt = useWildHuntStore((s) => s.resetWildHunt);
 
@@ -68,7 +70,7 @@ export function WildHuntEncounterScreen() {
           <p className="text-xs text-stone-500 mt-0.5">Final Battle</p>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-cyan-400 font-semibold">🛡️ {shieldCount}</span>
+          <ShieldCounter count={shieldCount} onAdd={() => gainShields(1)} onRemove={() => absorbDamage(1)} compact />
           <button
             onClick={handleConcede}
             className="text-sm text-stone-400 hover:text-red-400 transition-colors"

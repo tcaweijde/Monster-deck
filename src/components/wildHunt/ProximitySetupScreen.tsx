@@ -120,9 +120,8 @@ export function ProximitySetupScreen() {
               )}
             </div>
             <button
-              onClick={() => setHoundCount((n) => Math.min(3, n + 1))}
-              disabled={houndCount === 3}
-              className="w-12 h-12 rounded-lg bg-stone-700 hover:bg-stone-600 disabled:opacity-30 text-white text-2xl font-bold transition-colors"
+              onClick={() => setHoundCount((n) => n + 1)}
+              className="w-12 h-12 rounded-lg bg-stone-700 hover:bg-stone-600 text-white text-2xl font-bold transition-colors"
             >
               +
             </button>
