@@ -86,4 +86,6 @@ export interface WildHuntState {
   activeWildHuntSlotIndex: 0 | 1 | 2 | null;
   /** Whether the player is viewing the monster board sub-screen. */
   showMonsters: boolean;
+  /** Whether the proximity bonus setup screen is shown before an encounter. */
+  showProximitySetup: boolean;
 }

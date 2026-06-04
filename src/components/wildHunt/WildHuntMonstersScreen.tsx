@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useEncounterStore } from '../../store/encounterStore';
 import { useWildHuntStore } from '../../store/wildHuntStore';
 import { MONSTERS } from '../../data/monsters';
 import { LOCATIONS } from '../../data/locations';
@@ -78,7 +77,7 @@ export function WildHuntMonstersScreen() {
   const absorbDamage = useWildHuntStore((s) => s.absorbDamage);
   const setActiveWildHuntSlot = useWildHuntStore((s) => s.setActiveWildHuntSlot);
   const setShowMonsters = useWildHuntStore((s) => s.setShowMonsters);
-  const startEncounter = useEncounterStore((s) => s.startEncounter);
+  const setShowProximitySetup = useWildHuntStore((s) => s.setShowProximitySetup);
 
   const getMonsterName = (id: string | null) =>
     id ? (MONSTERS.find((m) => m.id === id)?.name ?? id) : '';
@@ -87,7 +86,7 @@ export function WildHuntMonstersScreen() {
     const slot = wildHuntSlots[index];
     if (slot.status === 'empty' || !slot.monsterId) return;
     setActiveWildHuntSlot(index);
-    startEncounter(slot.monsterId);
+    setShowProximitySetup(true);
   };
 
   return (

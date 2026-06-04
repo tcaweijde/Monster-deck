@@ -13,7 +13,7 @@ interface EncounterStore {
   phase: 'setup' | 'playing' | 'victory';
   lastDiscardTriggered: boolean;
 
-  startEncounter: (monsterId: string, playerFirst?: boolean) => void;
+  startEncounter: (monsterId: string, playerFirst?: boolean, bonusCards?: number) => void;
   flipMonsterCard: () => void;
   discardOne: () => void;
   passTurn: () => void;
@@ -30,11 +30,11 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
   phase: 'setup',
   lastDiscardTriggered: false,
 
-  startEncounter: (monsterId, playerFirst = false) => {
+  startEncounter: (monsterId, playerFirst = false, bonusCards = 0) => {
     const monster = getMonsterById(monsterId);
     if (!monster) throw new Error(`Monster "${monsterId}" not found`);
 
-    const deck = generateDeck(monster, undefined);
+    const deck = generateDeck(monster, undefined, [], bonusCards);
 
     set({
       monster,

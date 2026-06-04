@@ -5,8 +5,9 @@ export function generateDeck(
   monster: Monster,
   rng?: () => number,
   genericCards: MonsterCard[] = [],
+  bonusCount: number = 0,
 ): MonsterCard[] {
-  const size = monster.deckSize;
+  const size = monster.deckSize + bonusCount;
   const pool = [...monster.cardPool, ...genericCards];
 
   if (pool.length < size) {

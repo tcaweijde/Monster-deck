@@ -92,6 +92,9 @@ export interface WildHuntActions {
   /** Show or hide the monster board sub-screen within Wild Hunt mode. */
   setShowMonsters: (show: boolean) => void;
 
+  /** Show or hide the proximity bonus setup screen before a monster encounter. */
+  setShowProximitySetup: (show: boolean) => void;
+
   /** Mark the run as won. */
   triggerVictory: () => void;
 
@@ -150,6 +153,7 @@ const INITIAL_STATE: WildHuntState = {
   wildHuntSlots: EMPTY_SLOTS,
   activeWildHuntSlotIndex: null,
   showMonsters: false,
+  showProximitySetup: false,
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -392,6 +396,10 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
 
       setShowMonsters: (show) => {
         set({ showMonsters: show });
+      },
+
+      setShowProximitySetup: (show) => {
+        set({ showProximitySetup: show });
       },
 
       triggerVictory: () => {

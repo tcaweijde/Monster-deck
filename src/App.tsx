@@ -7,6 +7,7 @@ import { EncounterScreen } from './components/encounter/EncounterScreen';
 import { WildHuntSetupScreen } from './components/wildHunt/WildHuntSetupScreen';
 import { WildHuntBoardScreen } from './components/wildHunt/WildHuntBoardScreen';
 import { WildHuntMonstersScreen } from './components/wildHunt/WildHuntMonstersScreen';
+import { ProximitySetupScreen } from './components/wildHunt/ProximitySetupScreen';
 
 const slideUp: Variants = {
   initial: { y: '100%', opacity: 0 },
@@ -19,6 +20,7 @@ export default function App() {
   const activeSlotIndex = useBoardStore((s) => s.activeSlotIndex);
   const wildHuntPhase = useWildHuntStore((s) => s.phase);
   const showMonsters = useWildHuntStore((s) => s.showMonsters);
+  const showProximitySetup = useWildHuntStore((s) => s.showProximitySetup);
   const activeWildHuntSlotIndex = useWildHuntStore((s) => s.activeWildHuntSlotIndex);
 
   const inWildHunt = wildHuntPhase !== 'inactive';
@@ -26,7 +28,7 @@ export default function App() {
     ? (wildHuntPhase === 'setup'
         ? 'wh-setup'
         : activeWildHuntSlotIndex !== null
-          ? 'encounter'
+          ? showProximitySetup ? 'wh-proximity' : 'encounter'
           : showMonsters
             ? 'wh-monsters'
             : 'wh-board')
@@ -47,6 +49,7 @@ export default function App() {
             {screen === 'wh-setup' && <WildHuntSetupScreen />}
             {screen === 'wh-board' && <WildHuntBoardScreen />}
             {screen === 'wh-monsters' && <WildHuntMonstersScreen />}
+            {screen === 'wh-proximity' && <ProximitySetupScreen />}
           </motion.div>
         )}
 

@@ -75,6 +75,7 @@ const INITIAL_STATE: WildHuntState = {
   wildHuntSlots: [{ ...EMPTY_SLOT }, { ...EMPTY_SLOT }, { ...EMPTY_SLOT }],
   activeWildHuntSlotIndex: null,
   showMonsters: false,
+  showProximitySetup: false,
 };
 
 // ---------------------------------------------------------------------------
