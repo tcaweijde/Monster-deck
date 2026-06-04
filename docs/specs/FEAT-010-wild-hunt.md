@@ -1,35 +1,39 @@
 # FEAT-010 — Wild Hunt Expansion
 
-> Status: Spec · Last updated: 2026-06-03
+> Status: Spec · Last updated: 2026-06-04
 
 ---
 
 ## Overview
 
-The Wild Hunt expansion replaces the standard open-ended game loop with an **8-round campaign**. Each round has a fixed sequence of 4 stages driven by the app. In round 8, stage 4 triggers the **Final Battle** against the Wild Hunt boss instead of the normal spawn phase.
+The Wild Hunt expansion is a **game mode** (not a campaign) that replaces the standard open-ended game loop with an **8-round sequence**. Each round has a fixed sequence of 4 stages driven by the app. In round 8, stage 4 triggers the **Final Battle** against the Wild Hunt boss instead of the normal spawn phase. The game mode always ends after the Final Battle — it cannot end early.
 
-The campaign setup is configurable by **player count** (solo for now; multiplayer variant is a future consideration — see Multiplayer feature) and **difficulty level** selected at campaign start.
+The setup is configurable by **player count** (solo for now; multiplayer variant is a future consideration — see Multiplayer feature) and **difficulty level** selected at the start.
+
+- **Difficulty** affects: starting monster(s) on the board and the Wild Hunt's starting shield count
+- **Player count** also affects starting shield count (values TBD from rulebook)
 
 The Wild Hunt character moves **2 spaces toward the player** each round on a location graph.
 
-This is the largest scope expansion in the roadmap. It touches the board engine, the encounter engine, a new campaign state layer, and new monster/enemy types.
+This is the largest scope expansion in the roadmap. It touches the board engine, the encounter engine, a new game-mode state layer, and new monster/enemy types.
 
 ---
 
 ## Feature Breakdown
 
-### FEAT-010-A — Campaign State Engine
+### FEAT-010-A — Game Mode State Engine
 
-The app must track a campaign session distinct from a single encounter.
+The app must track a Wild Hunt game mode session distinct from a single encounter.
 
-- Campaign has 8 rounds; the app tracks the current round
+- Game mode has 8 rounds; the app tracks the current round
 - Each round has 4 ordered stages (see FEAT-010-B)
 - **Round 8, Stage 4** triggers the Final Battle instead of the normal spawn phase
-- Campaign state must persist across app refresh (like board state today)
-- Only one campaign can be active at a time
-- **Campaign setup screen** configures:
+- The game mode always ends after the Final Battle — it cannot end before round 8
+- Game mode state must persist across app refresh (like board state today)
+- Only one game mode session can be active at a time
+- **Setup screen** configures:
   - Player count (solo for now; future: multiplayer variant)
-  - Difficulty level (affects starting setup — TBD from rulebook)
+  - Difficulty level (affects starting monsters on the board and Wild Hunt starting shield count)
 
 **Effort: M**
 
@@ -83,7 +87,7 @@ Encountering the Wild Hunt uses a modified version of the existing encounter eng
 - Wild Hunt deck = standard generic deck + 4 character-specific special cards
 - The 4 special cards have the same attack format as standard cards, but each has a **discard-trigger ability** that fires when the card is discarded as part of player damage
 - Wild Hunt has a **shield counter** (see FEAT-010-F)
-- The encounter ends when the Wild Hunt's deck is exhausted (player wins) or... [TBD: defeat condition]
+- The encounter ends when the Wild Hunt's deck is exhausted (player wins). The player's own deck running out is their defeat condition — this is not tracked by the app; the player declares defeat manually.
 - UI must show: shield counter, current special card discard abilities (same `DiscardAlert` pattern)
 
 **Effort: L**
@@ -96,9 +100,9 @@ The Wild Hunt has a shield counter that absorbs incoming damage.
 
 - Shields displayed as a counter on the Wild Hunt's board card and encounter screen
 - Player damage hits shields first; only excess damage discards cards from the Wild Hunt deck
-- **Manually adjustable via +/− buttons** — story card events can add or remove shields at any point during the campaign; this is the primary way shields change outside of combat
+- **Manually adjustable via +/− buttons** — story card events can add or remove shields at any point during the game mode; this is the primary way shields change outside of combat
 - Shields are also auto-incremented when a monster fails to spawn due to a full board (see FEAT-010-G)
-- Initial shield count is set at campaign start (character-specific or fixed — TBD from physical rules)
+- Initial shield count is determined by **difficulty level and player count** (exact values TBD from physical rulebook)
 
 **Effort: M**
 
@@ -201,16 +205,14 @@ Before starting a regular monster encounter, the app checks how many Wild Hunt /
 
 ## Open Questions
 
-- What is the player defeat condition in the Wild Hunt boss encounter? (deck not exhausted, time limit, something else?)
 - What is the hound reward table? (needs transcription from physical expansion)
-- What is the starting shield count — same for all characters or character-specific?
-- Can the player lose the campaign before round 8, or does it always run to completion?
-- What does difficulty level affect at campaign setup? (starting shields? monster spawn table? Wild Hunt starting position?)
+- What are the exact starting shield counts per difficulty and player count? (needs physical rulebook)
+- What are the starting monsters per difficulty? (needs physical rulebook)
 - Does the location graph have a fixed structure, or does it vary by setup?
 
 ## Future Considerations
 
-- **Multiplayer variant**: Campaign setup currently scoped to solo only. When multiplayer support is added (separate roadmap item), the Wild Hunt campaign setup should support multiple player counts — spawn tables and difficulty scaling may differ.
+- **Multiplayer variant**: Setup currently scoped to solo only. When multiplayer support is added (separate roadmap item), the Wild Hunt game mode setup should support multiple player counts — starting shield counts and difficulty scaling will differ.
 
 ---
 
@@ -218,5 +220,5 @@ Before starting a regular monster encounter, the app checks how many Wild Hunt /
 
 | Depends on | Why |
 |-----------|-----|
-| FEAT-001 (Board Management) | Campaign uses the board system as its foundation |
+| FEAT-001 (Board Management) | Game mode uses the board system as its foundation |
 | Existing encounter engine | Wild Hunt boss fight is an extended encounter |
