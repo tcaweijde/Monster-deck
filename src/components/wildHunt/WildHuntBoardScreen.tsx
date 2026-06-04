@@ -1,6 +1,7 @@
 import { useWildHuntStore } from '../../store/wildHuntStore';
 import { useBoardStore } from '../../store/boardStore';
 import { getSpawnOutcome } from '../../data/wildHunt/spawnTable';
+import { ShieldCounter } from './ShieldCounter';
 
 const STAGE_LABELS: Record<1 | 2 | 3 | 4, string> = {
   1: 'Movement & Action',
@@ -15,6 +16,9 @@ export function WildHuntBoardScreen() {
   const phase = useWildHuntStore((s) => s.phase);
   const wildHuntSlots = useWildHuntStore((s) => s.wildHuntSlots);
   const wildHuntLocationId = useWildHuntStore((s) => s.wildHuntLocationId);
+  const shieldCount = useWildHuntStore((s) => s.shieldCount);
+  const gainShields = useWildHuntStore((s) => s.gainShields);
+  const absorbDamage = useWildHuntStore((s) => s.absorbDamage);
   const advanceStage = useWildHuntStore((s) => s.advanceStage);
   const resetWildHunt = useWildHuntStore((s) => s.resetWildHunt);
   const setShowMonsters = useWildHuntStore((s) => s.setShowMonsters);
@@ -86,7 +90,7 @@ export function WildHuntBoardScreen() {
         </div>
       </div>
 
-      {/* Round / Stage indicator */}
+      {/* Round / Stage / Shield indicator */}
       <div className="flex gap-3">
         <div className="flex-1 rounded-lg bg-stone-800 border border-stone-600 p-3 text-center">
           <p className="text-xs text-stone-400 uppercase tracking-wide">Round</p>
@@ -98,6 +102,11 @@ export function WildHuntBoardScreen() {
           <p className="text-2xl font-bold text-amber-400">{isFinalBattle ? '—' : stage}</p>
           <p className="text-xs text-stone-500">{isFinalBattle ? 'Final Battle' : `of 4`}</p>
         </div>
+        <ShieldCounter
+          count={shieldCount}
+          onAdd={() => gainShields(1)}
+          onRemove={() => absorbDamage(1)}
+        />
       </div>
 
       {/* Stage label */}

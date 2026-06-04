@@ -4,6 +4,7 @@ import { useWildHuntStore } from '../../store/wildHuntStore';
 import { MONSTERS } from '../../data/monsters';
 import { LOCATIONS } from '../../data/locations';
 import type { WildHuntBoardSlot } from '../../types/wildHunt';
+import { ShieldCounter } from './ShieldCounter';
 
 interface SlotCardProps {
   slot: WildHuntBoardSlot;
@@ -72,6 +73,9 @@ function WildHuntSlotCard({ slot, monsterName, onStartEncounter }: SlotCardProps
  */
 export function WildHuntMonstersScreen() {
   const wildHuntSlots = useWildHuntStore((s) => s.wildHuntSlots);
+  const shieldCount = useWildHuntStore((s) => s.shieldCount);
+  const gainShields = useWildHuntStore((s) => s.gainShields);
+  const absorbDamage = useWildHuntStore((s) => s.absorbDamage);
   const setActiveWildHuntSlot = useWildHuntStore((s) => s.setActiveWildHuntSlot);
   const setShowMonsters = useWildHuntStore((s) => s.setShowMonsters);
   const startEncounter = useEncounterStore((s) => s.startEncounter);
@@ -90,12 +94,20 @@ export function WildHuntMonstersScreen() {
     <div className="h-dvh flex flex-col p-6 gap-4 max-w-lg mx-auto overflow-hidden">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-amber-500">Board</h1>
-        <button
-          onClick={() => setShowMonsters(false)}
-          className="text-sm text-stone-400 hover:text-amber-400 transition-colors"
-        >
-          ← Back to Run
-        </button>
+        <div className="flex items-center gap-4">
+          <ShieldCounter
+            count={shieldCount}
+            onAdd={() => gainShields(1)}
+            onRemove={() => absorbDamage(1)}
+            compact
+          />
+          <button
+            onClick={() => setShowMonsters(false)}
+            className="text-sm text-stone-400 hover:text-amber-400 transition-colors"
+          >
+            ← Back to Run
+          </button>
+        </div>
       </div>
       <p className="text-sm text-stone-400">Tap a monster to begin the encounter.</p>
       <div className="flex-1 min-h-0 flex flex-col gap-3">
