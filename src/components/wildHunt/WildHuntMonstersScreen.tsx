@@ -13,6 +13,7 @@ interface SlotCardProps {
 const BASE = import.meta.env.BASE_URL ?? '/';
 const resolveUrl = (path: string) => `${BASE}${path.replace(/^\//, '')}`;
 const FALLBACK_IMAGE = resolveUrl('/images/locations/fallback.png');
+const BG = `${BASE}images/monsters/wild-hunt/background.jpg`;
 
 
 function WildHuntSlotCard({ slot, monsterName, onStartEncounter }: SlotCardProps) {
@@ -32,7 +33,7 @@ function WildHuntSlotCard({ slot, monsterName, onStartEncounter }: SlotCardProps
           ? 'border-stone-700 bg-stone-900/40 opacity-40 cursor-default'
           : isEncountering
             ? 'border-red-700 opacity-60 cursor-default'
-            : 'border-stone-700 hover:border-amber-600'
+            : 'border-stone-700 hover:border-cyan-600'
       }`}
     >
       {isEmpty ? (
@@ -51,7 +52,7 @@ function WildHuntSlotCard({ slot, monsterName, onStartEncounter }: SlotCardProps
           <div className="relative z-10 flex flex-col justify-between h-full p-4">
             <div className="flex items-center justify-between">
               <span className="font-bold text-white text-lg drop-shadow">{monsterName}</span>
-              <span className="text-sm font-semibold text-amber-400 drop-shadow">Lv.{slot.level}</span>
+              <span className="text-sm font-semibold text-cyan-400 drop-shadow">Lv.{slot.level}</span>
             </div>
             <div className="flex items-center justify-end">
               {isEncountering && (
@@ -90,34 +91,40 @@ export function WildHuntMonstersScreen() {
   };
 
   return (
-    <div className="h-dvh flex flex-col p-6 gap-4 max-w-lg mx-auto overflow-hidden">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-amber-500">Board</h1>
-        <div className="flex items-center gap-4">
-          <ShieldCounter
-            count={shieldCount}
-            onAdd={() => gainShields(1)}
-            onRemove={() => absorbDamage(1)}
-            compact
-          />
-          <button
-            onClick={() => setShowMonsters(false)}
-            className="text-sm text-stone-400 hover:text-amber-400 transition-colors"
-          >
-            ← Back to Run
-          </button>
+    <div className="relative h-dvh overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${BG})` }} />
+      <div className="absolute inset-0 bg-stone-950/80" />
+
+      <div className="relative h-full flex flex-col p-6 gap-4 max-w-lg mx-auto overflow-hidden">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-cyan-400">Board</h1>
+          <div className="flex items-center gap-4">
+            <ShieldCounter
+              count={shieldCount}
+              onAdd={() => gainShields(1)}
+              onRemove={() => absorbDamage(1)}
+              compact
+            />
+            <button
+              onClick={() => setShowMonsters(false)}
+              className="text-sm text-stone-400 hover:text-cyan-400 transition-colors"
+            >
+              ← Back to Run
+            </button>
+          </div>
         </div>
-      </div>
-      <p className="text-sm text-stone-400">Tap a monster to begin the encounter.</p>
-      <div className="flex-1 min-h-0 flex flex-col gap-3">
-        {wildHuntSlots.map((slot, i) => (
-          <WildHuntSlotCard
-            key={i}
-            slot={slot}
-            monsterName={getMonsterName(slot.monsterId)}
-            onStartEncounter={() => handleSlotTap(i as 0 | 1 | 2)}
-          />
-        ))}
+        <p className="text-sm text-stone-400">Tap a monster to begin the encounter.</p>
+        <div className="flex-1 min-h-0 flex flex-col gap-3">
+          {wildHuntSlots.map((slot, i) => (
+            <WildHuntSlotCard
+              key={i}
+              slot={slot}
+              monsterName={getMonsterName(slot.monsterId)}
+              onStartEncounter={() => handleSlotTap(i as 0 | 1 | 2)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

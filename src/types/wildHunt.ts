@@ -37,6 +37,8 @@ export interface WildHuntCharacter {
   passiveAbility: MonsterAbility;
   /** Exactly 4 special cards, each carrying its own discard-trigger ability. */
   specialCards: WildHuntSpecialCard[];
+  /** Path to the character portrait image (relative to public/). */
+  image?: string;
 }
 
 // ─── Board Representation ────────────────────────────────────────────────────

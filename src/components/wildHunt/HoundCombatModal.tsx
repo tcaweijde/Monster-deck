@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useWildHuntStore } from '../../store/wildHuntStore';
 import type { HoundSlot } from '../../types/wildHunt';
 
+const BASE = import.meta.env.BASE_URL ?? '/';
+const HOUND_IMG = `${BASE}images/monsters/wild-hunt/hound/1.jpg`;
+
 const THRESHOLD: Record<1 | 2 | 3, number> = { 1: 2, 2: 3, 3: 4 };
 
 interface HoundCombatModalProps {
@@ -38,7 +41,11 @@ export function HoundCombatModal({ hound, onClose }: HoundCombatModalProps) {
 
         {/* Header */}
         <div className="flex items-center gap-3">
-          <span className="text-2xl">🐺</span>
+          <img
+            src={HOUND_IMG}
+            alt="Hound"
+            className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+          />
           <div>
             <h2 className="text-xl font-bold text-red-300">Hound Combat</h2>
             <p className="text-xs text-stone-400">Level {hound.level} — threshold: {threshold} damage</p>

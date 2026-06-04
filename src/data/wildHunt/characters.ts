@@ -10,9 +10,10 @@ import type { WildHuntCharacter } from '../../types/wildHunt';
 const eredin: WildHuntCharacter = {
   id: 'wh-eredin',
   name: 'Eredin',
+  image: 'images/monsters/wild-hunt/eredin.jpg',
   passiveAbility: {
-    name: 'King of the Wild Hunt', // TODO: fill from rulebook
-    description: 'TODO: fill from rulebook',
+    name: 'Ghastly pursuit',
+    description: 'Before creating the Life pool, all players who are not on Eredins location trash any 1 card from their deck, discard pile, or hand.',
     trigger: 'passive',
   },
   specialCards: [
@@ -62,9 +63,10 @@ const eredin: WildHuntCharacter = {
 const caranthir: WildHuntCharacter = {
   id: 'wh-caranthir',
   name: 'Caranthir',
+  image: 'images/monsters/wild-hunt/caranthir.jpg',
   passiveAbility: {
-    name: 'Navigator', // TODO: fill from rulebook
-    description: 'TODO: fill from rulebook',
+    name: 'Defensive Formation',
+    description: 'Caranthir gains 1 shield per each Trophy card gained by the Players.',
     trigger: 'passive',
   },
   specialCards: [
@@ -114,9 +116,10 @@ const caranthir: WildHuntCharacter = {
 const imlerith: WildHuntCharacter = {
   id: 'wh-imlerith',
   name: 'Imlerith',
+  image: 'images/monsters/wild-hunt/imlerith.jpg',
   passiveAbility: {
-    name: 'Warrior\'s Might', // TODO: fill from rulebook
-    description: 'TODO: fill from rulebook',
+    name: 'Wild Hhunt Terror',
+    description: 'Before creating the Life pool: each Players lowers the level of any Attribute by 1 per each Quest token on the Game Board and on Monster cards. The player may lower levels of one or more Attributes',
     trigger: 'passive',
   },
   specialCards: [
@@ -166,9 +169,10 @@ const imlerith: WildHuntCharacter = {
 const nithral: WildHuntCharacter = {
   id: 'wh-nithral',
   name: 'Nithral',
+  image: 'images/monsters/wild-hunt/nithral.jpg',
   passiveAbility: {
-    name: 'Knight\'s Vigil', // TODO: fill from rulebook
-    description: 'TODO: fill from rulebook',
+    name: 'Summoning the Hounds',
+    description: 'Place all Hounds from the Game Board next to Nithral\'s character card. If any Hound has Shields, add them to Nithral\'s shield count.',
     trigger: 'passive',
   },
   specialCards: [

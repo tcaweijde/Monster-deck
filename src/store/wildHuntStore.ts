@@ -98,6 +98,9 @@ export interface WildHuntActions {
   /** Mark the run as won. */
   triggerVictory: () => void;
 
+  /** Mark the run as lost (shields depleted). */
+  triggerDefeat: () => void;
+
   /** Reset all state back to initial values. */
   resetWildHunt: () => void;
 }
@@ -406,6 +409,10 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
         set({ phase: 'victory' });
       },
 
+      triggerDefeat: () => {
+        set({ phase: 'defeat' });
+      },
+
       resetWildHunt: () => {
         set({ ...INITIAL_STATE });
       },
@@ -414,17 +421,14 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
       name: 'monster-deck-wh-v2',
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        // EC-4: if app was closed mid-finalBattle, revert to 'playing'
-        if (state.phase === 'finalBattle') {
-          state.phase = 'playing';
-        }
-        // EC-4: if app was closed mid-encounter, revert encountering slot to active
+        // If app closed mid-encounter, revert encountering slot to active
         if (state.wildHuntSlots) {
           state.wildHuntSlots = state.wildHuntSlots.map((slot) =>
             slot.status === 'encountering' ? { ...slot, status: 'active' } : slot,
           ) as typeof state.wildHuntSlots;
         }
         state.activeWildHuntSlotIndex = null;
+        state.showProximitySetup = false;
       },
     },
   ),
