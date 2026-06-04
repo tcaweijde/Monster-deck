@@ -19,6 +19,8 @@ export function WildHuntBoardScreen() {
   const shieldCount = useWildHuntStore((s) => s.shieldCount);
   const gainShields = useWildHuntStore((s) => s.gainShields);
   const absorbDamage = useWildHuntStore((s) => s.absorbDamage);
+  const houndSlots = useWildHuntStore((s) => s.houndSlots);
+  const removeHound = useWildHuntStore((s) => s.removeHound);
   const advanceStage = useWildHuntStore((s) => s.advanceStage);
   const resetWildHunt = useWildHuntStore((s) => s.resetWildHunt);
   const setShowMonsters = useWildHuntStore((s) => s.setShowMonsters);
@@ -148,7 +150,36 @@ export function WildHuntBoardScreen() {
         </div>
       )}
 
-      <div className="flex-1" />
+            {/* Active hounds */}
+            {houndSlots.length > 0 && (
+              <div className="rounded-lg bg-stone-800 border border-stone-600 p-4 space-y-2">
+                <p className="text-xs text-stone-400 uppercase tracking-wide font-semibold">
+                  Active Hounds ({houndSlots.length}/3)
+                </p>
+                {houndSlots.map((hound) => (
+                  <div
+                    key={hound.id}
+                    className="flex items-center justify-between bg-stone-900/60 rounded-lg px-3 py-2"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">🐺</span>
+                      <span className="text-stone-200 font-semibold">Hound</span>
+                      <span className="text-xs bg-red-800/60 text-red-300 border border-red-700/50 rounded px-1.5 py-0.5 font-bold">
+                        Lv.{hound.level}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => removeHound(hound.id)}
+                      className="text-xs text-stone-400 hover:text-red-400 border border-stone-600 hover:border-red-700 rounded px-2 py-1 transition-colors"
+                    >
+                      Defeated
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="flex-1" />
 
       {/* Advance button */}
       {!isFinalBattle && (
