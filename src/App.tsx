@@ -6,6 +6,7 @@ import { BoardScreen } from './components/board/BoardScreen';
 import { EncounterScreen } from './components/encounter/EncounterScreen';
 import { WildHuntSetupScreen } from './components/wildHunt/WildHuntSetupScreen';
 import { WildHuntBoardScreen } from './components/wildHunt/WildHuntBoardScreen';
+import { WildHuntMonstersScreen } from './components/wildHunt/WildHuntMonstersScreen';
 
 const slideUp: Variants = {
   initial: { y: '100%', opacity: 0 },
@@ -17,10 +18,17 @@ export default function App() {
   const board = useBoardStore((s) => s.board);
   const activeSlotIndex = useBoardStore((s) => s.activeSlotIndex);
   const wildHuntPhase = useWildHuntStore((s) => s.phase);
+  const showMonsters = useWildHuntStore((s) => s.showMonsters);
 
   const inWildHunt = wildHuntPhase !== 'inactive';
   const screen = inWildHunt
-    ? (wildHuntPhase === 'setup' ? 'wh-setup' : activeSlotIndex !== null ? 'encounter' : 'wh-board')
+    ? (wildHuntPhase === 'setup'
+        ? 'wh-setup'
+        : activeSlotIndex !== null
+          ? 'encounter'
+          : showMonsters
+            ? 'wh-monsters'
+            : 'wh-board')
     : (!board ? 'welcome' : activeSlotIndex !== null ? 'encounter' : 'board');
 
   return (
@@ -37,6 +45,7 @@ export default function App() {
             {screen === 'board' && <BoardScreen />}
             {screen === 'wh-setup' && <WildHuntSetupScreen />}
             {screen === 'wh-board' && <WildHuntBoardScreen />}
+            {screen === 'wh-monsters' && <WildHuntMonstersScreen />}
           </motion.div>
         )}
 

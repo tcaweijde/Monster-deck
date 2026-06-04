@@ -46,6 +46,9 @@ export interface WildHuntActions {
   /** Remove a hound token by its unique id. */
   removeHound: (houndId: string) => void;
 
+  /** Show or hide the monster board sub-screen within Wild Hunt mode. */
+  setShowMonsters: (show: boolean) => void;
+
   /** Mark the run as won. */
   triggerVictory: () => void;
 
@@ -80,6 +83,7 @@ const INITIAL_STATE: WildHuntState = {
   playerLocationId: null,
   houndSlots: [],
   occupiedBoardSlots: 0,
+  showMonsters: false,
 };
 
 // ─── Store ────────────────────────────────────────────────────────────────────
@@ -164,6 +168,10 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
         set((state) => ({
           houndSlots: state.houndSlots.filter((h) => h.id !== houndId),
         }));
+      },
+
+      setShowMonsters: (show) => {
+        set({ showMonsters: show });
       },
 
       triggerVictory: () => {

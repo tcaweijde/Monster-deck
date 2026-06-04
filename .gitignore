@@ -46,3 +46,6 @@ dist-ssr
 
 # GitHub agent definitions
 .github/agents/
+
+# package
+package-lock.json

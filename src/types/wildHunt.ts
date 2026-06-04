@@ -70,4 +70,6 @@ export interface WildHuntState {
   houndSlots: HoundSlot[];
   /** Number of regular board slots currently occupied (0–3); used for overflow checks. */
   occupiedBoardSlots: number;
+  /** Whether the player is viewing the monster board sub-screen. */
+  showMonsters: boolean;
 }

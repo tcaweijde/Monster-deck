@@ -1,4 +1,5 @@
 import { useWildHuntStore } from '../../store/wildHuntStore';
+import { useBoardStore } from '../../store/boardStore';
 
 const STAGE_LABELS: Record<1 | 2 | 3 | 4, string> = {
   1: 'Movement & Action',
@@ -13,9 +14,16 @@ export function WildHuntBoardScreen() {
   const phase = useWildHuntStore((s) => s.phase);
   const advanceStage = useWildHuntStore((s) => s.advanceStage);
   const resetWildHunt = useWildHuntStore((s) => s.resetWildHunt);
+  const setShowMonsters = useWildHuntStore((s) => s.setShowMonsters);
+  const endGame = useBoardStore((s) => s.endGame);
 
   const isFinalBattle = phase === 'finalBattle';
   const isFinalStage = round === 8 && stage === 4;
+
+  function handleEndRun() {
+    resetWildHunt();
+    endGame();
+  }
 
   const stagePrompt = (): string => {
     if (isFinalBattle) return 'The Wild Hunt has arrived. Prepare for the Final Battle.';
@@ -39,12 +47,20 @@ export function WildHuntBoardScreen() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-amber-500">Wild Hunt</h1>
-        <button
-          onClick={resetWildHunt}
-          className="text-sm text-stone-400 hover:text-red-400 transition-colors"
-        >
-          End Run
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setShowMonsters(true)}
+            className="text-sm text-stone-400 hover:text-amber-400 transition-colors"
+          >
+            View Board
+          </button>
+          <button
+            onClick={handleEndRun}
+            className="text-sm text-stone-400 hover:text-red-400 transition-colors"
+          >
+            End Run
+          </button>
+        </div>
       </div>
 
       {/* Round / Stage indicator */}
@@ -104,7 +120,7 @@ export function WildHuntBoardScreen() {
             Boss fight coming in a future update.
           </p>
           <button
-            onClick={resetWildHunt}
+            onClick={handleEndRun}
             className="w-full py-4 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 font-bold transition-colors"
           >
             End Run
