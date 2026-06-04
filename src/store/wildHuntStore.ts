@@ -263,7 +263,7 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
         const occupied = countOccupied(wildHuntSlots);
         const outcome = getSpawnOutcome(round, occupied, wildHuntLocationId);
 
-        let newSlots = wildHuntSlots.map((s) => ({ ...s })) as typeof wildHuntSlots;
+        const newSlots = wildHuntSlots.map((s) => ({ ...s })) as typeof wildHuntSlots;
         let newShieldCount = shieldCount;
         let newHoundSlots = [...houndSlots];
 

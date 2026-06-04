@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { MonsterAbility } from '../../types';
 
 interface DiscardAlertProps {
@@ -8,13 +8,14 @@ interface DiscardAlertProps {
 
 export function DiscardAlert({ ability, triggered }: DiscardAlertProps) {
   const [visible, setVisible] = useState(false);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
-    if (triggered) {
-      setVisible(true);
-      const timer = setTimeout(() => setVisible(false), 3000);
-      return () => clearTimeout(timer);
-    }
+    if (!triggered) return;
+    const t1 = setTimeout(() => setVisible(true), 0);
+    const t2 = setTimeout(() => setVisible(false), 3000);
+    timersRef.current = [t1, t2];
+    return () => timersRef.current.forEach(clearTimeout);
   }, [triggered]);
 
   if (!visible) return null;

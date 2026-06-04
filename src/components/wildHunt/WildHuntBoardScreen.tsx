@@ -73,16 +73,6 @@ export function WildHuntBoardScreen() {
     return parts.length > 0 ? parts.join('\n') : 'Nothing spawns this round.';
   };
 
-  const stagePrompt = (): string => {
-    if (isFinalBattle) return 'The Wild Hunt has arrived. Prepare for the Final Battle.';
-    switch (stage) {
-      case 1: return 'Move and act on the board.';
-      case 2: return `Read Story Card #${round}, then continue.`;
-      case 3: return 'Draw cards and train.';
-      case 4: return 'Spawning monsters and hounds as shown below.';
-    }
-  };
-
   const advanceLabel = (): string => {
     if (isFinalBattle) return 'Begin Final Battle';
     if (isFinalStage) return 'Begin Final Battle';
@@ -141,20 +131,47 @@ export function WildHuntBoardScreen() {
         {!isFinalBattle && (
           <div className="rounded-lg bg-stone-900/80 border border-stone-700 px-4 py-2">
             <p className="text-xs text-stone-400 uppercase tracking-wide mb-1">Stage {stage}</p>
-            <p className="font-semibold text-stone-200">{STAGE_LABELS[stage]}</p>
+                        {round === 8 && stage ===4? (
+                          <div>
+                            <p className="font-semibold text-stone-200">The wild hunt has arrived!</p>
+                          </div>
+                        ): (
+                          <div>
+                            <p className="font-semibold text-stone-200">{STAGE_LABELS[stage]}</p>
+                          </div>
+                        )}
           </div>
         )}
 
         {/* Stage prompt */}
-        <div
-          className={`rounded-lg p-4 border ${
-            isFinalBattle
-              ? 'bg-red-950/50 border-red-800 text-red-200'
-              : 'bg-stone-900/70 border-stone-700 text-stone-300'
-          }`}
-        >
-          <p className="text-sm leading-relaxed">{stagePrompt()}</p>
-        </div>
+        {stage !== 2 || isFinalBattle ? (
+          <div/>
+          ) : (
+          <div className="rounded-lg overflow-hidden border border-stone-700 bg-stone-900/70">
+            {round === 8 ? (
+              <div className="px-4 py-3">
+                <p className="text-xs text-cyan-400 uppercase tracking-wide font-semibold mb-1">Stage 2 — Read Story Card</p>
+                <p className="text-sm text-stone-500 italic">No exploration this round.</p>
+              </div>
+            ) : (
+              <div className="flex gap-4 p-4 items-center">
+                <img
+                  src={`${BASE}images/monsters/wild-hunt/exploration-${round <= 4 ? 1 : 2}.png`}
+                  alt={`Exploration Card ${round <= 4 ? 'I' : 'II'}`}
+                  className="w-16 h-24 object-cover rounded-lg flex-shrink-0"
+                />
+                <div>
+                  <p className="text-xs text-cyan-400 uppercase tracking-wide font-semibold mb-1">
+                    Stage 2 — Read Story Card
+                  </p>
+                  <p className="text-xs text-stone-500 mt-1">
+                    Exploration {round <= 4 ? 'I' : 'II'} (rounds {round <= 4 ? '1–4' : '5–7'})
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Stage 4 spawn preview */}
         {preview !== null && (
@@ -179,8 +196,8 @@ export function WildHuntBoardScreen() {
           </div>
         )}
 
-        {/* Active hounds */}
-        {houndSlots.length > 0 && (
+        {/* Active hounds — only visible in stage 1 (Movement & Action) */}
+        {stage === 1 && houndSlots.length > 0 && (
           <div className="rounded-lg bg-stone-900/80 border border-stone-700 p-4 space-y-2">
             <p className="text-xs text-stone-400 uppercase tracking-wide font-semibold">
               Active Hounds ({houndSlots.length})
@@ -229,7 +246,7 @@ export function WildHuntBoardScreen() {
               onClick={() => setConfirmingBattle(true)}
               className="w-full py-4 rounded-lg bg-red-700 hover:bg-red-600 text-white font-bold text-lg transition-colors"
             >
-              ⚔️ Begin Final Battle
+              Begin Final Battle
             </button>
           </div>
         )}
@@ -241,17 +258,14 @@ export function WildHuntBoardScreen() {
             <div className="relative bg-stone-900 border border-red-800 rounded-2xl p-6 space-y-4 max-w-sm w-full text-center">
               <h2 className="text-xl font-bold text-red-300">Final Battle</h2>
               <p className="text-stone-300 text-sm">
-                Are you at the Wild Hunt's location on the board?
-              </p>
-              <p className="text-stone-500 text-xs">
-                You must be on the same space as the Wild Hunt to begin this fight.
+                Is a player at the Wild Hunt's location on the board?
               </p>
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => { setConfirmingBattle(false); handleBeginFinalBattle(false); }}
                   className="flex-1 py-2.5 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-300 font-semibold text-sm transition-colors"
                 >
-                  Not yet
+                  No
                 </button>
                 <button
                   onClick={() => { setConfirmingBattle(false); handleBeginFinalBattle(true); }}
