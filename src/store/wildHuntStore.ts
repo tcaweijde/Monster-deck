@@ -82,6 +82,13 @@ export interface WildHuntActions {
   /** Remove a hound token by its unique id. */
   removeHound: (houndId: string) => void;
 
+  /**
+   * Resolve hound combat. If declaredDamage >= threshold for the hound's level,
+   * the hound is defeated and excess damage is absorbed as shield loss.
+   * Returns `{ defeated: boolean; excessDamage: number }`.
+   */
+  resolveHoundCombat: (houndId: string, declaredDamage: number) => { defeated: boolean; excessDamage: number };
+
   /** Show or hide the monster board sub-screen within Wild Hunt mode. */
   setShowMonsters: (show: boolean) => void;
 
@@ -365,6 +372,22 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
         set((state) => ({
           houndSlots: state.houndSlots.filter((h) => h.id !== houndId),
         }));
+      },
+
+      resolveHoundCombat: (houndId, declaredDamage) => {
+        const THRESHOLD: Record<1 | 2 | 3, number> = { 1: 2, 2: 3, 3: 4 };
+        const { houndSlots, shieldCount } = get();
+        const hound = houndSlots.find((h) => h.id === houndId);
+        if (!hound) return { defeated: false, excessDamage: 0 };
+        const threshold = THRESHOLD[hound.level];
+        if (declaredDamage < threshold) return { defeated: false, excessDamage: 0 };
+        const excessDamage = declaredDamage - threshold;
+        const newShields = Math.max(0, shieldCount - excessDamage);
+        set({
+          houndSlots: houndSlots.filter((h) => h.id !== houndId),
+          shieldCount: newShields,
+        });
+        return { defeated: true, excessDamage };
       },
 
       setShowMonsters: (show) => {

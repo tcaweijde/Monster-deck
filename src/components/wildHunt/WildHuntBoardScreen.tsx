@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { useWildHuntStore } from '../../store/wildHuntStore';
 import { useBoardStore } from '../../store/boardStore';
 import { getSpawnOutcome } from '../../data/wildHunt/spawnTable';
 import { ShieldCounter } from './ShieldCounter';
+import { HoundCombatModal } from './HoundCombatModal';
+import type { HoundSlot } from '../../types/wildHunt';
 
 const STAGE_LABELS: Record<1 | 2 | 3 | 4, string> = {
   1: 'Movement & Action',
@@ -20,8 +23,9 @@ export function WildHuntBoardScreen() {
   const gainShields = useWildHuntStore((s) => s.gainShields);
   const absorbDamage = useWildHuntStore((s) => s.absorbDamage);
   const houndSlots = useWildHuntStore((s) => s.houndSlots);
-  const removeHound = useWildHuntStore((s) => s.removeHound);
   const advanceStage = useWildHuntStore((s) => s.advanceStage);
+
+  const [activeHound, setActiveHound] = useState<HoundSlot | null>(null);
   const resetWildHunt = useWildHuntStore((s) => s.resetWildHunt);
   const setShowMonsters = useWildHuntStore((s) => s.setShowMonsters);
   const endGame = useBoardStore((s) => s.endGame);
@@ -169,10 +173,10 @@ export function WildHuntBoardScreen() {
                       </span>
                     </div>
                     <button
-                      onClick={() => removeHound(hound.id)}
-                      className="text-xs text-stone-400 hover:text-red-400 border border-stone-600 hover:border-red-700 rounded px-2 py-1 transition-colors"
+                      onClick={() => setActiveHound(hound)}
+                      className="text-xs text-red-300 hover:text-red-200 border border-red-800/60 hover:border-red-600 rounded px-2 py-1 transition-colors"
                     >
-                      Defeated
+                      ⚔️ Fight
                     </button>
                   </div>
                 ))}
@@ -207,6 +211,13 @@ export function WildHuntBoardScreen() {
             End Run
           </button>
         </div>
+      )}
+
+      {activeHound && (
+        <HoundCombatModal
+          hound={activeHound}
+          onClose={() => setActiveHound(null)}
+        />
       )}
     </div>
   );
