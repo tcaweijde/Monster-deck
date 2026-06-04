@@ -3,15 +3,18 @@ import { getActiveAbilities, hasDiscardTrigger } from '../../engine/abilities';
 
 interface AbilityPanelProps {
   monster: Monster;
+  theme?: 'default' | 'frost';
 }
 
-export function AbilityPanel({ monster }: AbilityPanelProps) {
+export function AbilityPanel({ monster, theme = 'default' }: AbilityPanelProps) {
   const abilities = getActiveAbilities(monster);
   const showDiscardAbility = hasDiscardTrigger(monster);
 
+  const headingColor = theme === 'frost' ? 'text-cyan-400' : 'text-amber-400';
+
   return (
     <div className="bg-stone-800/70 border border-stone-700 rounded-lg p-4 space-y-1">
-      <h3 className="text-sm font-semibold text-amber-400 uppercase tracking-wide">
+      <h3 className={`text-sm font-semibold uppercase tracking-wide ${headingColor}`}>
         Abilities
       </h3>
       {abilities.map((ability) => (

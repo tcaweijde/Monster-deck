@@ -1,8 +1,16 @@
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { useBoardStore } from './store/boardStore';
+import { useWildHuntStore } from './store/wildHuntStore';
+import { useEncounterStore } from './store/encounterStore';
 import { BoardWelcomeScreen } from './components/board/BoardWelcomeScreen';
 import { BoardScreen } from './components/board/BoardScreen';
 import { EncounterScreen } from './components/encounter/EncounterScreen';
+import { WildHuntSetupScreen } from './components/wildHunt/WildHuntSetupScreen';
+import { WildHuntBoardScreen } from './components/wildHunt/WildHuntBoardScreen';
+import { WildHuntMonstersScreen } from './components/wildHunt/WildHuntMonstersScreen';
+import { ProximitySetupScreen } from './components/wildHunt/ProximitySetupScreen';
+import { WildHuntEncounterScreen } from './components/wildHunt/WildHuntEncounterScreen';
+import { WildHuntVictoryScreen } from './components/wildHunt/WildHuntVictoryScreen';
 
 const slideUp: Variants = {
   initial: { y: '100%', opacity: 0 },
@@ -13,24 +21,51 @@ const slideUp: Variants = {
 export default function App() {
   const board = useBoardStore((s) => s.board);
   const activeSlotIndex = useBoardStore((s) => s.activeSlotIndex);
+  const wildHuntPhase = useWildHuntStore((s) => s.phase);
+  const showMonsters = useWildHuntStore((s) => s.showMonsters);
+  const showProximitySetup = useWildHuntStore((s) => s.showProximitySetup);
+  const activeWildHuntSlotIndex = useWildHuntStore((s) => s.activeWildHuntSlotIndex);
+  const encounterPhase = useEncounterStore((s) => s.phase);
 
-  const screen = !board ? 'welcome' : activeSlotIndex !== null ? 'encounter' : 'board';
+  const inWildHunt = wildHuntPhase !== 'inactive';
+
+  const screen = inWildHunt
+    ? wildHuntPhase === 'setup'
+      ? 'wh-setup'
+      : wildHuntPhase === 'victory'
+        ? 'wh-victory'
+        : wildHuntPhase === 'defeat'
+          ? 'wh-board' // TODO: add a defeat screen
+          : wildHuntPhase === 'finalBattle' && encounterPhase !== 'setup'
+            ? 'wh-boss'
+            : activeWildHuntSlotIndex !== null
+              ? showProximitySetup ? 'wh-proximity' : 'encounter'
+              : showMonsters
+                ? 'wh-monsters'
+                : 'wh-board'
+    : (!board ? 'welcome' : activeSlotIndex !== null ? 'encounter' : 'board');
 
   return (
     <div className="relative w-full h-dvh overflow-hidden">
       <AnimatePresence mode="sync">
-        {screen !== 'encounter' && (
+        {screen !== 'encounter' && screen !== 'wh-boss' && (
           <motion.div
             key="board"
             className="absolute inset-0"
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.15 } }}
           >
-            {screen === 'welcome' ? <BoardWelcomeScreen /> : <BoardScreen />}
+            {screen === 'welcome' && <BoardWelcomeScreen />}
+            {screen === 'board' && <BoardScreen />}
+            {screen === 'wh-setup' && <WildHuntSetupScreen />}
+            {screen === 'wh-board' && <WildHuntBoardScreen />}
+            {screen === 'wh-monsters' && <WildHuntMonstersScreen />}
+            {screen === 'wh-proximity' && <ProximitySetupScreen />}
+            {screen === 'wh-victory' && <WildHuntVictoryScreen />}
           </motion.div>
         )}
 
-        {screen === 'encounter' && (
+        {(screen === 'encounter' || screen === 'wh-boss') && (
           <motion.div
             key="encounter"
             className="absolute inset-0"
@@ -39,7 +74,7 @@ export default function App() {
             animate="animate"
             exit="exit"
           >
-            <EncounterScreen />
+            {screen === 'wh-boss' ? <WildHuntEncounterScreen /> : <EncounterScreen />}
           </motion.div>
         )}
       </AnimatePresence>

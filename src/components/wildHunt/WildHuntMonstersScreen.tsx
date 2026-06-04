@@ -1,0 +1,131 @@
+import { useState } from 'react';
+import { useWildHuntStore } from '../../store/wildHuntStore';
+import { MONSTERS } from '../../data/monsters';
+import { LOCATIONS } from '../../data/locations';
+import type { WildHuntBoardSlot } from '../../types/wildHunt';
+import { ShieldCounter } from './ShieldCounter';
+
+interface SlotCardProps {
+  slot: WildHuntBoardSlot;
+  monsterName: string;
+  onStartEncounter: () => void;
+}
+const BASE = import.meta.env.BASE_URL ?? '/';
+const resolveUrl = (path: string) => `${BASE}${path.replace(/^\//, '')}`;
+const FALLBACK_IMAGE = resolveUrl('/images/locations/fallback.png');
+const BG = `${BASE}images/monsters/wild-hunt/background.jpg`;
+
+
+function WildHuntSlotCard({ slot, monsterName, onStartEncounter }: SlotCardProps) {
+  const isEncountering = slot.status === 'encountering';
+  const isEmpty = slot.status === 'empty';
+  const location = LOCATIONS.find((l) => l.id === slot.locationId);
+  const [imgSrc, setImgSrc] = useState(
+    location?.image ? resolveUrl(location.image) : FALLBACK_IMAGE
+  );
+
+  return (
+    <button
+      onClick={onStartEncounter}
+      disabled={isEmpty || isEncountering}
+      className={`relative w-full flex-1 min-h-0 text-left rounded-xl border-2 overflow-hidden transition-colors ${
+        isEmpty
+          ? 'border-stone-700 bg-stone-900/40 opacity-40 cursor-default'
+          : isEncountering
+            ? 'border-red-700 opacity-60 cursor-default'
+            : 'border-stone-700 hover:border-cyan-600'
+      }`}
+    >
+      {isEmpty ? (
+        <p className="text-stone-500 text-sm italic p-4">Empty slot</p>
+      ) : (
+        <>
+          {/* Background image */}
+          <img
+            src={imgSrc}
+            alt={location?.name ?? ''}
+            onError={() => setImgSrc(FALLBACK_IMAGE)}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+
+          {/* Content overlay */}
+          <div className="relative z-10 flex flex-col justify-between h-full p-4">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-white text-lg drop-shadow">{monsterName}</span>
+              <span className="text-sm font-semibold text-cyan-400 drop-shadow">Lv.{slot.level}</span>
+            </div>
+            <div className="flex items-center justify-end">
+              {isEncountering && (
+                <span className="text-xs text-red-400 font-semibold drop-shadow">In combat</span>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+    </button>
+  );
+}
+
+/**
+ * Monster board sub-screen within the Wild Hunt game mode.
+ * Shows the 3 fixed board slots; navigates back to the Wild Hunt board screen
+ * instead of ending the game.
+ */
+export function WildHuntMonstersScreen() {
+  const wildHuntSlots = useWildHuntStore((s) => s.wildHuntSlots);
+  const shieldCount = useWildHuntStore((s) => s.shieldCount);
+  const gainShields = useWildHuntStore((s) => s.gainShields);
+  const absorbDamage = useWildHuntStore((s) => s.absorbDamage);
+  const setActiveWildHuntSlot = useWildHuntStore((s) => s.setActiveWildHuntSlot);
+  const setShowMonsters = useWildHuntStore((s) => s.setShowMonsters);
+  const setShowProximitySetup = useWildHuntStore((s) => s.setShowProximitySetup);
+
+  const getMonsterName = (id: string | null) =>
+    id ? (MONSTERS.find((m) => m.id === id)?.name ?? id) : '';
+
+  const handleSlotTap = (index: 0 | 1 | 2) => {
+    const slot = wildHuntSlots[index];
+    if (slot.status === 'empty' || !slot.monsterId) return;
+    setActiveWildHuntSlot(index);
+    setShowProximitySetup(true);
+  };
+
+  return (
+    <div className="relative h-dvh overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${BG})` }} />
+      <div className="absolute inset-0 bg-stone-950/80" />
+
+      <div className="relative h-full flex flex-col p-6 gap-4 max-w-lg mx-auto overflow-hidden">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-cyan-400">Board</h1>
+          <div className="flex items-center gap-4">
+            <ShieldCounter
+              count={shieldCount}
+              onAdd={() => gainShields(1)}
+              onRemove={() => absorbDamage(1)}
+              compact
+            />
+            <button
+              onClick={() => setShowMonsters(false)}
+              className="text-sm text-stone-400 hover:text-cyan-400 transition-colors"
+            >
+              ← Back to Run
+            </button>
+          </div>
+        </div>
+        <p className="text-sm text-stone-400">Tap a monster to begin the encounter.</p>
+        <div className="flex-1 min-h-0 flex flex-col gap-3">
+          {wildHuntSlots.map((slot, i) => (
+            <WildHuntSlotCard
+              key={i}
+              slot={slot}
+              monsterName={getMonsterName(slot.monsterId)}
+              onStartEncounter={() => handleSlotTap(i as 0 | 1 | 2)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

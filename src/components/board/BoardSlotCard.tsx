@@ -37,9 +37,6 @@ export function BoardSlotCard({ slot, monsterName, onStartEncounter }: BoardSlot
         className="absolute inset-0 w-full h-full object-cover"
       />
 
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-stone-950/30 to-stone-950/80" />
-
       {/* Content */}
       <div className="relative z-10 flex flex-col justify-between h-full p-4">
         <div className="flex items-center justify-between">

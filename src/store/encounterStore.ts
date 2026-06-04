@@ -12,12 +12,20 @@ interface EncounterStore {
   turn: 'monster' | 'player';
   phase: 'setup' | 'playing' | 'victory';
   lastDiscardTriggered: boolean;
+  /** The most recently discarded card (from player damage). One-shot — cleared on next flip/pass or when consumed. */
+  lastDiscardedCard: MonsterCard | null;
+  /** Extra cards added due to Wild Hunt / hound proximity. >0 means frost theme applies. */
+  proximityBonus: number;
 
-  startEncounter: (monsterId: string, playerFirst?: boolean) => void;
+  startEncounter: (monsterId: string, playerFirst?: boolean, bonusCards?: number) => void;
+  /** Start an encounter with a pre-built Monster object (used for boss fights). */
+  startEncounterWithMonster: (monster: Monster, playerFirst?: boolean) => void;
   flipMonsterCard: () => void;
   discardOne: () => void;
   passTurn: () => void;
   applyPlayerDamage: (damage: number) => void;
+  /** Clear lastDiscardedCard — call when a discard alert has been acted on. */
+  clearLastDiscardedCard: () => void;
   resetToSetup: () => void;
 }
 
@@ -29,12 +37,14 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
   turn: 'monster',
   phase: 'setup',
   lastDiscardTriggered: false,
+  lastDiscardedCard: null,
+  proximityBonus: 0,
 
-  startEncounter: (monsterId, playerFirst = false) => {
+  startEncounter: (monsterId, playerFirst = false, bonusCards = 0) => {
     const monster = getMonsterById(monsterId);
     if (!monster) throw new Error(`Monster "${monsterId}" not found`);
 
-    const deck = generateDeck(monster, undefined);
+    const deck = generateDeck(monster, undefined, [], bonusCards);
 
     set({
       monster,
@@ -44,6 +54,23 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       turn: playerFirst ? 'player' : 'monster',
       phase: 'playing',
       lastDiscardTriggered: false,
+      lastDiscardedCard: null,
+      proximityBonus: bonusCards,
+    });
+  },
+
+  startEncounterWithMonster: (monster, playerFirst = false) => {
+    const deck = generateDeck(monster);
+    set({
+      monster,
+      deck,
+      discardPile: [],
+      currentCard: null,
+      turn: playerFirst ? 'player' : 'monster',
+      phase: 'playing',
+      lastDiscardTriggered: false,
+      lastDiscardedCard: null,
+      proximityBonus: 0,
     });
   },
 
@@ -71,6 +98,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       deck: result.remainingDeck,
       discardPile: [...discardPile, ...result.discardedCards],
       lastDiscardTriggered: hasDiscardAbility,
+      lastDiscardedCard: result.discardedCards[0] ?? null,
       phase: result.remainingDeck.length === 0 ? 'victory' : 'playing',
     });
   },
@@ -89,6 +117,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       discardPile: newDiscardPile,
       currentCard: null,
       lastDiscardTriggered: false,
+      lastDiscardedCard: null,
       turn: turn === 'monster' ? 'player' : 'monster',
       phase: deck.length === 0 ? 'victory' : 'playing',
     });
@@ -102,6 +131,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       set({
         currentCard: null,
         lastDiscardTriggered: false,
+        lastDiscardedCard: null,
         turn: 'monster',
       });
       return;
@@ -116,9 +146,14 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       discardPile: [...discardPile, ...result.discardedCards],
       currentCard: null,
       lastDiscardTriggered: hasDiscardAbility && result.discardedCards.length > 0,
+      lastDiscardedCard: result.discardedCards[0] ?? null,
       turn: 'monster',
       phase: newPhase,
     });
+  },
+
+  clearLastDiscardedCard: () => {
+    set({ lastDiscardedCard: null });
   },
 
   resetToSetup: () => {
@@ -130,6 +165,8 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       turn: 'monster',
       phase: 'setup',
       lastDiscardTriggered: false,
+      lastDiscardedCard: null,
+      proximityBonus: 0,
     });
   },
 }));

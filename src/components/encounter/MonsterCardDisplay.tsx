@@ -18,6 +18,7 @@ interface MonsterCardDisplayProps {
   onFlip: () => void;
   onSwipeDamage: () => void;
   onPass: () => void;
+  theme?: 'default' | 'frost';
 }
 
 function getCardFrontImage(cardId: string, images: string[]): string {
@@ -35,6 +36,7 @@ export function MonsterCardDisplay({
   onFlip,
   onSwipeDamage,
   onPass,
+  theme = 'default',
 }: MonsterCardDisplayProps) {
   const [isFlipping, setIsFlipping] = useState(false);
   const [justRevealed, setJustRevealed] = useState(false);
@@ -119,13 +121,33 @@ export function MonsterCardDisplay({
           <div
             className="absolute inset-0 rounded-xl border-2 border-stone-600/40"
             style={{ ...cardBackStyle, transform: 'translate(-8px, -8px)', opacity: 0.35 }}
-          />
+          >
+            {theme === 'frost' && (
+              <div
+                className="absolute inset-0 rounded-xl pointer-events-none"
+                style={{
+                  background: 'radial-gradient(ellipse at center, transparent 45%, rgba(6,182,212,0.2) 75%, rgba(8,145,178,0.4) 100%)',
+                  boxShadow: 'inset 0 0 20px rgba(6,182,212,0.25)',
+                }}
+              />
+            )}
+          </div>
         )}
         {stackCount >= 1 && (
           <div
             className="absolute inset-0 rounded-xl border-2 border-stone-500/50"
             style={{ ...cardBackStyle, transform: 'translate(-4px, -4px)', opacity: 0.6 }}
-          />
+          >
+            {theme === 'frost' && (
+              <div
+                className="absolute inset-0 rounded-xl pointer-events-none"
+                style={{
+                  background: 'radial-gradient(ellipse at center, transparent 45%, rgba(6,182,212,0.2) 75%, rgba(8,145,178,0.4) 100%)',
+                  boxShadow: 'inset 0 0 20px rgba(6,182,212,0.25)',
+                }}
+              />
+            )}
+          </div>
         )}
         <motion.div
           drag={isPlayerTurn ? 'x' : false}
@@ -146,14 +168,29 @@ export function MonsterCardDisplay({
             deckEmpty
               ? 'border-stone-700 bg-stone-800/30'
               : isPlayerTurn
-                ? 'border-amber-500/50 cursor-grab active:cursor-grabbing touch-none'
-                : 'border-stone-500 hover:border-amber-500 cursor-pointer'
+                ? theme === 'frost'
+                  ? 'border-cyan-500/50 cursor-grab active:cursor-grabbing touch-none'
+                  : 'border-amber-500/50 cursor-grab active:cursor-grabbing touch-none'
+                : theme === 'frost'
+                  ? 'border-stone-500 hover:border-cyan-500 cursor-pointer'
+                  : 'border-stone-500 hover:border-amber-500 cursor-pointer'
           }`}
           whileTap={!isPlayerTurn && !deckEmpty ? { scale: 0.95 } : {}}
           animate={isFlipping ? { rotateY: 90 } : justRevealed ? { rotateY: [90, 0] } : { rotateY: 0 }}
           transition={{ duration: 0.3 }}
           onAnimationComplete={() => setJustRevealed(false)}
         >
+          {theme === 'frost' && !deckEmpty && (
+            <motion.div
+              className="absolute inset-0 rounded-xl pointer-events-none"
+              style={{
+                background: 'radial-gradient(ellipse at center, transparent 45%, rgba(6,182,212,0.25) 75%, rgba(8,145,178,0.5) 100%)',
+                boxShadow: 'inset 0 0 30px rgba(6,182,212,0.35)',
+              }}
+              animate={{ opacity: [0.65, 1, 0.65] }}
+              transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          )}
           {deckEmpty ? (
             <span className="text-stone-600 text-lg">No cards left</span>
           ) : currentCard ? (
@@ -165,14 +202,18 @@ export function MonsterCardDisplay({
                 <div className="text-3xl sm:text-5xl font-bold text-red-400">{currentCard.chosenHalf.attack} damage</div>
               )}
               {currentCard.chosenHalf.effect && (
-                <div className="text-sm text-amber-300 bg-amber-500/20 rounded-lg px-3 py-1.5 mt-3">
+                <div className={`text-sm rounded-lg px-3 py-1.5 mt-3 ${
+                  theme === 'frost'
+                    ? 'text-cyan-300 bg-cyan-500/20'
+                    : 'text-amber-300 bg-amber-500/20'
+                }`}>
                   {currentCard.chosenHalf.effect}
                 </div>
               )}
             </div>
           ) : isPlayerTurn ? (
             <div className="text-center bg-stone-950/80 rounded-lg px-4 py-2 w-full">
-              <div className="text-2xl font-bold text-amber-200 mb-1">Your turn</div>
+              <div className={`text-2xl font-bold mb-1 ${theme === 'frost' ? 'text-cyan-200' : 'text-amber-200'}`}>Your turn</div>
               <span className="text-stone-200 text-sm">Swipe to deal damage</span>
             </div>
           ) : (

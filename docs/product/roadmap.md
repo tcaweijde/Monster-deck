@@ -25,20 +25,30 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | FEAT-001 | Monster Placement | 1.0 | ✅ Done |
 | FEAT-002 | Generic Card Data + Charge/Bite Display | 1.0 | ✅ Done |
 | FEAT-003 | Monster Art on Attack Cards | 1.0 | ✅ Done |
-| FEAT-004 | Monster-Specific Attack Cards | 1.1 | 🔲 Todo |
-| FEAT-005 | Monster Weaknesses | 1.1 | 🔲 Todo |
-| FEAT-006 | Monster-Specific Discard-Trigger Abilities | 1.1 | 🔲 Todo |
-| FEAT-007 | Monster-Specific Card Art | 1.1 | 🔲 Could-have |
-| FEAT-011 | New Attack Types | 1.1 | 🔲 Todo |
-| FEAT-012 | New Card Types | 1.1 | 🔲 Todo |
-| FEAT-013 | Special Attacks | 1.1 | 🔲 Todo |
-| FEAT-SKELLIGE-001 | Skellige Locations | 1.2 | 🔲 Todo |
-| FEAT-SKELLIGE-002 | Dagon's Lair | 1.2 | 🔲 Todo |
-| FEAT-SKELLIGE-003 | Dagon Monster Data | 1.2 | 🔲 Todo |
-| FEAT-SKELLIGE-004 | Random Encounter | 1.2 | 🔲 Todo |
-| FEAT-008 | Legendary Monster Engine | 2.0 | 🔲 Todo |
-| FEAT-009 | Legendary Monster Data | 2.0 | 🔲 Todo |
-| FEAT-010 | Wild Hunt Expansion | 3.0 | 🔲 Needs spec |
+| FEAT-004 | Monster-Specific Attack Cards | 3.0 | 🔲 Todo |
+| FEAT-005 | Monster Weaknesses | 3.0 | 🔲 Todo |
+| FEAT-006 | Monster-Specific Discard-Trigger Abilities | 3.0 | 🔲 Todo |
+| FEAT-007 | Monster-Specific Card Art | 3.0 | 🔲 Could-have |
+| FEAT-011 | New Attack Types | 3.0 | 🔲 Todo |
+| FEAT-012 | New Card Types | 3.0 | 🔲 Todo |
+| FEAT-013 | Special Attacks | 3.0 | 🔲 Todo |
+| FEAT-SKELLIGE-001 | Skellige Locations | 5.0 | 🔲 Todo |
+| FEAT-SKELLIGE-002 | Dagon's Lair | 5.0 | 🔲 Todo |
+| FEAT-SKELLIGE-003 | Dagon Monster Data | 5.0 | 🔲 Todo |
+| FEAT-SKELLIGE-004 | Random Encounter | 5.0 | 🔲 Todo |
+| FEAT-008 | Legendary Monster Engine | 4.0 | 🔲 Todo |
+| FEAT-009 | Legendary Monster Data | 4.0 | 🔲 Todo |
+| FEAT-010-A | Campaign State Engine | 2.0 | 🔲 Todo |
+| FEAT-010-B | Round Stage Driver | 2.0 | 🔲 Todo |
+| FEAT-010-C | Wild Hunt Character Selection | 2.0 | 🔲 Todo |
+| FEAT-010-D | Wild Hunt Location Tracking | 2.0 | 🔲 Todo |
+| FEAT-010-E | Wild Hunt Encounter (Boss Fight) | 2.0 | 🔲 Todo |
+| FEAT-010-F | Shield Counter | 2.0 | 🔲 Todo |
+| FEAT-010-G | Monster Spawn System | 2.0 | 🔲 Todo |
+| FEAT-010-H | Hound Enemy Type | 2.0 | 🔲 Todo |
+| FEAT-010-I | Story Card Reminder | 2.0 | 🔲 Todo |
+| FEAT-010-J | Wild Hunt Character Data | 2.0 | 🔲 Todo |
+| FEAT-010-K | Monster Proximity Card Bonus | 2.0 | 🔲 Todo |
 
 ---
 
@@ -57,7 +67,7 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 
 ---
 
-## 1.0 — Full Base Game
+## ✅ 1.0 — Full Base Game *(Released)*
 
 > **Goal:** A complete, polished solo experience for the base game. No placeholders.
 > Every interaction should feel accurate to the physical game.
@@ -84,7 +94,71 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 
 ---
 
-## 1.1 — Monster Trail Expansion
+## 2.0 — Wild Hunt Expansion
+
+> **Goal:** Support the Wild Hunt expansion — an 8-round campaign mode with a boss fight
+> against one of 4 Wild Hunt characters. Introduces campaign state, round stage tracking,
+> a shield counter, hound enemies, and a monster spawn system. Largest scope expansion in
+> the roadmap. Full spec: [`docs/specs/FEAT-010-wild-hunt.md`](../specs/FEAT-010-wild-hunt.md)
+
+### FEAT-010-A — Campaign State Engine *(M)*
+- Track an 8-round campaign session with persistent state (survives refresh)
+- Round counter, stage progress, win/boss-fight trigger at round 8 stage 4
+- **Campaign setup**: player count (solo for now) + difficulty level selection
+
+### FEAT-010-B — Round Stage Driver *(M)*
+- App drives player through 4 ordered stages each round:
+  1. **Movement & Action** (player acts physically; app shows prompt)
+  2. **Fight, Meditation & Exploration** (story card reminder shown here — see FEAT-010-I)
+  3. **Drawing & Gaining Cards** (player acts physically; app shows prompt)
+  4. **Add Hound & Monster** (spawn phase) — **round 8: triggers Final Battle instead**
+
+### FEAT-010-C — Wild Hunt Character Selection *(S)*
+- Campaign-start screen: pick one of 4 pre-built characters
+- Each character has a fixed name and passive ability
+
+### FEAT-010-D — Wild Hunt Location Tracking *(M)*
+- Wild Hunt has a board position; moves **2 spaces toward player** each round (shortest path)
+- App calculates next position; player confirms move at start of each round
+- Current position displayed persistently on board screen during campaign
+- Reaching player location (or round 8 stage 4) triggers Final Battle
+
+### FEAT-010-E — Wild Hunt Encounter (Boss Fight) *(L)*
+- Uses existing encounter engine + 4 character-specific special cards
+- Special cards have discard-trigger abilities (fire when discarded as player damage)
+- Shield counter absorbs damage before cards are discarded (see FEAT-010-F)
+
+### FEAT-010-F — Shield Counter *(M)*
+- Numeric counter displayed on Wild Hunt board card and in encounter screen
+- Player damage depletes shields first; overflow discards deck cards
+- **Manually adjustable (+/−)** — story card events can add or remove shields at any time
+- Auto-increments when monster spawn overflows (see FEAT-010-G)
+
+### FEAT-010-G — Monster Spawn System *(M)*
+- Per-round spawn table defines what level monsters and/or hounds to spawn
+- App shows spawn prompt during stage 4; player handles physical placement
+- Board-full overflow: Wild Hunt gains +1 shield instead of spawning
+
+### FEAT-010-H — Hound Enemy Type *(M)*
+- L1/L2/L3 one-off enemy; tracked outside the 3 regular board slots; spawns at Wild Hunt's location
+- **Pre-attack**: app shows player bonus reminder before combo is declared
+- **Combo resolution**: player declares a single damage value; threshold is 2/3/4 per level (solo) — if met → hound defeated + Wild Hunt loses 1 shield
+- On defeat: app displays a random reward (reward table TBD)
+
+### FEAT-010-I — Story Card Reminder *(S)*
+- Prompt shown during **stage 2** of each round: "Read Story Card #N"
+- No story card content in app; all narrative lives on physical cards
+
+### FEAT-010-J — Wild Hunt Character Data *(S)*
+- Static data: 4 characters × name, ability, starting shield count, 4 special cards
+
+### FEAT-010-K — Monster Proximity Card Bonus *(M)*
+- Pre-fight screen before every regular monster encounter: asks if Wild Hunt is nearby and how many hounds are adjacent
+- Each nearby Wild Hunt/hound unit adds +1 card drawn from the monster's card pool to the deck before the fight starts
+
+---
+
+## 3.0 — Monster Trail Expansion
 
 > **Goal:** Support the Monster Trail expansion, which introduces monster-specific attack
 > cards, weaknesses, and richer discard mechanics. Scoped as a separate release because
@@ -126,7 +200,25 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 
 ---
 
-## 1.2 — Skellige Expansion
+## 4.0 — Legendary Monsters
+
+> **Goal:** Add the Legendary (L4) monster tier. This is a meaningful scope increase —
+> Legendary monsters have movement mechanics, larger decks, and stronger cards —
+> warranting a major version.
+
+### FEAT-008 — Legendary Monster Engine *(L)*
+- New `level: 4` tier with deck sizes of 20+ cards
+- Movement mechanic: Legendary monsters can move between board locations
+- New engine module for movement resolution (location-to-location rules)
+- Update `boardStore` to handle movement events
+
+### FEAT-009 — Legendary Monster Data *(M)*
+- Define Legendary-tier cards and abilities for each Legendary monster
+- Fill in art assets
+
+---
+
+## 5.0 — Skellige Expansion
 
 > **Goal:** Support the Skellige expansion — 3 new board locations, a permanent lair
 > for the boss monster Dagon, and a random encounter mechanic for off-board fights.
@@ -151,35 +243,6 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 - Player can trigger a fight against a randomly selected monster that is not currently on the board
 - One-off encounter: no board state changes after the fight (win or lose)
 - New entry point in the UI distinct from tapping a board monster
-
----
-
-## 2.0 — Legendary Monsters
-
-> **Goal:** Add the Legendary (L4) monster tier. This is a meaningful scope increase —
-> Legendary monsters have movement mechanics, larger decks, and stronger cards —
-> warranting a major version.
-
-### FEAT-008 — Legendary Monster Engine *(L)*
-- New `level: 4` tier with deck sizes of 20+ cards
-- Movement mechanic: Legendary monsters can move between board locations
-- New engine module for movement resolution (location-to-location rules)
-- Update `boardStore` to handle movement events
-
-### FEAT-009 — Legendary Monster Data *(M)*
-- Define Legendary-tier cards and abilities for each Legendary monster
-- Fill in art assets
-
----
-
-## 3.0 — Wild Hunt Expansion
-
-> **Goal:** Support the Wild Hunt expansion as a major new epic. Scope TBD — requires
-> a dedicated spec before planning begins.
-
-### FEAT-010 — Wild Hunt Expansion *(needs spec)*
-- New monster types, mechanics, and board interactions from the Wild Hunt expansion
-- Define a spec (`docs/specs/FEAT-010-wild-hunt.md`) before committing to scope
 
 ---
 
