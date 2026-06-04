@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useWildHuntStore } from '../../store/wildHuntStore';
-import { useBoardStore } from '../../store/boardStore';
 import { WILD_HUNT_CHARACTERS } from '../../data/wildHunt/characters';
 import type { WildHuntDifficulty } from '../../types/wildHunt';
 
@@ -23,11 +22,11 @@ export function WildHuntSetupScreen() {
   const startWildHunt = useWildHuntStore((s) => s.startWildHunt);
   const confirmSetup = useWildHuntStore((s) => s.confirmSetup);
   const resetWildHunt = useWildHuntStore((s) => s.resetWildHunt);
-  const initNewGame = useBoardStore((s) => s.initNewGame);
+  const initWildHuntBoard = useWildHuntStore((s) => s.initWildHuntBoard);
 
   const handleConfirm = () => {
     startWildHunt(selectedCharacterId, difficulty);
-    initNewGame();
+    initWildHuntBoard();
     confirmSetup();
   };
 

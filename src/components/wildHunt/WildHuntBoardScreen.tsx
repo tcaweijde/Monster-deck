@@ -1,5 +1,6 @@
 import { useWildHuntStore } from '../../store/wildHuntStore';
 import { useBoardStore } from '../../store/boardStore';
+import { getSpawnOutcome } from '../../data/wildHunt/spawnTable';
 
 const STAGE_LABELS: Record<1 | 2 | 3 | 4, string> = {
   1: 'Movement & Action',
@@ -12,6 +13,8 @@ export function WildHuntBoardScreen() {
   const round = useWildHuntStore((s) => s.round);
   const stage = useWildHuntStore((s) => s.stage);
   const phase = useWildHuntStore((s) => s.phase);
+  const wildHuntSlots = useWildHuntStore((s) => s.wildHuntSlots);
+  const wildHuntLocationId = useWildHuntStore((s) => s.wildHuntLocationId);
   const advanceStage = useWildHuntStore((s) => s.advanceStage);
   const resetWildHunt = useWildHuntStore((s) => s.resetWildHunt);
   const setShowMonsters = useWildHuntStore((s) => s.setShowMonsters);
@@ -19,11 +22,29 @@ export function WildHuntBoardScreen() {
 
   const isFinalBattle = phase === 'finalBattle';
   const isFinalStage = round === 8 && stage === 4;
+  const occupiedSlots = wildHuntSlots.filter((s) => s.status !== 'empty').length;
 
   function handleEndRun() {
     resetWildHunt();
     endGame();
   }
+
+  const spawnPreview = (): string | null => {
+    if (stage !== 4 || isFinalBattle || round >= 8) return null;
+    const outcome = getSpawnOutcome(round, occupiedSlots, wildHuntLocationId);
+    const parts: string[] = [];
+    if (outcome.monsterLevel !== null) {
+      parts.push(
+        outcome.monsterBlocked
+          ? `Board full — Wild Hunt gains +1 shield (instead of L${outcome.monsterLevel} monster)`
+          : `Spawn 1× L${outcome.monsterLevel} monster`,
+      );
+    }
+    if (outcome.houndLevel !== null) {
+      parts.push(`Spawn 1× L${outcome.houndLevel} hound`);
+    }
+    return parts.length > 0 ? parts.join('\n') : 'Nothing spawns this round.';
+  };
 
   const stagePrompt = (): string => {
     if (isFinalBattle) return 'The Wild Hunt has arrived. Prepare for the Final Battle.';
@@ -31,7 +52,7 @@ export function WildHuntBoardScreen() {
       case 1: return 'Move and act on the board.';
       case 2: return `Read Story Card #${round}, then continue.`;
       case 3: return 'Draw and collect your rewards.';
-      case 4: return 'Spawn monsters and hounds as indicated by the round table.';
+      case 4: return 'Spawning monsters and hounds as shown below, then advance.';
     }
   };
 
@@ -41,6 +62,8 @@ export function WildHuntBoardScreen() {
     if (stage === 4) return `Begin Round ${round + 1}`;
     return `Advance to Stage ${stage + 1}`;
   };
+
+  const preview = spawnPreview();
 
   return (
     <div className="h-dvh flex flex-col p-6 gap-6 max-w-lg mx-auto">
@@ -80,9 +103,7 @@ export function WildHuntBoardScreen() {
       {/* Stage label */}
       {!isFinalBattle && (
         <div className="rounded-lg bg-stone-800 border border-stone-600 px-4 py-2">
-          <p className="text-xs text-stone-400 uppercase tracking-wide mb-1">
-            Stage {stage}
-          </p>
+          <p className="text-xs text-stone-400 uppercase tracking-wide mb-1">Stage {stage}</p>
           <p className="font-semibold text-stone-200">{STAGE_LABELS[stage]}</p>
         </div>
       )}
@@ -97,6 +118,26 @@ export function WildHuntBoardScreen() {
       >
         <p className="text-sm leading-relaxed">{stagePrompt()}</p>
       </div>
+
+      {/* Stage 4 spawn preview */}
+      {preview !== null && (
+        <div className="rounded-lg bg-amber-950/30 border border-amber-800/50 p-4">
+          <p className="text-xs text-amber-500 uppercase tracking-wide mb-2 font-semibold">
+            Spawn This Round
+          </p>
+          {preview.split('\n').map((line, i) => (
+            <p key={i} className="text-sm text-amber-200 leading-relaxed">{line}</p>
+          ))}
+        </div>
+      )}
+
+            {preview !== null && (
+        <div className="rounded-lg bg-amber-950/30 border border-amber-800/50 p-4">
+          <p className="text-xs text-amber-500 uppercase tracking-wide mb-2 font-semibold">
+            The Wild hunt moves up to 2 locations towards the player and activates it's ability.
+          </p>
+        </div>
+      )}
 
       <div className="flex-1" />
 

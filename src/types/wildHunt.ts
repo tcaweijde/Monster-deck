@@ -50,6 +50,18 @@ export interface HoundSlot {
   locationId: number;
 }
 
+/**
+ * One of the three fixed monster slots on the Wild Hunt board.
+ * A slot is always present; it is `'empty'` until a monster spawns into it.
+ */
+export interface WildHuntBoardSlot {
+  monsterId: string | null;
+  level: (1 | 2 | 3) | null;
+  locationType: import('./index').LocationType | null;
+  locationId: number | null;
+  status: 'empty' | 'active' | 'encountering';
+}
+
 // ─── Full Run State ──────────────────────────────────────────────────────────
 
 /** Complete persisted state shape for an active (or inactive) Wild Hunt run. */
@@ -68,8 +80,10 @@ export interface WildHuntState {
   /** Location ID of the player's current board position, or `null` when not placed. */
   playerLocationId: number | null;
   houndSlots: HoundSlot[];
-  /** Number of regular board slots currently occupied (0–3); used for overflow checks. */
-  occupiedBoardSlots: number;
+  /** Three fixed board slots. Slots are 'empty' until a monster spawns into them. */
+  wildHuntSlots: [WildHuntBoardSlot, WildHuntBoardSlot, WildHuntBoardSlot];
+  /** Index of the slot currently in an encounter, or `null` when idle. */
+  activeWildHuntSlotIndex: 0 | 1 | 2 | null;
   /** Whether the player is viewing the monster board sub-screen. */
   showMonsters: boolean;
 }

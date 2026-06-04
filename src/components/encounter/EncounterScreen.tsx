@@ -1,5 +1,5 @@
 import { useEncounterStore } from '../../store/encounterStore';
-import { useBoardStore } from '../../store/boardStore';
+import { useEncounterHandlers } from '../../hooks/useEncounterHandlers';
 import { AbilityPanel } from './AbilityPanel';
 import { DeckTracker } from './DeckTracker';
 import { MonsterCardDisplay } from './MonsterCardDisplay';
@@ -17,33 +17,19 @@ export function EncounterScreen() {
   const flipMonsterCard = useEncounterStore((s) => s.flipMonsterCard);
   const discardOne = useEncounterStore((s) => s.discardOne);
   const passTurn = useEncounterStore((s) => s.passTurn);
-  const resetToSetup = useEncounterStore((s) => s.resetToSetup);
 
-  const activeSlotIndex = useBoardStore((s) => s.activeSlotIndex);
-  const boardSlots = useBoardStore((s) => s.board?.slots);
-  const handleVictory = useBoardStore((s) => s.handleVictory);
-  const clearActiveSlot = useBoardStore((s) => s.clearActiveSlot);
+  const { displayLevel, quitEncounter, completeEncounter } = useEncounterHandlers();
 
   if (!monster) return null;
-
-  const displayLevel =
-    activeSlotIndex !== null
-      ? (boardSlots?.[activeSlotIndex]?.level ?? monster.level)
-      : monster.level;
-
-  const handleQuit = () => {
-    clearActiveSlot();
-    resetToSetup();
-  };
 
   return (
     <div className="h-dvh overflow-hidden flex flex-col p-4 space-y-4 max-w-lg mx-auto">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-amber-500">{monster.name}</h1>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-stone-500">Lv.{displayLevel}</span>
+          <span className="text-sm text-stone-500">Lv.{displayLevel ?? monster.level}</span>
           <button
-            onClick={handleQuit}
+            onClick={quitEncounter}
             className="text-sm text-stone-400 hover:text-stone-200 transition-colors"
           >
             Quit
@@ -83,10 +69,7 @@ export function EncounterScreen() {
       {phase === 'victory' && (
         <VictoryOverlay
           monsterName={monster.name}
-          onClose={() => {
-            handleVictory();
-            resetToSetup();
-          }}
+          onClose={completeEncounter}
         />
       )}
       <DeckTracker deckSize={deck.length} discardSize={discardPile.length} />

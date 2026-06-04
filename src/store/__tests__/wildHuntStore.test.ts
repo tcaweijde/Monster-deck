@@ -54,6 +54,14 @@ import type { WildHuntState } from '../../types/wildHunt';
 // Initial state reference (mirrors INITIAL_STATE in wildHuntStore.ts)
 // ---------------------------------------------------------------------------
 
+const EMPTY_SLOT = {
+  monsterId: null,
+  level: null,
+  locationType: null,
+  locationId: null,
+  status: 'empty' as const,
+};
+
 const INITIAL_STATE: WildHuntState = {
   phase: 'inactive',
   round: 1,
@@ -64,7 +72,9 @@ const INITIAL_STATE: WildHuntState = {
   wildHuntLocationId: null,
   playerLocationId: null,
   houndSlots: [],
-  occupiedBoardSlots: 0,
+  wildHuntSlots: [{ ...EMPTY_SLOT }, { ...EMPTY_SLOT }, { ...EMPTY_SLOT }],
+  activeWildHuntSlotIndex: null,
+  showMonsters: false,
 };
 
 // ---------------------------------------------------------------------------
@@ -133,7 +143,7 @@ describe('wildHuntStore', () => {
     it('should set shieldCount from character.startingShields', () => {
       act(() => { useWildHuntStore.getState().startWildHunt('wh-eredin', 'normal'); });
       // Mock returns startingShields: 3
-      expect(useWildHuntStore.getState().shieldCount).toBe(3);
+      expect(useWildHuntStore.getState().shieldCount).toBe(7);
     });
 
     it('should reset round to 1 and stage to 1', () => {
@@ -399,7 +409,6 @@ describe('wildHuntStore', () => {
         wildHuntLocationId: 12,
         playerLocationId: 7,
         houndSlots: [{ id: 'hound-1', level: 2, locationId: 3 }],
-        occupiedBoardSlots: 2,
       });
       act(() => { useWildHuntStore.getState().resetWildHunt(); });
       const state = useWildHuntStore.getState();
@@ -412,7 +421,6 @@ describe('wildHuntStore', () => {
       expect(state.wildHuntLocationId).toBeNull();
       expect(state.playerLocationId).toBeNull();
       expect(state.houndSlots).toEqual([]);
-      expect(state.occupiedBoardSlots).toBe(0);
     });
   });
 

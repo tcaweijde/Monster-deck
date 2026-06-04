@@ -19,12 +19,13 @@ export default function App() {
   const activeSlotIndex = useBoardStore((s) => s.activeSlotIndex);
   const wildHuntPhase = useWildHuntStore((s) => s.phase);
   const showMonsters = useWildHuntStore((s) => s.showMonsters);
+  const activeWildHuntSlotIndex = useWildHuntStore((s) => s.activeWildHuntSlotIndex);
 
   const inWildHunt = wildHuntPhase !== 'inactive';
   const screen = inWildHunt
     ? (wildHuntPhase === 'setup'
         ? 'wh-setup'
-        : activeSlotIndex !== null
+        : activeWildHuntSlotIndex !== null
           ? 'encounter'
           : showMonsters
             ? 'wh-monsters'
