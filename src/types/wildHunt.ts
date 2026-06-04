@@ -11,8 +11,8 @@ export type WildHuntPhase =
   | 'victory'       // player won the boss fight
   | 'defeat';       // placeholder — defeat condition TBD from physical rulebook
 
-/** Difficulty setting for a Wild Hunt run. 'hard' effect is TBD from physical rulebook. */
-export type WildHuntDifficulty = 'normal' | 'hard';
+/** Difficulty setting for a Wild Hunt run. */
+export type WildHuntDifficulty = 'easy' | 'normal' | 'hard' | 'very-hard';
 
 // ─── Special Cards ───────────────────────────────────────────────────────────
 
@@ -35,7 +35,6 @@ export interface WildHuntCharacter {
   id: string;
   name: string;
   passiveAbility: MonsterAbility;
-  startingShields: number;
   /** Exactly 4 special cards, each carrying its own discard-trigger ability. */
   specialCards: WildHuntSpecialCard[];
 }

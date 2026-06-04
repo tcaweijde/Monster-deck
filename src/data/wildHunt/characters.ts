@@ -2,7 +2,7 @@ import type { WildHuntCharacter } from '../../types/wildHunt';
 
 // ---------------------------------------------------------------------------
 // Wild Hunt character definitions
-// All ability descriptions, card stats, and startingShields values are stubs.
+// All ability descriptions and card stats are stubs.
 // Replace every line marked "// TODO: fill from rulebook" once the physical
 // rulebook data is transcribed.
 // ---------------------------------------------------------------------------
@@ -15,7 +15,6 @@ const eredin: WildHuntCharacter = {
     description: 'TODO: fill from rulebook',
     trigger: 'passive',
   },
-  startingShields: 0, // TODO: fill from rulebook
   specialCards: [
     {
       id: 'wh-eredin-special-1',
@@ -68,7 +67,6 @@ const caranthir: WildHuntCharacter = {
     description: 'TODO: fill from rulebook',
     trigger: 'passive',
   },
-  startingShields: 0, // TODO: fill from rulebook
   specialCards: [
     {
       id: 'wh-caranthir-special-1',
@@ -121,7 +119,6 @@ const imlerith: WildHuntCharacter = {
     description: 'TODO: fill from rulebook',
     trigger: 'passive',
   },
-  startingShields: 0, // TODO: fill from rulebook
   specialCards: [
     {
       id: 'wh-imlerith-special-1',
@@ -174,7 +171,6 @@ const nithral: WildHuntCharacter = {
     description: 'TODO: fill from rulebook',
     trigger: 'passive',
   },
-  startingShields: 0, // TODO: fill from rulebook
   specialCards: [
     {
       id: 'wh-nithral-special-1',

@@ -102,7 +102,16 @@ The Wild Hunt has a shield counter that absorbs incoming damage.
 - Player damage hits shields first; only excess damage discards cards from the Wild Hunt deck
 - **Manually adjustable via +/− buttons** — story card events can add or remove shields at any point during the game mode; this is the primary way shields change outside of combat
 - Shields are also auto-incremented when a monster fails to spawn due to a full board (see FEAT-010-G)
-- Initial shield count is determined by **difficulty level and player count** (exact values TBD from physical rulebook)
+- Initial shield count is determined by **difficulty level and player count** (solo values below; multiplayer TBD)
+
+**Solo play starting setup:**
+
+| Difficulty | Starting monster | Starting shields |
+|------------|-----------------|-----------------|
+| Easy       | 1× Level 1      | 5               |
+| Normal     | 1× Level 1      | 7               |
+| Hard       | 1× Level 2      | 9               |
+| Very Hard  | 1× Level 3      | 11              |
 
 **Effort: M**
 

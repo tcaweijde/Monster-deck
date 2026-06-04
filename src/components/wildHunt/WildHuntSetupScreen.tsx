@@ -6,6 +6,13 @@ import type { WildHuntDifficulty } from '../../types/wildHunt';
 
 type Step = 'difficulty' | 'character';
 
+const DIFFICULTIES: { value: WildHuntDifficulty; label: string; detail: string }[] = [
+  { value: 'easy',      label: 'Easy',      detail: '1× L1 monster · 5 shields' },
+  { value: 'normal',    label: 'Normal',    detail: '1× L1 monster · 7 shields' },
+  { value: 'hard',      label: 'Hard',      detail: '1× L2 monster · 9 shields' },
+  { value: 'very-hard', label: 'Very Hard', detail: '1× L3 monster · 11 shields' },
+];
+
 export function WildHuntSetupScreen() {
   const [step, setStep] = useState<Step>('difficulty');
   const [difficulty, setDifficulty] = useState<WildHuntDifficulty>('normal');
@@ -33,17 +40,20 @@ export function WildHuntSetupScreen() {
         <div className="w-full space-y-4">
           <h2 className="text-lg font-semibold text-stone-200 text-center">Choose Difficulty</h2>
           <div className="flex flex-col gap-3">
-            {(['normal', 'hard'] as WildHuntDifficulty[]).map((d) => (
+            {DIFFICULTIES.map(({ value, label, detail }) => (
               <button
-                key={d}
-                onClick={() => setDifficulty(d)}
-                className={`w-full py-4 rounded-lg font-semibold text-base transition-colors border ${
-                  difficulty === d
+                key={value}
+                onClick={() => setDifficulty(value)}
+                className={`w-full py-3 px-4 rounded-lg text-left transition-colors border ${
+                  difficulty === value
                     ? 'bg-amber-700 border-amber-500 text-white'
                     : 'bg-stone-800 border-stone-600 text-stone-300 hover:border-amber-600'
                 }`}
               >
-                {d === 'normal' ? 'Normal' : 'Hard'}
+                <span className="font-semibold">{label}</span>
+                <span className={`ml-3 text-sm ${difficulty === value ? 'text-amber-200' : 'text-stone-500'}`}>
+                  {detail}
+                </span>
               </button>
             ))}
           </div>

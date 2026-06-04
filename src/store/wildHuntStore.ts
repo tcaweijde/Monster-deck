@@ -57,6 +57,16 @@ export interface WildHuntActions {
 
 export type WildHuntStoreState = WildHuntState & WildHuntActions;
 
+// ─── Solo difficulty setup table ──────────────────────────────────────────────
+
+/** Starting shields per difficulty for solo play. */
+const SOLO_STARTING_SHIELDS: Record<WildHuntDifficulty, number> = {
+  'easy':      5,
+  'normal':    7,
+  'hard':      9,
+  'very-hard': 11,
+};
+
 // ─── Initial state ────────────────────────────────────────────────────────────
 
 const INITIAL_STATE: WildHuntState = {
@@ -91,7 +101,7 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
           phase: 'setup',
           characterId,
           difficulty,
-          shieldCount: character.startingShields,
+          shieldCount: SOLO_STARTING_SHIELDS[difficulty],
           round: 1,
           stage: 1,
           houndSlots: [],
