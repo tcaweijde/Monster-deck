@@ -1,8 +1,11 @@
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { useBoardStore } from './store/boardStore';
+import { useWildHuntStore } from './store/wildHuntStore';
 import { BoardWelcomeScreen } from './components/board/BoardWelcomeScreen';
 import { BoardScreen } from './components/board/BoardScreen';
 import { EncounterScreen } from './components/encounter/EncounterScreen';
+import { WildHuntSetupScreen } from './components/wildHunt/WildHuntSetupScreen';
+import { WildHuntBoardScreen } from './components/wildHunt/WildHuntBoardScreen';
 
 const slideUp: Variants = {
   initial: { y: '100%', opacity: 0 },
@@ -13,8 +16,12 @@ const slideUp: Variants = {
 export default function App() {
   const board = useBoardStore((s) => s.board);
   const activeSlotIndex = useBoardStore((s) => s.activeSlotIndex);
+  const wildHuntPhase = useWildHuntStore((s) => s.phase);
 
-  const screen = !board ? 'welcome' : activeSlotIndex !== null ? 'encounter' : 'board';
+  const inWildHunt = wildHuntPhase !== 'inactive';
+  const screen = inWildHunt
+    ? (wildHuntPhase === 'setup' ? 'wh-setup' : activeSlotIndex !== null ? 'encounter' : 'wh-board')
+    : (!board ? 'welcome' : activeSlotIndex !== null ? 'encounter' : 'board');
 
   return (
     <div className="relative w-full h-dvh overflow-hidden">
@@ -26,7 +33,10 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.15 } }}
           >
-            {screen === 'welcome' ? <BoardWelcomeScreen /> : <BoardScreen />}
+            {screen === 'welcome' && <BoardWelcomeScreen />}
+            {screen === 'board' && <BoardScreen />}
+            {screen === 'wh-setup' && <WildHuntSetupScreen />}
+            {screen === 'wh-board' && <WildHuntBoardScreen />}
           </motion.div>
         )}
 

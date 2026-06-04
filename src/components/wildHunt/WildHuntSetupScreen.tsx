@@ -1,0 +1,104 @@
+import { useState } from 'react';
+import { useWildHuntStore } from '../../store/wildHuntStore';
+import { useBoardStore } from '../../store/boardStore';
+import { WILD_HUNT_CHARACTERS } from '../../data/wildHunt/characters';
+import type { WildHuntDifficulty } from '../../types/wildHunt';
+
+type Step = 'difficulty' | 'character';
+
+export function WildHuntSetupScreen() {
+  const [step, setStep] = useState<Step>('difficulty');
+  const [difficulty, setDifficulty] = useState<WildHuntDifficulty>('normal');
+  const [selectedCharacterId, setSelectedCharacterId] = useState<string>(
+    WILD_HUNT_CHARACTERS[0].id,
+  );
+
+  const startWildHunt = useWildHuntStore((s) => s.startWildHunt);
+  const confirmSetup = useWildHuntStore((s) => s.confirmSetup);
+  const resetWildHunt = useWildHuntStore((s) => s.resetWildHunt);
+  const initNewGame = useBoardStore((s) => s.initNewGame);
+
+  const handleConfirm = () => {
+    startWildHunt(selectedCharacterId, difficulty);
+    initNewGame();
+    confirmSetup();
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 space-y-8 max-w-lg mx-auto">
+      <h1 className="text-3xl font-bold text-amber-500">Wild Hunt</h1>
+      <p className="text-stone-400 text-sm text-center">8-Round Campaign</p>
+
+      {step === 'difficulty' && (
+        <div className="w-full space-y-4">
+          <h2 className="text-lg font-semibold text-stone-200 text-center">Choose Difficulty</h2>
+          <div className="flex flex-col gap-3">
+            {(['normal', 'hard'] as WildHuntDifficulty[]).map((d) => (
+              <button
+                key={d}
+                onClick={() => setDifficulty(d)}
+                className={`w-full py-4 rounded-lg font-semibold text-base transition-colors border ${
+                  difficulty === d
+                    ? 'bg-amber-700 border-amber-500 text-white'
+                    : 'bg-stone-800 border-stone-600 text-stone-300 hover:border-amber-600'
+                }`}
+              >
+                {d === 'normal' ? 'Normal' : 'Hard'}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-3 pt-2">
+            <button
+              onClick={resetWildHunt}
+              className="flex-1 py-3 rounded-lg bg-stone-700 text-stone-300 hover:bg-stone-600 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => setStep('character')}
+              className="flex-1 py-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold transition-colors"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 'character' && (
+        <div className="w-full space-y-4">
+          <h2 className="text-lg font-semibold text-stone-200 text-center">Choose Character</h2>
+          <div className="flex flex-col gap-3">
+            {WILD_HUNT_CHARACTERS.map((char) => (
+              <button
+                key={char.id}
+                onClick={() => setSelectedCharacterId(char.id)}
+                className={`w-full p-4 rounded-lg text-left transition-colors border ${
+                  selectedCharacterId === char.id
+                    ? 'bg-amber-900/50 border-amber-500'
+                    : 'bg-stone-800 border-stone-600 hover:border-amber-700'
+                }`}
+              >
+                <p className="font-bold text-stone-100">{char.name}</p>
+                <p className="text-xs text-stone-400 mt-1">{char.passiveAbility.name}</p>
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-3 pt-2">
+            <button
+              onClick={() => setStep('difficulty')}
+              className="flex-1 py-3 rounded-lg bg-stone-700 text-stone-300 hover:bg-stone-600 transition-colors"
+            >
+              Back
+            </button>
+            <button
+              onClick={handleConfirm}
+              className="flex-1 py-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold transition-colors"
+            >
+              Begin Campaign
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
