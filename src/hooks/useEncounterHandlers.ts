@@ -12,6 +12,7 @@ export function useEncounterHandlers() {
   const wildHuntSlots = useWildHuntStore((s) => s.wildHuntSlots);
   const clearActiveWildHuntSlot = useWildHuntStore((s) => s.clearActiveWildHuntSlot);
   const defeatWildHuntSlot = useWildHuntStore((s) => s.defeatWildHuntSlot);
+  const absorbDamage = useWildHuntStore((s) => s.absorbDamage);
 
   const boardActiveSlotIndex = useBoardStore((s) => s.activeSlotIndex);
   const boardSlots = useBoardStore((s) => s.board?.slots);
@@ -38,6 +39,8 @@ export function useEncounterHandlers() {
 
   const completeEncounter = () => {
     if (inWildHunt && activeWildHuntSlotIndex !== null) {
+      const level = wildHuntSlots[activeWildHuntSlotIndex]?.level ?? 1;
+      absorbDamage(level);
       defeatWildHuntSlot(activeWildHuntSlotIndex);
     } else {
       handleBoardVictory();
@@ -45,5 +48,5 @@ export function useEncounterHandlers() {
     resetToSetup();
   };
 
-  return { displayLevel, quitEncounter, completeEncounter };
+  return { displayLevel, inWildHunt, quitEncounter, completeEncounter };
 }

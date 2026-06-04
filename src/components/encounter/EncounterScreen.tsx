@@ -18,7 +18,7 @@ export function EncounterScreen() {
   const discardOne = useEncounterStore((s) => s.discardOne);
   const passTurn = useEncounterStore((s) => s.passTurn);
 
-  const { displayLevel, quitEncounter, completeEncounter } = useEncounterHandlers();
+  const { displayLevel, inWildHunt, quitEncounter, completeEncounter } = useEncounterHandlers();
 
   if (!monster) return null;
 
@@ -69,6 +69,7 @@ export function EncounterScreen() {
       {phase === 'victory' && (
         <VictoryOverlay
           monsterName={monster.name}
+          wildHuntShieldLoss={inWildHunt ? (displayLevel ?? undefined) : undefined}
           onClose={completeEncounter}
         />
       )}
