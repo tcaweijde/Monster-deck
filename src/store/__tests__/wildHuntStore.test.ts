@@ -147,8 +147,7 @@ describe('wildHuntStore', () => {
 
     it('should clear houndSlots', () => {
       useWildHuntStore.setState({
-        houndSlots: [{ id: 'hound-1', level: 1, locationId: 5 }],
-        playerLocationId: 7,
+        houndSlots: [{ id: 'hound-1', level: 1 }],
       });
       act(() => { useWildHuntStore.getState().startWildHunt('wh-eredin', 'normal'); });
       const { houndSlots } = useWildHuntStore.getState();
@@ -287,27 +286,26 @@ describe('wildHuntStore', () => {
   // ──────────────────────────────────────────────────────────────────────────
   describe('spawnHound', () => {
     it('should add a hound and increase houndSlots.length', () => {
-      act(() => { useWildHuntStore.getState().spawnHound(4, 1); });
+      act(() => { useWildHuntStore.getState().spawnHound(1); });
       expect(useWildHuntStore.getState().houndSlots).toHaveLength(1);
     });
 
-    it('should store correct level and locationId', () => {
-      act(() => { useWildHuntStore.getState().spawnHound(9, 3); });
+    it('should store correct level', () => {
+      act(() => { useWildHuntStore.getState().spawnHound(3); });
       const hound = useWildHuntStore.getState().houndSlots[0];
       expect(hound.level).toBe(3);
-      expect(hound.locationId).toBe(9);
     });
 
     it('should assign a string id starting with "hound-"', () => {
-      act(() => { useWildHuntStore.getState().spawnHound(1, 2); });
+      act(() => { useWildHuntStore.getState().spawnHound(2); });
       expect(useWildHuntStore.getState().houndSlots[0].id).toMatch(/^hound-/);
     });
 
     it('should append multiple hounds', () => {
       act(() => {
-        useWildHuntStore.getState().spawnHound(1, 1);
-        useWildHuntStore.getState().spawnHound(2, 2);
-        useWildHuntStore.getState().spawnHound(3, 3);
+        useWildHuntStore.getState().spawnHound(1);
+        useWildHuntStore.getState().spawnHound(2);
+        useWildHuntStore.getState().spawnHound(3);
       });
       expect(useWildHuntStore.getState().houndSlots).toHaveLength(3);
     });
@@ -318,8 +316,8 @@ describe('wildHuntStore', () => {
     it('should remove the hound with the given id', () => {
       useWildHuntStore.setState({
         houndSlots: [
-          { id: 'hound-1', level: 1, locationId: 5 },
-          { id: 'hound-2', level: 2, locationId: 8 },
+          { id: 'hound-1', level: 1 },
+          { id: 'hound-2', level: 2 },
         ],
       });
       act(() => { useWildHuntStore.getState().removeHound('hound-1'); });
@@ -330,7 +328,7 @@ describe('wildHuntStore', () => {
 
     it('should be a no-op when the id does not exist', () => {
       useWildHuntStore.setState({
-        houndSlots: [{ id: 'hound-1', level: 1, locationId: 5 }],
+        houndSlots: [{ id: 'hound-1', level: 1 }],
       });
       act(() => { useWildHuntStore.getState().removeHound('hound-nonexistent'); });
       expect(useWildHuntStore.getState().houndSlots).toHaveLength(1);
@@ -367,7 +365,7 @@ describe('wildHuntStore', () => {
         characterId: 'wh-eredin',
         difficulty: 'hard',
         shieldCount: 4,
-        houndSlots: [{ id: 'hound-1', level: 2, locationId: 3 }],
+        houndSlots: [{ id: 'hound-1', level: 2 }],
       });
       act(() => { useWildHuntStore.getState().resetWildHunt(); });
       const state = useWildHuntStore.getState();

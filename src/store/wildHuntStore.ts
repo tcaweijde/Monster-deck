@@ -70,8 +70,8 @@ export interface WildHuntActions {
   /** Increase shieldCount by `amount`. */
   gainShields: (amount: number) => void;
 
-  /** Spawn a hound token at the given location with the given level. */
-  spawnHound: (locationId: number, level: 1 | 2 | 3) => void;
+  /** Spawn a hound token with the given level. */
+  spawnHound: (level: 1 | 2 | 3) => void;
 
   /** Remove a hound token by its unique id. */
   removeHound: (houndId: string) => void;
@@ -347,11 +347,10 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
         set((state) => ({ shieldCount: state.shieldCount + amount }));
       },
 
-      spawnHound: (locationId, level) => {
+      spawnHound: (level) => {
         const newHound: HoundSlot = {
           id: `hound-${Date.now()}`,
           level,
-          locationId,
         };
         set((state) => ({ houndSlots: [...state.houndSlots, newHound] }));
       },
