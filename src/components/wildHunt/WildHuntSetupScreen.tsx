@@ -42,7 +42,7 @@ export function WildHuntSetupScreen() {
       <div className="relative min-h-screen flex flex-col items-center justify-center p-6 space-y-8 max-w-lg mx-auto">
         <div className="text-center space-y-1">
           <h1 className="text-3xl font-bold text-cyan-400 tracking-wide">Wild Hunt</h1>
-          <p className="text-stone-400 text-sm">8-Round Campaign</p>
+          <p className="text-stone-400 text-sm">8-Round</p>
         </div>
 
         {step === 'difficulty' && (
@@ -122,7 +122,7 @@ export function WildHuntSetupScreen() {
                 onClick={handleConfirm}
                 className="flex-1 py-3 rounded-lg bg-blue-700 hover:bg-blue-600 text-white font-bold transition-colors"
               >
-                Begin Campaign
+                Begin
               </button>
             </div>
           </div>

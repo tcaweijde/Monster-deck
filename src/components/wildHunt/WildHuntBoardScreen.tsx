@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useWildHuntStore } from '../../store/wildHuntStore';
 import { useEncounterStore } from '../../store/encounterStore';
-import { useBoardStore } from '../../store/boardStore';
 import { getSpawnOutcome } from '../../data/wildHunt/spawnTable';
 import { getWildHuntCharacterById } from '../../data/wildHunt/characters';
 import { buildBossMonster } from '../../data/wildHunt/bossMonster';
@@ -33,19 +32,18 @@ export function WildHuntBoardScreen() {
 
   const [activeHound, setActiveHound] = useState<HoundSlot | null>(null);
   const [confirmingBattle, setConfirmingBattle] = useState(false);
-  const resetWildHunt = useWildHuntStore((s) => s.resetWildHunt);
+  const [showMovementAbility, setShowMovementAbility] = useState(false);
+  const triggerDefeat = useWildHuntStore((s) => s.triggerDefeat);
   const setShowMonsters = useWildHuntStore((s) => s.setShowMonsters);
   const characterId = useWildHuntStore((s) => s.characterId);
   const startEncounterWithMonster = useEncounterStore((s) => s.startEncounterWithMonster);
-  const endGame = useBoardStore((s) => s.endGame);
 
   const isFinalBattle = phase === 'finalBattle';
   const isFinalStage = round === 8 && stage === 4;
   const occupiedSlots = wildHuntSlots.filter((s) => s.status !== 'empty').length;
 
-  function handleEndRun() {
-    resetWildHunt();
-    endGame();
+  function handleConcede() {
+    triggerDefeat();
   }
 
   function handleBeginFinalBattle(playerFirst = false) {
@@ -100,7 +98,7 @@ export function WildHuntBoardScreen() {
               View Board
             </button>
             <button
-              onClick={handleEndRun}
+              onClick={handleConcede}
               className="text-sm text-stone-400 hover:text-red-400 transition-colors"
             >
               End Run
@@ -186,14 +184,18 @@ export function WildHuntBoardScreen() {
         )}
 
         {preview !== null && (
-          <div className="rounded-lg bg-blue-950/40 border border-blue-800/50 p-4">
+          <button
+            onClick={() => setShowMovementAbility(true)}
+            className="w-full text-left rounded-lg bg-blue-950/40 border border-blue-800/50 p-4 hover:bg-blue-950/60 hover:border-blue-700/70 transition-colors active:scale-[0.99]"
+          >
             <p className="text-xs text-cyan-500 uppercase tracking-wide mb-2 font-semibold">
               Wild Hunt Movement
             </p>
             <p className="text-sm text-cyan-200">
               The Wild Hunt moves up to 2 locations towards the player and activates its ability.
             </p>
-          </div>
+            <p className="text-xs text-blue-400/70 mt-2 italic">Tap to see ability →</p>
+          </button>
         )}
 
         {/* Active hounds — only visible in stage 1 (Movement & Action) */}
@@ -284,6 +286,53 @@ export function WildHuntBoardScreen() {
             onClose={() => setActiveHound(null)}
           />
         )}
+
+        {/* Wild Hunt Movement Ability Popup */}
+        {showMovementAbility && (() => {
+          const character = characterId ? getWildHuntCharacterById(characterId) : null;
+          const artUrl = character?.image ? `${BASE}${character.image}` : BG;
+          return (
+            <div
+              className="fixed inset-0 z-50 flex items-end justify-center"
+              onClick={() => setShowMovementAbility(false)}
+            >
+              {/* Scrim */}
+              <div className="absolute inset-0 bg-stone-950/70" />
+              {/* Panel */}
+              <div className="relative w-full max-w-lg overflow-hidden rounded-t-2xl">
+                {/* Character art */}
+                <div
+                  className="absolute inset-0 bg-cover bg-top"
+                  style={{ backgroundImage: `url(${artUrl})` }}
+                />
+                {/* Gradient: transparent at top → dark at bottom */}
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent" />
+                {/* Content */}
+                <div className="relative px-6 pt-32 pb-10 space-y-4">
+                  <p className="text-xs text-cyan-400 uppercase tracking-widest font-semibold">
+                    Wild Hunt Ability
+                  </p>
+                  <h2 className="text-lg font-bold text-stone-100 leading-snug">
+                    Is the Wild Hunt at a player's location?
+                  </h2>
+                  {character ? (
+                    <div className="rounded-xl bg-stone-900/70 border border-cyan-800/50 p-4 space-y-1">
+                      <p className="text-xs text-cyan-500 uppercase tracking-wide font-semibold">
+                        {character.name} — {character.locationAbility.name}
+                      </p>
+                      <p className="text-sm text-stone-200 leading-relaxed">
+                        {character.locationAbility.description}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-stone-400 italic">No character selected.</p>
+                  )}
+                  <p className="text-xs text-stone-500 text-center pt-2">Tap anywhere to close</p>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

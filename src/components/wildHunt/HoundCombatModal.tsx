@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useWildHuntStore } from '../../store/wildHuntStore';
 import type { HoundSlot } from '../../types/wildHunt';
+import { getRandomHoundReward, type HoundReward } from '../../data/wildHunt/houndRewards';
 
 const BASE = import.meta.env.BASE_URL ?? '/';
 const PLAYER_COUNT = 1; // solo — update when multi-player support is added
@@ -24,6 +25,7 @@ export function HoundCombatModal({ hound, onClose }: HoundCombatModalProps) {
   const [phase, setPhase] = useState<Phase>('reminder');
   const [damage, setDamage] = useState(0);
   const [result, setResult] = useState<CombatResult | null>(null);
+  const [reward, setReward] = useState<HoundReward | null>(null);
 
   const threshold = THRESHOLD[hound.level];
   const houndBg = `${BASE}images/monsters/wild-hunt/hound/${hound.level}.jpg`;
@@ -32,6 +34,7 @@ export function HoundCombatModal({ hound, onClose }: HoundCombatModalProps) {
   function handleResolve() {
     const res = resolveHoundCombat(hound.id, damage);
     setResult(res);
+    if (res.defeated) setReward(getRandomHoundReward(hound.level));
     setPhase('result');
   }
 
@@ -155,10 +158,13 @@ export function HoundCombatModal({ hound, onClose }: HoundCombatModalProps) {
                   ) : (
                     <p className="text-center text-sm text-stone-400">No excess damage — shields unaffected.</p>
                   )}
-                  <div className="rounded-lg bg-stone-900/60 border border-stone-700 p-3 text-sm text-stone-300">
-                    <p className="text-xs text-cyan-400 uppercase tracking-wide font-semibold mb-1">Reward</p>
-                    <p>Draw your reward from the physical expansion reward table.</p>
-                  </div>
+                  {reward && (
+                    <div className="rounded-lg bg-stone-900/70 border border-amber-700/40 p-4 space-y-2">
+                      <p className="text-xs text-amber-400 uppercase tracking-wide font-semibold">🎁 Reward</p>
+                      <p className="text-white font-bold text-base">{reward.name}</p>
+                      <p className="text-sm text-stone-300 leading-relaxed">{reward.description}</p>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="rounded-lg bg-stone-900/60 border border-stone-600 p-4 text-center space-y-2">
@@ -169,14 +175,13 @@ export function HoundCombatModal({ hound, onClose }: HoundCombatModalProps) {
                   </p>
                 </div>
               )}
-              <button
-                onClick={onClose}
-                className="w-full py-3 rounded-lg bg-cyan-700 hover:bg-cyan-600 text-white font-bold transition-colors"
-              >
-                Close
-              </button>
             </>
           )}
+          <button
+            onClick={onClose}
+            className="w-full py-3 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 font-bold transition-colors">
+            Close
+          </button>
         </div>
       </div>
     </div>

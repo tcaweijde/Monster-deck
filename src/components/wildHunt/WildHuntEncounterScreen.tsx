@@ -31,7 +31,7 @@ export function WildHuntEncounterScreen() {
   const absorbDamage = useWildHuntStore((s) => s.absorbDamage);
   const gainShields = useWildHuntStore((s) => s.gainShields);
   const triggerVictory = useWildHuntStore((s) => s.triggerVictory);
-  const resetWildHunt = useWildHuntStore((s) => s.resetWildHunt);
+  const triggerDefeat = useWildHuntStore((s) => s.triggerDefeat);
 
   if (!monster) return null;
 
@@ -43,7 +43,7 @@ export function WildHuntEncounterScreen() {
   };
 
   const handleConcede = () => {
-    resetWildHunt();
+    triggerDefeat();
     resetToSetup();
   };
 

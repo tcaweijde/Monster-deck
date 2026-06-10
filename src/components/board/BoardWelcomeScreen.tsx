@@ -20,7 +20,7 @@ export function BoardWelcomeScreen() {
           onClick={initiateSetup}
           className="w-full py-4 rounded-lg bg-stone-700 hover:bg-stone-600 border border-stone-500 text-stone-200 font-bold text-lg transition-colors"
         >
-          Wild Hunt Campaign
+          Wild Hunt mode
         </button>
       </div>
     </div>

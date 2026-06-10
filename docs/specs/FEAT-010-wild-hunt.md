@@ -1,6 +1,6 @@
 # FEAT-010 — Wild Hunt Expansion
 
-> Status: Spec · Last updated: 2026-06-04
+> Status: In Progress · Last updated: 2026-06-10
 
 ---
 
@@ -71,10 +71,13 @@ At campaign start, the player selects one of 4 Wild Hunt characters.
 The Wild Hunt has a position on the board and moves each round.
 
 - Starts at a designated starting location
-- Moves **2 spaces toward the player** each round (shortest path on the location graph)
-- App calculates and shows the next position; player confirms the move
-- Current location displayed persistently on board screen during campaign
-- When the Wild Hunt reaches the player's location, the boss fight is triggered (or at round 8 stage 4, whichever comes first)
+- Moves **2 spaces toward the player** each round
+- The player is notified when to move the Wild hunt in a specific round
+- When the Wild hunt reaches the player's location, a special ability is triggered (depending on the Boss)
+
+**Status: ✅ Built** — The "Wild Hunt Movement" card on the board screen is tappable and opens a bottom-sheet popup showing the character's `locationAbility` (name + description) with the character's portrait art as background and a gradient overlay. The popup closes on tap.
+
+> ⚠️ **Data gap:** Each `WildHuntCharacter` now has a `locationAbility` field, but all four characters currently carry `"TODO: fill from rulebook"` as the ability description. These must be transcribed from the physical Wild Hunt expansion rulebook before the feature is fully playable.
 
 **Effort: M**
 
@@ -153,7 +156,7 @@ Hounds are a new one-off enemy type with a **unique one-shot combo resolution** 
 6. **On defeat**: app displays a random reward (reward table TBD — to be filled at implementation from physical expansion contents)
 
 > **Note:** Damage thresholds above are for solo play. Multiplayer variants may differ — define when multiplayer support is added.
-
+> ⚠️ **Data gap:** the rewards are still placeholder and should be updated before finishing this feature
 **Effort: M**
 
 ---

@@ -16,6 +16,11 @@ const eredin: WildHuntCharacter = {
     description: 'Before creating the Life pool, all players who are not on Eredins location trash any 1 card from their deck, discard pile, or hand.',
     trigger: 'passive',
   },
+  locationAbility: {
+    name: 'Frost Commander',
+    description: 'TODO: fill from rulebook', // TODO: fill from rulebook
+    trigger: 'passive',
+  },
   specialCards: [
     {
       id: 'wh-eredin-special-1',
@@ -67,6 +72,11 @@ const caranthir: WildHuntCharacter = {
   passiveAbility: {
     name: 'Defensive Formation',
     description: 'Caranthir gains 1 shield per each Trophy card gained by the Players.',
+    trigger: 'passive',
+  },
+  locationAbility: {
+    name: 'Sea Fog',
+    description: 'TODO: fill from rulebook', // TODO: fill from rulebook
     trigger: 'passive',
   },
   specialCards: [
@@ -122,6 +132,11 @@ const imlerith: WildHuntCharacter = {
     description: 'Before creating the Life pool: each Players lowers the level of any Attribute by 1 per each Quest token on the Game Board and on Monster cards. The player may lower levels of one or more Attributes',
     trigger: 'passive',
   },
+  locationAbility: {
+    name: 'Crushing Presence',
+    description: 'TODO: fill from rulebook', // TODO: fill from rulebook
+    trigger: 'passive',
+  },
   specialCards: [
     {
       id: 'wh-imlerith-special-1',
@@ -173,6 +188,11 @@ const nithral: WildHuntCharacter = {
   passiveAbility: {
     name: 'Summoning the Hounds',
     description: 'Place all Hounds from the Game Board next to Nithral\'s character card. If any Hound has Shields, add them to Nithral\'s shield count.',
+    trigger: 'passive',
+  },
+  locationAbility: {
+    name: 'Hunt Commander',
+    description: 'TODO: fill from rulebook', // TODO: fill from rulebook
     trigger: 'passive',
   },
   specialCards: [

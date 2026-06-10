@@ -11,6 +11,7 @@ import { WildHuntMonstersScreen } from './components/wildHunt/WildHuntMonstersSc
 import { ProximitySetupScreen } from './components/wildHunt/ProximitySetupScreen';
 import { WildHuntEncounterScreen } from './components/wildHunt/WildHuntEncounterScreen';
 import { WildHuntVictoryScreen } from './components/wildHunt/WildHuntVictoryScreen';
+import { WildHuntDefeatScreen } from './components/wildHunt/WildHuntDefeatScreen';
 
 const slideUp: Variants = {
   initial: { y: '100%', opacity: 0 },
@@ -35,7 +36,7 @@ export default function App() {
       : wildHuntPhase === 'victory'
         ? 'wh-victory'
         : wildHuntPhase === 'defeat'
-          ? 'wh-board' // TODO: add a defeat screen
+          ? 'wh-defeat'
           : wildHuntPhase === 'finalBattle' && encounterPhase !== 'setup'
             ? 'wh-boss'
             : activeWildHuntSlotIndex !== null
@@ -62,6 +63,7 @@ export default function App() {
             {screen === 'wh-monsters' && <WildHuntMonstersScreen />}
             {screen === 'wh-proximity' && <ProximitySetupScreen />}
             {screen === 'wh-victory' && <WildHuntVictoryScreen />}
+            {screen === 'wh-defeat' && <WildHuntDefeatScreen />}
           </motion.div>
         )}
 
