@@ -429,8 +429,6 @@ describe('wildHuntStore', () => {
       expect(typeof result.current.advanceStage).toBe('function');
       expect(typeof result.current.absorbDamage).toBe('function');
       expect(typeof result.current.gainShields).toBe('function');
-      expect(typeof result.current.setWildHuntLocation).toBe('function');
-      expect(typeof result.current.setPlayerLocation).toBe('function');
       expect(typeof result.current.spawnHound).toBe('function');
       expect(typeof result.current.removeHound).toBe('function');
       expect(typeof result.current.triggerVictory).toBe('function');

@@ -70,12 +70,6 @@ export interface WildHuntActions {
   /** Increase shieldCount by `amount`. */
   gainShields: (amount: number) => void;
 
-  /** Place the Wild Hunt unit on a location. */
-  setWildHuntLocation: (locationId: number) => void;
-
-  /** Place the player on a location. */
-  setPlayerLocation: (locationId: number) => void;
-
   /** Spawn a hound token at the given location with the given level. */
   spawnHound: (locationId: number, level: 1 | 2 | 3) => void;
 
@@ -150,8 +144,6 @@ const INITIAL_STATE: WildHuntState = {
   characterId: null,
   difficulty: 'normal' as WildHuntDifficulty,
   shieldCount: 0,
-  wildHuntLocationId: null,
-  playerLocationId: null,
   houndSlots: [],
   wildHuntSlots: EMPTY_SLOTS,
   activeWildHuntSlotIndex: null,
@@ -220,8 +212,6 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
           houndSlots: [],
           wildHuntSlots: EMPTY_SLOTS,
           activeWildHuntSlotIndex: null,
-          wildHuntLocationId: null,
-          playerLocationId: null,
         });
       },
 
@@ -247,7 +237,7 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
       },
 
       advanceStage: () => {
-        const { stage, round, wildHuntSlots, wildHuntLocationId, shieldCount, houndSlots } = get();
+        const { stage, round, wildHuntSlots, shieldCount, houndSlots } = get();
 
         if (stage < 4) {
           set({ stage: (stage + 1) as 1 | 2 | 3 | 4 });
@@ -261,7 +251,7 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
         }
 
         const occupied = countOccupied(wildHuntSlots);
-        const outcome = getSpawnOutcome(round, occupied, wildHuntLocationId);
+        const outcome = getSpawnOutcome(round, occupied);
 
         const newSlots = wildHuntSlots.map((s) => ({ ...s })) as typeof wildHuntSlots;
         let newShieldCount = shieldCount;
@@ -302,7 +292,6 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
           const newHound: HoundSlot = {
             id: `hound-${Date.now()}`,
             level: outcome.houndLevel,
-            locationId: outcome.houndLocationId,
           };
           newHoundSlots = [...newHoundSlots, newHound];
         }
@@ -356,14 +345,6 @@ export const useWildHuntStore = create<WildHuntStoreState>()(
 
       gainShields: (amount) => {
         set((state) => ({ shieldCount: state.shieldCount + amount }));
-      },
-
-      setWildHuntLocation: (locationId) => {
-        set({ wildHuntLocationId: locationId });
-      },
-
-      setPlayerLocation: (locationId) => {
-        set({ playerLocationId: locationId });
       },
 
       spawnHound: (locationId, level) => {

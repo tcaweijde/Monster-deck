@@ -54,8 +54,6 @@ export interface HoundSlot {
   /** Unique identifier, e.g. `'hound-0'`. */
   id: string;
   level: 1 | 2 | 3;
-  /** ID of the Wild Hunt location where this hound spawned. */
-  locationId: number;
 }
 
 /**

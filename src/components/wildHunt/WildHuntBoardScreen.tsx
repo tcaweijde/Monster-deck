@@ -23,7 +23,6 @@ export function WildHuntBoardScreen() {
   const stage = useWildHuntStore((s) => s.stage);
   const phase = useWildHuntStore((s) => s.phase);
   const wildHuntSlots = useWildHuntStore((s) => s.wildHuntSlots);
-  const wildHuntLocationId = useWildHuntStore((s) => s.wildHuntLocationId);
   const shieldCount = useWildHuntStore((s) => s.shieldCount);
   const gainShields = useWildHuntStore((s) => s.gainShields);
   const absorbDamage = useWildHuntStore((s) => s.absorbDamage);
@@ -56,7 +55,7 @@ export function WildHuntBoardScreen() {
 
   const spawnPreview = (): string | null => {
     if (stage !== 4 || isFinalBattle || round >= 8) return null;
-    const outcome = getSpawnOutcome(round, occupiedSlots, wildHuntLocationId);
+    const outcome = getSpawnOutcome(round, occupiedSlots);
     const parts: string[] = [];
     if (outcome.monsterLevel !== null) {
       parts.push(
