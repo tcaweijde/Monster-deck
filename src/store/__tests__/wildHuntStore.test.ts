@@ -389,7 +389,7 @@ describe('wildHuntStore', () => {
 
   // ──────────────────────────────────────────────────────────────────────────
   describe('onRehydrateStorage crash recovery (EC-4)', () => {
-    const activeSlot = { monsterId: 'griffin', level: 1 as const, locationType: 'forest' as const, locationId: null, status: 'active' as const };
+    const activeSlot = { monsterId: 'griffin', level: 1 as const, locationType: 'woods' as const, locationId: null, status: 'active' as const };
     const encSlot = { ...activeSlot, status: 'encountering' as const };
     const emptySlot = { monsterId: null, level: null, locationType: null, locationId: null, status: 'empty' as const };
 
