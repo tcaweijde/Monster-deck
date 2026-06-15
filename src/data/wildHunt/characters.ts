@@ -17,48 +17,44 @@ const eredin: WildHuntCharacter = {
     trigger: 'passive',
   },
   locationAbility: {
-    name: 'Frost Commander',
-    description: 'TODO: fill from rulebook', // TODO: fill from rulebook
+    name: 'Freeze',
+    description: 'When Eredin enters the Location with any Player(s), each Player on that location lowers their Shield level by 1. If they cannot lower their Shield level, they trash any 1 card from their deck, discard pile of hand and raise their Shield level up to their Defense level ', // TODO: fill from rulebook
     trigger: 'passive',
   },
   specialCards: [
     {
       id: 'wh-eredin-special-1',
-      top: { name: 'Frost Strike', attack: 3 },         // TODO: fill from rulebook
-      bottom: { name: 'Ice Blast', attack: 2, effect: 'Freeze' }, // TODO: fill from rulebook
+      top: { name: 'Magic Shock Wave', effect: 'All players discard 1 random card from their hand (empty hand: from the top of your discard pile', attack: 3 },         
       discardAbility: {
-        name: 'Eternal Winter',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Master Teleportation',
+        description: 'Ignore any further damage in this player\'s Fight turn',      
         trigger: 'discard',
       },
     },
     {
       id: 'wh-eredin-special-2',
-      top: { name: 'Spectral Command', attack: 4 },     // TODO: fill from rulebook
-      bottom: { name: 'Dark Portal', effect: 'Teleport' }, // TODO: fill from rulebook
+      top: { name: 'Magic Shock Wave', effect: 'All players discard 1 random card from their hand (empty hand: from the top of your discard pile', attack: 4 },         
       discardAbility: {
-        name: 'Red Rider',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Master Teleportation',
+        description: 'Ignore any further damage in this player\'s Fight turn',      
         trigger: 'discard',
       },
     },
     {
       id: 'wh-eredin-special-3',
-      top: { name: 'Wild Charge', attack: 3 },          // TODO: fill from rulebook
-      bottom: { name: 'Frost Aura', attack: 1, effect: 'Chill' }, // TODO: fill from rulebook
+      top: { name: 'Exploding Energy', effect:'All Players lower their Shield level to 0', attack: 4 },         
       discardAbility: {
-        name: 'Elven Curse',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Master Teleportation',
+        description: 'Ignore any further damage in this player\'s Fight turn',      
         trigger: 'discard',
       },
     },
     {
       id: 'wh-eredin-special-4',
-      top: { name: 'Void Slash', attack: 5 },           // TODO: fill from rulebook
-      bottom: { name: 'Spectral Step', effect: 'Evade' }, // TODO: fill from rulebook
+      top: { name: 'Exploding Energy', effect:'All Players lower their Shield level to 0', attack: 3 },          
       discardAbility: {
-        name: 'Icy Grip',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Master Teleportation',
+        description: 'Ignore any further damage in this player\'s Fight turn',      
         trigger: 'discard',
       },
     },
@@ -75,48 +71,44 @@ const caranthir: WildHuntCharacter = {
     trigger: 'passive',
   },
   locationAbility: {
-    name: 'Sea Fog',
-    description: 'TODO: fill from rulebook', // TODO: fill from rulebook
+    name: 'Teleportation',
+    description: 'When Caranthir enters the Location with any Player(s), each Player on that Locations draws 1 location token and discards all their potions. If they do not have any Potion, they lower any Attribute by 1. After, each players moves to the drawn location. They do not perform that location action',
     trigger: 'passive',
   },
   specialCards: [
     {
       id: 'wh-caranthir-special-1',
-      top: { name: 'Helm Smash', attack: 3 },           // TODO: fill from rulebook
-      bottom: { name: 'Sea Fog', effect: 'Blind' },      // TODO: fill from rulebook
+      top: { name: 'White Frost', attack: 4, effect:'All Players lower their Combat level by 1' },           
       discardAbility: {
-        name: 'Steer the Storm',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Teleportation',
+        description: 'Before the next Player\'s Fight turn: all Players place 2 randomly chosen cards from their hands on the top of their decks',         // TODO: fill from rulebook
         trigger: 'discard',
       },
     },
     {
       id: 'wh-caranthir-special-2',
-      top: { name: 'Course Correction', attack: 2 },    // TODO: fill from rulebook
-      bottom: { name: 'Rift Open', attack: 3, effect: 'Pull' }, // TODO: fill from rulebook
+      top: { name: 'White Frost', attack: 6, effect:'All Players lower the level of any Attribute by 1' },           
       discardAbility: {
-        name: 'Spatial Rift',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Teleportation',
+        description: 'Before the next Player\'s Fight turn: all Players place 2 randomly chosen cards from their hands on the top of their decks',         // TODO: fill from rulebook
         trigger: 'discard',
       },
     },
     {
       id: 'wh-caranthir-special-3',
-      top: { name: 'Spectral Wake', attack: 2 },        // TODO: fill from rulebook
-      bottom: { name: 'Frozen Current', attack: 1, effect: 'Slow' }, // TODO: fill from rulebook
+      top: { name: 'White Frost', attack: 5, effect:'All Players lower their highest Attribute level by 1' },           
       discardAbility: {
-        name: 'Dead Water',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Teleportation',
+        description: 'Before the next Player\'s Fight turn: all Players place 2 randomly chosen cards from their hands on the top of their decks',         // TODO: fill from rulebook
         trigger: 'discard',
       },
     },
     {
       id: 'wh-caranthir-special-4',
-      top: { name: 'Icy Gale', attack: 4 },             // TODO: fill from rulebook
-      bottom: { name: 'Navigator\'s Mark', effect: 'Mark' }, // TODO: fill from rulebook
+      top: { name: 'White Frost', attack: 3, effect:'All Players lower all Attributes levels by 1' },           
       discardAbility: {
-        name: 'Into the Void',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Teleportation',
+        description: 'Before the next Player\'s Fight turn: all Players place 2 randomly chosen cards from their hands on the top of their decks',         // TODO: fill from rulebook
         trigger: 'discard',
       },
     },
@@ -133,48 +125,44 @@ const imlerith: WildHuntCharacter = {
     trigger: 'passive',
   },
   locationAbility: {
-    name: 'Crushing Presence',
-    description: 'TODO: fill from rulebook', // TODO: fill from rulebook
+    name: 'Mark of the Spectre',
+  description: 'When Imlerith enters the Location with any Player(s), choose any 1 monster on the Game |Board and place 1 Quest-token (if available) on it\s card per each Player on Imlerith\'s location. Fighting this monster, after creating the Life Pool, the fighting player takes Damage equal to the numer of Quest-tokens on the Monster\'s card. When the monster is Defeated or Driven Away, discard the Quest token(s)',
     trigger: 'passive',
   },
   specialCards: [
     {
       id: 'wh-imlerith-special-1',
-      top: { name: 'Shield Bash', attack: 4 },          // TODO: fill from rulebook
-      bottom: { name: 'Brutal Strike', attack: 3 },     // TODO: fill from rulebook
+      top: { name: 'Freeze', attack: 4, effect:'During each Player\'s next Fight turn: they cannot raise their Shield level (Mages cannot gather protection, they can raise their enery level)' },          
       discardAbility: {
-        name: 'Relentless',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Frost Armor',
+        description: 'Before the next Player\'s Fight turn: Imlerith gains 1 shield per each player',
         trigger: 'discard',
       },
     },
     {
       id: 'wh-imlerith-special-2',
-      top: { name: 'Mace Sweep', attack: 5 },           // TODO: fill from rulebook
-      bottom: { name: 'Armour Crush', attack: 2, effect: 'Break' }, // TODO: fill from rulebook
+      top: { name: 'Freeze', attack: 6, effect:'During each Player\'s next Fight turn: they cannot raise their Shield level (Mages cannot gather protection, they can raise their enery level)' },          
       discardAbility: {
-        name: 'Iron Will',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Frost Armor',
+        description: 'Before the next Player\'s Fight turn: Imlerith gains 1 shield per each player',
         trigger: 'discard',
       },
     },
     {
       id: 'wh-imlerith-special-3',
-      top: { name: 'Frost Mace', attack: 3, effect: 'Freeze' }, // TODO: fill from rulebook
-      bottom: { name: 'Ground Slam', attack: 4 },       // TODO: fill from rulebook
+      top: { name: 'Freeze', attack: 3, effect:'During each Player\'s next Fight turn: they cannot raise their Shield level (Mages cannot gather protection, they can raise their enery level)' },          
       discardAbility: {
-        name: 'Undying Rage',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Frost Armor',
+        description: 'Before the next Player\'s Fight turn: Imlerith gains 1 shield per each player',
         trigger: 'discard',
       },
     },
     {
       id: 'wh-imlerith-special-4',
-      top: { name: 'Charge', attack: 3 },               // TODO: fill from rulebook
-      bottom: { name: 'Overwhelm', attack: 2, effect: 'Stagger' }, // TODO: fill from rulebook
+      top: { name: 'Freeze', attack: 5, effect:'During each Player\'s next Fight turn: they cannot raise their Shield level (Mages cannot gather protection, they can raise their enery level)' },          
       discardAbility: {
-        name: 'Carnage',
-        description: 'TODO: fill from rulebook',         // TODO: fill from rulebook
+        name: 'Frost Armor',
+        description: 'Before the next Player\'s Fight turn: Imlerith gains 1 shield per each player',
         trigger: 'discard',
       },
     },
@@ -191,8 +179,8 @@ const nithral: WildHuntCharacter = {
     trigger: 'passive',
   },
   locationAbility: {
-    name: 'Hunt Commander',
-    description: 'TODO: fill from rulebook', // TODO: fill from rulebook
+    name: 'Strenghening the Hound',
+    description: 'When Nithral enters the Location with any Player(s), choose any 1 Hound on the Game Board and place 1 Wild Hunt Shield next to it, per each player on Nitral\'s location. The Hounds Life Pool is increased by the amount of Shields.',
     trigger: 'passive',
   },
   specialCards: [

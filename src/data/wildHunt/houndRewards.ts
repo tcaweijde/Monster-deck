@@ -4,25 +4,21 @@
 
 export interface HoundReward {
   id: string;
-  name: string;
   description: string;
 }
 
 const HOUND_REWARDS: Record<1 | 2 | 3, HoundReward[]> = {
   1: [
-    { id: 'lv1-r1', name: 'TODO: Reward L1-A', description: 'TODO: Fill with actual reward description from the expansion.' },
-    { id: 'lv1-r2', name: 'TODO: Reward L1-B', description: 'TODO: Fill with actual reward description from the expansion.' },
-    { id: 'lv1-r3', name: 'TODO: Reward L1-C', description: 'TODO: Fill with actual reward description from the expansion.' },
+    { id: 'lv1-r1', description: 'Draw a card from your deck' },
+    { id: 'lv1-r2', description: 'Draw a trail-token' },
   ],
   2: [
-    { id: 'lv2-r1', name: 'TODO: Reward L2-A', description: 'TODO: Fill with actual reward description from the expansion.' },
-    { id: 'lv2-r2', name: 'TODO: Reward L2-B', description: 'TODO: Fill with actual reward description from the expansion.' },
-    { id: 'lv2-r3', name: 'TODO: Reward L2-C', description: 'TODO: Fill with actual reward description from the expansion.' },
+    { id: 'lv2-r1', description: 'Add any 1 of the revealed Action cards of cost 0 to your discard pile' },
+    { id: 'lv2-r2', description: 'Raise you lowest Attribute by 1 level' },
   ],
   3: [
-    { id: 'lv3-r1', name: 'TODO: Reward L3-A', description: 'TODO: Fill with actual reward description from the expansion.' },
-    { id: 'lv3-r2', name: 'TODO: Reward L3-B', description: 'TODO: Fill with actual reward description from the expansion.' },
-    { id: 'lv3-r3', name: 'TODO: Reward L3-C', description: 'TODO: Fill with actual reward description from the expansion.' },
+    { id: 'lv3-r1', description: 'Raise any Attribute by 1 level' },
+    { id: 'lv3-r2', description: 'Add any 1 of the revealed Action cards of cost 1 to your discard pile' },
   ],
 };
 

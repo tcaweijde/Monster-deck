@@ -9,7 +9,7 @@ export interface MonsterCard {
   id: string;
   // FEAT-004: top and bottom will become optional to support single-half Monster Trail cards.
   top: CardHalf;
-  bottom: CardHalf;
+  bottom?: CardHalf;
 }
 
 export interface RevealedCard {

@@ -20,17 +20,17 @@
 | FEAT-010-G | Stage 4 spawn prompts (monster + hound) | ✅ Done |
 | FEAT-010-H | Hound combat modal (3-phase, threshold, shield loss) | ✅ Done |
 | FEAT-010-I | Wild Hunt monster board slots (3 slots, WH slot cards) | ✅ Done |
-| FEAT-010-J | Character data (4 characters + 4 special cards each) | ✅ Done (stubs) |
+| FEAT-010-J | Character data (4 characters + 4 special cards each) | ✅ Done |
 | FEAT-010-K | Proximity bonus cards (pre-fight setup screen, +1/hound) | ✅ Done |
+| `wh-defeat-rewards` | Add rewards for defeating Wild Hunt monsters/hounds | ✅ Done|
+| — | Fill in all character abilities & special card stats | ✅ Done |
+| — | Add `WildHuntDefeatScreen` (currently falls back to `wh-board`) |  ✅ Done  |
+
 
 ### Open TODOs
 
 | ID | Description | Blocked on |
 |----|-------------|------------|
-| `wh-defeat-rewards` | Add rewards for defeating Wild Hunt monsters/hounds | Physical game data |
-| — | Fill in all character abilities & special card stats | Physical rulebook data |
-| — | Add `WildHuntDefeatScreen` (currently falls back to `wh-board`) | Game design decision |
-| — | Wild Hunt move validation / BFS pathfinding | Physical board map adjacency data |
 
 ---
 
@@ -105,7 +105,7 @@ EncounterScreen + useEncounterHandlers  (regular WH monster)
 - `src/types/wildHunt.ts` — all Wild Hunt types: `WildHuntPhase`, `WildHuntDifficulty`, `WildHuntCharacter`, `WildHuntSpecialCard`, `HoundSlot`, `WildHuntBoardSlot`, `WildHuntState`
 
 **Data**
-- `src/data/wildHunt/characters.ts` — 4 Wild Hunt characters with 4 special cards each (ability text = stubs)
+- `src/data/wildHunt/characters.ts` — 4 Wild Hunt characters with 4 special cards each
 - `src/data/wildHunt/spawnTable.ts` — round × occupied → spawn outcome
 - `src/data/wildHunt/bossGenericDeck.ts` — explicit 16-card WH generic pool
 - `src/data/wildHunt/bossMonster.ts` — `buildBossMonster(character)` helper
@@ -166,7 +166,6 @@ From smoke testing and design review (post-implementation):
 | `spawn-show-location` | Stage 4 spawn preview: include Wild Hunt location name | Medium | — |
 | `nithral-hound-shields` | Nithral: each board hound adds shields before boss fight | Medium | Physical game data |
 | `character-hound-decksize` | Hounds affect board monster deck size (character-specific) | Medium | Physical game data |
-| `wh-defeat-rewards` | Reward display for defeating Wild Hunt board monsters | Low | Physical game data |
 | `wh-styling` | Wild Hunt visual theme + images (frost/blue accent, character portraits, background image) | Medium | — |
 
 ### Boss fight notes
