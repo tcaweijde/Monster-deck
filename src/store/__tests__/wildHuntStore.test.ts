@@ -38,7 +38,7 @@ vi.mock('../../data/wildHunt/characters', () => ({
         id: 'wh-eredin',
         name: 'Eredin',
         passiveAbility: { name: 'King of the Wild Hunt', description: 'D', trigger: 'passive' },
-        startingShields: 3,
+        locationAbility: { name: 'Frost Aura', description: 'D', trigger: 'passive' },
         specialCards: [],
       };
     }
@@ -81,13 +81,17 @@ const INITIAL_STATE: WildHuntState = {
 // (mirrors the onRehydrateStorage callback in wildHuntStore.ts exactly)
 // ---------------------------------------------------------------------------
 
-type RehydrateState = Pick<WildHuntState, 'phase'>;
+type RehydrateState = Pick<WildHuntState, 'wildHuntSlots' | 'activeWildHuntSlotIndex' | 'showProximitySetup'>;
 
 function applyWildHuntRehydrationGuard(state: RehydrateState | undefined): void {
   if (!state) return;
-  if (state.phase === 'finalBattle') {
-    state.phase = 'playing';
+  if (state.wildHuntSlots) {
+    state.wildHuntSlots = state.wildHuntSlots.map((slot) =>
+      slot.status === 'encountering' ? { ...slot, status: 'active' } : slot,
+    ) as typeof state.wildHuntSlots;
   }
+  state.activeWildHuntSlotIndex = null;
+  state.showProximitySetup = false;
 }
 
 // ---------------------------------------------------------------------------
@@ -132,10 +136,14 @@ describe('wildHuntStore', () => {
       expect(difficulty).toBe('hard');
     });
 
-    it('should set shieldCount from character.startingShields', () => {
+    it('should set shieldCount based on difficulty', () => {
       act(() => { useWildHuntStore.getState().startWildHunt('wh-eredin', 'normal'); });
-      // Mock returns startingShields: 3
       expect(useWildHuntStore.getState().shieldCount).toBe(7);
+    });
+
+    it('should set shieldCount based on hard difficulty', () => {
+      act(() => { useWildHuntStore.getState().startWildHunt('wh-eredin', 'hard'); });
+      expect(useWildHuntStore.getState().shieldCount).toBe(9);
     });
 
     it('should reset round to 1 and stage to 1', () => {
@@ -381,28 +389,49 @@ describe('wildHuntStore', () => {
 
   // ──────────────────────────────────────────────────────────────────────────
   describe('onRehydrateStorage crash recovery (EC-4)', () => {
-    it('should reset phase from finalBattle to playing on rehydration', () => {
-      const state: RehydrateState = { phase: 'finalBattle' };
+    const activeSlot = { monsterId: 'griffin', level: 1 as const, locationType: 'forest' as const, locationId: null, status: 'active' as const };
+    const encSlot = { ...activeSlot, status: 'encountering' as const };
+    const emptySlot = { monsterId: null, level: null, locationType: null, locationId: null, status: 'empty' as const };
+
+    it('should revert encountering slots back to active on rehydration', () => {
+      const state: RehydrateState = {
+        wildHuntSlots: [encSlot, activeSlot, emptySlot],
+        activeWildHuntSlotIndex: 0,
+        showProximitySetup: false,
+      };
       applyWildHuntRehydrationGuard(state);
-      expect(state.phase).toBe('playing');
+      expect(state.wildHuntSlots[0].status).toBe('active');
     });
 
-    it('should leave phase unchanged when it is playing', () => {
-      const state: RehydrateState = { phase: 'playing' };
+    it('should leave non-encountering slots unchanged', () => {
+      const state: RehydrateState = {
+        wildHuntSlots: [activeSlot, emptySlot, emptySlot],
+        activeWildHuntSlotIndex: null,
+        showProximitySetup: false,
+      };
       applyWildHuntRehydrationGuard(state);
-      expect(state.phase).toBe('playing');
+      expect(state.wildHuntSlots[0].status).toBe('active');
+      expect(state.wildHuntSlots[1].status).toBe('empty');
     });
 
-    it('should leave phase unchanged when it is inactive', () => {
-      const state: RehydrateState = { phase: 'inactive' };
+    it('should clear activeWildHuntSlotIndex on rehydration', () => {
+      const state: RehydrateState = {
+        wildHuntSlots: [encSlot, emptySlot, emptySlot],
+        activeWildHuntSlotIndex: 0,
+        showProximitySetup: false,
+      };
       applyWildHuntRehydrationGuard(state);
-      expect(state.phase).toBe('inactive');
+      expect(state.activeWildHuntSlotIndex).toBeNull();
     });
 
-    it('should leave phase unchanged when it is victory', () => {
-      const state: RehydrateState = { phase: 'victory' };
+    it('should clear showProximitySetup on rehydration', () => {
+      const state: RehydrateState = {
+        wildHuntSlots: [activeSlot, emptySlot, emptySlot],
+        activeWildHuntSlotIndex: null,
+        showProximitySetup: true,
+      };
       applyWildHuntRehydrationGuard(state);
-      expect(state.phase).toBe('victory');
+      expect(state.showProximitySetup).toBe(false);
     });
 
     it('should handle undefined state gracefully without throwing', () => {
