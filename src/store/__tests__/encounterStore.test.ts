@@ -57,7 +57,7 @@ vi.mock('../../engine/combat', () => ({
 import { useEncounterStore } from '../encounterStore';
 
 function makeRevealedCard(card: MonsterCard, source: 'top' | 'bottom' = 'top'): RevealedCard {
-  return { cardId: card.id, chosenHalf: card[source], source };
+  return { cardId: card.id, chosenHalf: card[source]!, source };
 }
 
 function resetStore() {

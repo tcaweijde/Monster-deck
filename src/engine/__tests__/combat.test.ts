@@ -112,7 +112,7 @@ describe('flipCard', () => {
       expect(topResult!.revealed.chosenHalf.attack).toBe(CARD_A.top.attack);
 
       const bottomResult = flipCard([CARD_A], () => 0.9);
-      expect(bottomResult!.revealed.chosenHalf.attack).toBe(CARD_A.bottom.attack);
+      expect(bottomResult!.revealed.chosenHalf.attack).toBe(CARD_A.bottom!.attack);
     });
 
     it('should call the RNG exactly once per flip', () => {

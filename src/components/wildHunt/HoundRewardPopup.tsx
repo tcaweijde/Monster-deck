@@ -19,7 +19,6 @@ export function HoundRewardPopup({ reward, houndLevel, onClose }: HoundRewardPop
       {/* Reward card */}
       <div className="rounded-lg bg-stone-900/70 border border-amber-700/40 p-4 space-y-2">
         <p className="text-xs text-amber-400 uppercase tracking-wide font-semibold">Your Reward</p>
-        <p className="text-white font-bold text-base">{reward.name}</p>
         <p className="text-sm text-stone-300 leading-relaxed">{reward.description}</p>
       </div>
 
