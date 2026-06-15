@@ -34,7 +34,13 @@ export interface WildHuntSpecialCard extends MonsterCard {
 export interface WildHuntCharacter {
   id: string;
   name: string;
+  /** Fires before creating the Life pool at the start of the boss fight. */
   passiveAbility: MonsterAbility;
+  /**
+   * Fires each round when the Wild Hunt unit is on the same location as a
+   * player (FEAT-010-D location trigger).
+   */
+  locationAbility: MonsterAbility;
   /** Exactly 4 special cards, each carrying its own discard-trigger ability. */
   specialCards: WildHuntSpecialCard[];
   /** Path to the character portrait image (relative to public/). */
@@ -48,8 +54,6 @@ export interface HoundSlot {
   /** Unique identifier, e.g. `'hound-0'`. */
   id: string;
   level: 1 | 2 | 3;
-  /** ID of the Wild Hunt location where this hound spawned. */
-  locationId: number;
 }
 
 /**
@@ -77,10 +81,6 @@ export interface WildHuntState {
   characterId: string | null;
   difficulty: WildHuntDifficulty;
   shieldCount: number;
-  /** Location ID (1–18) of the Wild Hunt unit, or `null` when not yet placed. */
-  wildHuntLocationId: number | null;
-  /** Location ID of the player's current board position, or `null` when not placed. */
-  playerLocationId: number | null;
   houndSlots: HoundSlot[];
   /** Three fixed board slots. Slots are 'empty' until a monster spawns into them. */
   wildHuntSlots: [WildHuntBoardSlot, WildHuntBoardSlot, WildHuntBoardSlot];

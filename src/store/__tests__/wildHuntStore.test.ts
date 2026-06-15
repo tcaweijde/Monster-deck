@@ -38,7 +38,7 @@ vi.mock('../../data/wildHunt/characters', () => ({
         id: 'wh-eredin',
         name: 'Eredin',
         passiveAbility: { name: 'King of the Wild Hunt', description: 'D', trigger: 'passive' },
-        startingShields: 3,
+        locationAbility: { name: 'Frost Aura', description: 'D', trigger: 'passive' },
         specialCards: [],
       };
     }
@@ -69,8 +69,6 @@ const INITIAL_STATE: WildHuntState = {
   characterId: null,
   difficulty: 'normal',
   shieldCount: 0,
-  wildHuntLocationId: null,
-  playerLocationId: null,
   houndSlots: [],
   wildHuntSlots: [{ ...EMPTY_SLOT }, { ...EMPTY_SLOT }, { ...EMPTY_SLOT }],
   activeWildHuntSlotIndex: null,
@@ -83,13 +81,17 @@ const INITIAL_STATE: WildHuntState = {
 // (mirrors the onRehydrateStorage callback in wildHuntStore.ts exactly)
 // ---------------------------------------------------------------------------
 
-type RehydrateState = Pick<WildHuntState, 'phase'>;
+type RehydrateState = Pick<WildHuntState, 'wildHuntSlots' | 'activeWildHuntSlotIndex' | 'showProximitySetup'>;
 
 function applyWildHuntRehydrationGuard(state: RehydrateState | undefined): void {
   if (!state) return;
-  if (state.phase === 'finalBattle') {
-    state.phase = 'playing';
+  if (state.wildHuntSlots) {
+    state.wildHuntSlots = state.wildHuntSlots.map((slot) =>
+      slot.status === 'encountering' ? { ...slot, status: 'active' } : slot,
+    ) as typeof state.wildHuntSlots;
   }
+  state.activeWildHuntSlotIndex = null;
+  state.showProximitySetup = false;
 }
 
 // ---------------------------------------------------------------------------
@@ -113,13 +115,6 @@ describe('wildHuntStore', () => {
       expect(stage).toBe(1);
     });
 
-    it('should have null characterId and locations', () => {
-      const { characterId, wildHuntLocationId, playerLocationId } = useWildHuntStore.getState();
-      expect(characterId).toBeNull();
-      expect(wildHuntLocationId).toBeNull();
-      expect(playerLocationId).toBeNull();
-    });
-
     it('should have empty houndSlots and zero shieldCount', () => {
       const { houndSlots, shieldCount } = useWildHuntStore.getState();
       expect(houndSlots).toEqual([]);
@@ -141,10 +136,14 @@ describe('wildHuntStore', () => {
       expect(difficulty).toBe('hard');
     });
 
-    it('should set shieldCount from character.startingShields', () => {
+    it('should set shieldCount based on difficulty', () => {
       act(() => { useWildHuntStore.getState().startWildHunt('wh-eredin', 'normal'); });
-      // Mock returns startingShields: 3
       expect(useWildHuntStore.getState().shieldCount).toBe(7);
+    });
+
+    it('should set shieldCount based on hard difficulty', () => {
+      act(() => { useWildHuntStore.getState().startWildHunt('wh-eredin', 'hard'); });
+      expect(useWildHuntStore.getState().shieldCount).toBe(9);
     });
 
     it('should reset round to 1 and stage to 1', () => {
@@ -154,17 +153,13 @@ describe('wildHuntStore', () => {
       expect(useWildHuntStore.getState().stage).toBe(1);
     });
 
-    it('should clear houndSlots and locations', () => {
+    it('should clear houndSlots', () => {
       useWildHuntStore.setState({
-        houndSlots: [{ id: 'hound-1', level: 1, locationId: 5 }],
-        wildHuntLocationId: 3,
-        playerLocationId: 7,
+        houndSlots: [{ id: 'hound-1', level: 1 }],
       });
       act(() => { useWildHuntStore.getState().startWildHunt('wh-eredin', 'normal'); });
-      const { houndSlots, wildHuntLocationId, playerLocationId } = useWildHuntStore.getState();
+      const { houndSlots } = useWildHuntStore.getState();
       expect(houndSlots).toEqual([]);
-      expect(wildHuntLocationId).toBeNull();
-      expect(playerLocationId).toBeNull();
     });
 
     it('should be a no-op with an unknown characterId', () => {
@@ -297,57 +292,28 @@ describe('wildHuntStore', () => {
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  describe('setWildHuntLocation', () => {
-    it('should set wildHuntLocationId', () => {
-      act(() => { useWildHuntStore.getState().setWildHuntLocation(12); });
-      expect(useWildHuntStore.getState().wildHuntLocationId).toBe(12);
-    });
-
-    it('should overwrite a previously set location', () => {
-      useWildHuntStore.setState({ wildHuntLocationId: 5 });
-      act(() => { useWildHuntStore.getState().setWildHuntLocation(18); });
-      expect(useWildHuntStore.getState().wildHuntLocationId).toBe(18);
-    });
-  });
-
-  // ──────────────────────────────────────────────────────────────────────────
-  describe('setPlayerLocation', () => {
-    it('should set playerLocationId', () => {
-      act(() => { useWildHuntStore.getState().setPlayerLocation(7); });
-      expect(useWildHuntStore.getState().playerLocationId).toBe(7);
-    });
-
-    it('should overwrite a previously set location', () => {
-      useWildHuntStore.setState({ playerLocationId: 2 });
-      act(() => { useWildHuntStore.getState().setPlayerLocation(15); });
-      expect(useWildHuntStore.getState().playerLocationId).toBe(15);
-    });
-  });
-
-  // ──────────────────────────────────────────────────────────────────────────
   describe('spawnHound', () => {
     it('should add a hound and increase houndSlots.length', () => {
-      act(() => { useWildHuntStore.getState().spawnHound(4, 1); });
+      act(() => { useWildHuntStore.getState().spawnHound(1); });
       expect(useWildHuntStore.getState().houndSlots).toHaveLength(1);
     });
 
-    it('should store correct level and locationId', () => {
-      act(() => { useWildHuntStore.getState().spawnHound(9, 3); });
+    it('should store correct level', () => {
+      act(() => { useWildHuntStore.getState().spawnHound(3); });
       const hound = useWildHuntStore.getState().houndSlots[0];
       expect(hound.level).toBe(3);
-      expect(hound.locationId).toBe(9);
     });
 
     it('should assign a string id starting with "hound-"', () => {
-      act(() => { useWildHuntStore.getState().spawnHound(1, 2); });
+      act(() => { useWildHuntStore.getState().spawnHound(2); });
       expect(useWildHuntStore.getState().houndSlots[0].id).toMatch(/^hound-/);
     });
 
     it('should append multiple hounds', () => {
       act(() => {
-        useWildHuntStore.getState().spawnHound(1, 1);
-        useWildHuntStore.getState().spawnHound(2, 2);
-        useWildHuntStore.getState().spawnHound(3, 3);
+        useWildHuntStore.getState().spawnHound(1);
+        useWildHuntStore.getState().spawnHound(2);
+        useWildHuntStore.getState().spawnHound(3);
       });
       expect(useWildHuntStore.getState().houndSlots).toHaveLength(3);
     });
@@ -358,8 +324,8 @@ describe('wildHuntStore', () => {
     it('should remove the hound with the given id', () => {
       useWildHuntStore.setState({
         houndSlots: [
-          { id: 'hound-1', level: 1, locationId: 5 },
-          { id: 'hound-2', level: 2, locationId: 8 },
+          { id: 'hound-1', level: 1 },
+          { id: 'hound-2', level: 2 },
         ],
       });
       act(() => { useWildHuntStore.getState().removeHound('hound-1'); });
@@ -370,7 +336,7 @@ describe('wildHuntStore', () => {
 
     it('should be a no-op when the id does not exist', () => {
       useWildHuntStore.setState({
-        houndSlots: [{ id: 'hound-1', level: 1, locationId: 5 }],
+        houndSlots: [{ id: 'hound-1', level: 1 }],
       });
       act(() => { useWildHuntStore.getState().removeHound('hound-nonexistent'); });
       expect(useWildHuntStore.getState().houndSlots).toHaveLength(1);
@@ -407,9 +373,7 @@ describe('wildHuntStore', () => {
         characterId: 'wh-eredin',
         difficulty: 'hard',
         shieldCount: 4,
-        wildHuntLocationId: 12,
-        playerLocationId: 7,
-        houndSlots: [{ id: 'hound-1', level: 2, locationId: 3 }],
+        houndSlots: [{ id: 'hound-1', level: 2 }],
       });
       act(() => { useWildHuntStore.getState().resetWildHunt(); });
       const state = useWildHuntStore.getState();
@@ -419,36 +383,55 @@ describe('wildHuntStore', () => {
       expect(state.characterId).toBeNull();
       expect(state.difficulty).toBe('normal');
       expect(state.shieldCount).toBe(0);
-      expect(state.wildHuntLocationId).toBeNull();
-      expect(state.playerLocationId).toBeNull();
       expect(state.houndSlots).toEqual([]);
     });
   });
 
   // ──────────────────────────────────────────────────────────────────────────
   describe('onRehydrateStorage crash recovery (EC-4)', () => {
-    it('should reset phase from finalBattle to playing on rehydration', () => {
-      const state: RehydrateState = { phase: 'finalBattle' };
+    const activeSlot = { monsterId: 'griffin', level: 1 as const, locationType: 'woods' as const, locationId: null, status: 'active' as const };
+    const encSlot = { ...activeSlot, status: 'encountering' as const };
+    const emptySlot = { monsterId: null, level: null, locationType: null, locationId: null, status: 'empty' as const };
+
+    it('should revert encountering slots back to active on rehydration', () => {
+      const state: RehydrateState = {
+        wildHuntSlots: [encSlot, activeSlot, emptySlot],
+        activeWildHuntSlotIndex: 0,
+        showProximitySetup: false,
+      };
       applyWildHuntRehydrationGuard(state);
-      expect(state.phase).toBe('playing');
+      expect(state.wildHuntSlots[0].status).toBe('active');
     });
 
-    it('should leave phase unchanged when it is playing', () => {
-      const state: RehydrateState = { phase: 'playing' };
+    it('should leave non-encountering slots unchanged', () => {
+      const state: RehydrateState = {
+        wildHuntSlots: [activeSlot, emptySlot, emptySlot],
+        activeWildHuntSlotIndex: null,
+        showProximitySetup: false,
+      };
       applyWildHuntRehydrationGuard(state);
-      expect(state.phase).toBe('playing');
+      expect(state.wildHuntSlots[0].status).toBe('active');
+      expect(state.wildHuntSlots[1].status).toBe('empty');
     });
 
-    it('should leave phase unchanged when it is inactive', () => {
-      const state: RehydrateState = { phase: 'inactive' };
+    it('should clear activeWildHuntSlotIndex on rehydration', () => {
+      const state: RehydrateState = {
+        wildHuntSlots: [encSlot, emptySlot, emptySlot],
+        activeWildHuntSlotIndex: 0,
+        showProximitySetup: false,
+      };
       applyWildHuntRehydrationGuard(state);
-      expect(state.phase).toBe('inactive');
+      expect(state.activeWildHuntSlotIndex).toBeNull();
     });
 
-    it('should leave phase unchanged when it is victory', () => {
-      const state: RehydrateState = { phase: 'victory' };
+    it('should clear showProximitySetup on rehydration', () => {
+      const state: RehydrateState = {
+        wildHuntSlots: [activeSlot, emptySlot, emptySlot],
+        activeWildHuntSlotIndex: null,
+        showProximitySetup: true,
+      };
       applyWildHuntRehydrationGuard(state);
-      expect(state.phase).toBe('victory');
+      expect(state.showProximitySetup).toBe(false);
     });
 
     it('should handle undefined state gracefully without throwing', () => {
@@ -473,8 +456,6 @@ describe('wildHuntStore', () => {
       expect(typeof result.current.advanceStage).toBe('function');
       expect(typeof result.current.absorbDamage).toBe('function');
       expect(typeof result.current.gainShields).toBe('function');
-      expect(typeof result.current.setWildHuntLocation).toBe('function');
-      expect(typeof result.current.setPlayerLocation).toBe('function');
       expect(typeof result.current.spawnHound).toBe('function');
       expect(typeof result.current.removeHound).toBe('function');
       expect(typeof result.current.triggerVictory).toBe('function');

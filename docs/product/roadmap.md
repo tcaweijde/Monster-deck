@@ -29,26 +29,27 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | FEAT-005 | Monster Weaknesses | 3.0 | 🔲 Todo |
 | FEAT-006 | Monster-Specific Discard-Trigger Abilities | 3.0 | 🔲 Todo |
 | FEAT-007 | Monster-Specific Card Art | 3.0 | 🔲 Could-have |
-| FEAT-011 | New Attack Types | 3.0 | 🔲 Todo |
-| FEAT-012 | New Card Types | 3.0 | 🔲 Todo |
-| FEAT-013 | Special Attacks | 3.0 | 🔲 Todo |
+| FEAT-011 | New Attack Types | 6.0 | 🔲 Todo |
+| FEAT-012 | New Card Types | 6.0 | 🔲 Todo |
+| FEAT-013 | Special Attacks | 6.0 | 🔲 Todo |
 | FEAT-SKELLIGE-001 | Skellige Locations | 5.0 | 🔲 Todo |
 | FEAT-SKELLIGE-002 | Dagon's Lair | 5.0 | 🔲 Todo |
 | FEAT-SKELLIGE-003 | Dagon Monster Data | 5.0 | 🔲 Todo |
 | FEAT-SKELLIGE-004 | Random Encounter | 5.0 | 🔲 Todo |
 | FEAT-008 | Legendary Monster Engine | 4.0 | 🔲 Todo |
 | FEAT-009 | Legendary Monster Data | 4.0 | 🔲 Todo |
-| FEAT-010-A | Campaign State Engine | 2.0 | 🔲 Todo |
-| FEAT-010-B | Round Stage Driver | 2.0 | 🔲 Todo |
-| FEAT-010-C | Wild Hunt Character Selection | 2.0 | 🔲 Todo |
-| FEAT-010-D | Wild Hunt Location Tracking | 2.0 | 🔲 Todo |
-| FEAT-010-E | Wild Hunt Encounter (Boss Fight) | 2.0 | 🔲 Todo |
-| FEAT-010-F | Shield Counter | 2.0 | 🔲 Todo |
-| FEAT-010-G | Monster Spawn System | 2.0 | 🔲 Todo |
-| FEAT-010-H | Hound Enemy Type | 2.0 | 🔲 Todo |
-| FEAT-010-I | Story Card Reminder | 2.0 | 🔲 Todo |
-| FEAT-010-J | Wild Hunt Character Data | 2.0 | 🔲 Todo |
-| FEAT-010-K | Monster Proximity Card Bonus | 2.0 | 🔲 Todo |
+| FEAT-010-A | Campaign State Engine | 2.0 | ✅ Done |
+| FEAT-010-B | Round Stage Driver | 2.0 | ✅ Done |
+| FEAT-010-C | Wild Hunt Character Selection | 2.0 | ✅ Done |
+| FEAT-010-D | Wild Hunt Location Tracking | 2.0 | ✅ Done|
+| FEAT-010-E | Wild Hunt Encounter (Boss Fight) | 2.0 | ✅ Done |
+| FEAT-010-F | Shield Counter | 2.0 | ✅ Done |
+| FEAT-010-G | Monster Spawn System | 2.0 | ✅ Done |
+| FEAT-010-H | Hound Enemy Type | 2.0 | ⚠️ Partially Done |
+| FEAT-010-I | Story Card Reminder | 2.0 | ✅ Done |
+| FEAT-010-J | Wild Hunt Character Data | 2.0 | ⚠️ Partially Done |
+| FEAT-010-K | Monster Proximity Card Bonus | 2.0 | ✅ Done |
+| FEAT-010-L | Defeat Screen & Auto-Detect | 2.0 | 🔲 Todo |
 
 ---
 
@@ -94,67 +95,73 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 
 ---
 
-## 2.0 — Wild Hunt Expansion
+## 2.0 — Wild Hunt Expansion *(In Progress — ~90% complete)*
 
 > **Goal:** Support the Wild Hunt expansion — an 8-round campaign mode with a boss fight
 > against one of 4 Wild Hunt characters. Introduces campaign state, round stage tracking,
 > a shield counter, hound enemies, and a monster spawn system. Largest scope expansion in
 > the roadmap. Full spec: [`docs/specs/FEAT-010-wild-hunt.md`](../specs/FEAT-010-wild-hunt.md)
+>
+> **Status (2026-06-10):** Largely implemented. Store (`wildHuntStore.ts`), all UI screens,
+> and data files exist. Three gaps remain before 2.0 can ship — see below.
 
-### FEAT-010-A — Campaign State Engine *(M)*
+### ✅ FEAT-010-A — Campaign State Engine *(M)*
 - Track an 8-round campaign session with persistent state (survives refresh)
 - Round counter, stage progress, win/boss-fight trigger at round 8 stage 4
 - **Campaign setup**: player count (solo for now) + difficulty level selection
 
-### FEAT-010-B — Round Stage Driver *(M)*
+### ✅ FEAT-010-B — Round Stage Driver *(M)*
 - App drives player through 4 ordered stages each round:
   1. **Movement & Action** (player acts physically; app shows prompt)
   2. **Fight, Meditation & Exploration** (story card reminder shown here — see FEAT-010-I)
   3. **Drawing & Gaining Cards** (player acts physically; app shows prompt)
   4. **Add Hound & Monster** (spawn phase) — **round 8: triggers Final Battle instead**
 
-### FEAT-010-C — Wild Hunt Character Selection *(S)*
+### ✅ FEAT-010-C — Wild Hunt Character Selection *(S)*
 - Campaign-start screen: pick one of 4 pre-built characters
 - Each character has a fixed name and passive ability
 
-### FEAT-010-D — Wild Hunt Location Tracking *(M)*
+### ✅ FEAT-010-D — Wild Hunt Location *(M)*
 - Wild Hunt has a board position; moves **2 spaces toward player** each round (shortest path)
-- App calculates next position; player confirms move at start of each round
-- Current position displayed persistently on board screen during campaign
-- Reaching player location (or round 8 stage 4) triggers Final Battle
+- Round 8 stage 4 triggers Final Battle
 
-### FEAT-010-E — Wild Hunt Encounter (Boss Fight) *(L)*
+### ✅ FEAT-010-E — Wild Hunt Encounter (Boss Fight) *(L)*
 - Uses existing encounter engine + 4 character-specific special cards
 - Special cards have discard-trigger abilities (fire when discarded as player damage)
 - Shield counter absorbs damage before cards are discarded (see FEAT-010-F)
 
-### FEAT-010-F — Shield Counter *(M)*
+### ✅ FEAT-010-F — Shield Counter *(M)*
 - Numeric counter displayed on Wild Hunt board card and in encounter screen
 - Player damage depletes shields first; overflow discards deck cards
 - **Manually adjustable (+/−)** — story card events can add or remove shields at any time
 - Auto-increments when monster spawn overflows (see FEAT-010-G)
 
-### FEAT-010-G — Monster Spawn System *(M)*
+### ✅ FEAT-010-G — Monster Spawn System *(M)*
 - Per-round spawn table defines what level monsters and/or hounds to spawn
 - App shows spawn prompt during stage 4; player handles physical placement
 - Board-full overflow: Wild Hunt gains +1 shield instead of spawning
 
-### FEAT-010-H — Hound Enemy Type *(M)*
+###  FEAT-010-H — Hound Enemy Type *(M)*
 - L1/L2/L3 one-off enemy; tracked outside the 3 regular board slots; spawns at Wild Hunt's location
 - **Pre-attack**: app shows player bonus reminder before combo is declared
 - **Combo resolution**: player declares a single damage value; threshold is 2/3/4 per level (solo) — if met → hound defeated + Wild Hunt loses 1 shield
 - On defeat: app displays a random reward (reward table TBD)
 
-### FEAT-010-I — Story Card Reminder *(S)*
+### ✅ FEAT-010-I — Story Card Reminder *(S)*
 - Prompt shown during **stage 2** of each round: "Read Story Card #N"
 - No story card content in app; all narrative lives on physical cards
 
-### FEAT-010-J — Wild Hunt Character Data *(S)*
+### ✅ FEAT-010-J — Wild Hunt Character Data *(S)*
 - Static data: 4 characters × name, ability, starting shield count, 4 special cards
 
-### FEAT-010-K — Monster Proximity Card Bonus *(M)*
+### ✅ FEAT-010-K — Monster Proximity Card Bonus *(M)*
 - Pre-fight screen before every regular monster encounter: asks if Wild Hunt is nearby and how many hounds are adjacent
 - Each nearby Wild Hunt/hound unit adds +1 card drawn from the monster's card pool to the deck before the fight starts
+
+### ✅ FEAT-010-L — Defeat Screen *(S)*
+- `triggerDefeat()` exists in the store and the `'defeat'` phase is defined, but:
+  - **No `WildHuntDefeatScreen` component** — `App.tsx` falls back to `wh-board` with a `// TODO` comment
+- Required to make losing a run a complete, intentional UX flow
 
 ---
 

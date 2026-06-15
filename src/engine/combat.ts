@@ -7,10 +7,10 @@ export function flipCard(
   if (deck.length === 0) return null;
 
   const [card, ...remainingDeck] = deck;
-  const source = rng() < 0.5 ? 'top' : 'bottom';
+  const source = rng() < 0.5 || !card.bottom ? 'top' : 'bottom';
   const revealed: RevealedCard = {
     cardId: card.id,
-    chosenHalf: card[source],
+    chosenHalf: card[source]!,
     source,
   };
 

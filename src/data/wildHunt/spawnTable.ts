@@ -22,8 +22,6 @@ export interface SpawnOutcome {
   monsterBlocked: boolean;
   /** Level of hound to spawn, or `null` if no hound this round. */
   houndLevel: (1 | 2 | 3) | null;
-  /** Location where the hound spawns (Wild Hunt's current location, or 0 if unknown). */
-  houndLocationId: number;
 }
 
 /**
@@ -32,12 +30,10 @@ export interface SpawnOutcome {
  *
  * @param round - Current round number (1–8).
  * @param occupiedSlots - Number of non-empty board slots (0–3).
- * @param wildHuntLocationId - Current location of the Wild Hunt unit, or `null`.
  */
 export function getSpawnOutcome(
   round: number,
   occupiedSlots: number,
-  wildHuntLocationId: number | null,
 ): SpawnOutcome {
   const instruction = SOLO_SPAWN_TABLE[round] ?? {};
   const monsterLevel = instruction.monsterLevel ?? null;
@@ -46,6 +42,5 @@ export function getSpawnOutcome(
     monsterLevel,
     monsterBlocked: monsterLevel !== null && occupiedSlots >= 3,
     houndLevel,
-    houndLocationId: wildHuntLocationId ?? 0,
   };
 }

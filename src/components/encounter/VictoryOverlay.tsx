@@ -16,7 +16,7 @@ export function VictoryOverlay({ monsterName, wildHuntShieldLoss, onClose }: Vic
               Follow the usual steps when defeating a monster.
             </p>
             <p className="text-amber-300 text-sm font-semibold">
-              🛡️ The Wild Hunt loses {wildHuntShieldLoss} shield{wildHuntShieldLoss !== 1 ? 's' : ''} (equal to the monster's level).
+              The Wild Hunt loses {wildHuntShieldLoss} shield{wildHuntShieldLoss !== 1 ? 's' : ''} (equal to the monster's level).
             </p>
           </div>
         ) : null}

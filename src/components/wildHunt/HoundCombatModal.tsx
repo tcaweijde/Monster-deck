@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useWildHuntStore } from '../../store/wildHuntStore';
 import type { HoundSlot } from '../../types/wildHunt';
+import { getRandomHoundReward, type HoundReward } from '../../data/wildHunt/houndRewards';
 
 const BASE = import.meta.env.BASE_URL ?? '/';
 const PLAYER_COUNT = 1; // solo — update when multi-player support is added
@@ -24,6 +25,7 @@ export function HoundCombatModal({ hound, onClose }: HoundCombatModalProps) {
   const [phase, setPhase] = useState<Phase>('reminder');
   const [damage, setDamage] = useState(0);
   const [result, setResult] = useState<CombatResult | null>(null);
+  const [reward, setReward] = useState<HoundReward | null>(null);
 
   const threshold = THRESHOLD[hound.level];
   const houndBg = `${BASE}images/monsters/wild-hunt/hound/${hound.level}.jpg`;
@@ -32,6 +34,7 @@ export function HoundCombatModal({ hound, onClose }: HoundCombatModalProps) {
   function handleResolve() {
     const res = resolveHoundCombat(hound.id, damage);
     setResult(res);
+    if (res.defeated) setReward(getRandomHoundReward(hound.level));
     setPhase('result');
   }
 
@@ -145,20 +148,21 @@ export function HoundCombatModal({ hound, onClose }: HoundCombatModalProps) {
               {result.defeated ? (
                 <div className="space-y-3">
                   <div className="rounded-lg bg-cyan-900/30 border border-cyan-700/50 p-4 text-center space-y-1">
-                    <p className="text-2xl">✅</p>
                     <p className="text-cyan-300 font-bold text-lg">Hound Defeated!</p>
                   </div>
                   {result.excessDamage > 0 ? (
                     <div className="rounded-lg bg-red-900/30 border border-red-700/50 p-3 text-sm text-red-200 text-center">
-                      🛡️ Wild Hunt loses <span className="font-bold">{result.excessDamage} shield{result.excessDamage !== 1 ? 's' : ''}</span> from excess damage.
+                      Wild Hunt loses <span className="font-bold">{result.excessDamage} shield{result.excessDamage !== 1 ? 's' : ''}</span> from excess damage.
                     </div>
                   ) : (
                     <p className="text-center text-sm text-stone-400">No excess damage — shields unaffected.</p>
                   )}
-                  <div className="rounded-lg bg-stone-900/60 border border-stone-700 p-3 text-sm text-stone-300">
-                    <p className="text-xs text-cyan-400 uppercase tracking-wide font-semibold mb-1">Reward</p>
-                    <p>Draw your reward from the physical expansion reward table.</p>
-                  </div>
+                  {reward && (
+                    <div className="rounded-lg bg-stone-900/70 border border-amber-700/40 p-4 space-y-2">
+                      <p className="text-xs text-amber-400 uppercase tracking-wide font-semibold">Reward</p>
+                      <p className="text-sm text-stone-300 leading-relaxed">{reward.description}</p>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="rounded-lg bg-stone-900/60 border border-stone-600 p-4 text-center space-y-2">
@@ -169,14 +173,13 @@ export function HoundCombatModal({ hound, onClose }: HoundCombatModalProps) {
                   </p>
                 </div>
               )}
-              <button
-                onClick={onClose}
-                className="w-full py-3 rounded-lg bg-cyan-700 hover:bg-cyan-600 text-white font-bold transition-colors"
-              >
-                Close
-              </button>
             </>
           )}
+          <button
+            onClick={onClose}
+            className="w-full py-3 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 font-bold transition-colors">
+            Close
+          </button>
         </div>
       </div>
     </div>

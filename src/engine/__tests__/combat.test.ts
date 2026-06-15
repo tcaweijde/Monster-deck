@@ -14,6 +14,13 @@ function makeCard(id: string, topAttack = 1, bottomAttack = 2): MonsterCard {
   };
 }
 
+function makeSingleHalfCard(id: string, topAttack = 3): MonsterCard {
+  return {
+    id,
+    top: { name: 'Trail', attack: topAttack, effect: `top-effect-${id}` },
+  };
+}
+
 const CARD_A = makeCard('card-a', 3, 5);
 const CARD_B = makeCard('card-b', 2, 4);
 const CARD_C = makeCard('card-c', 1, 6);
@@ -105,7 +112,7 @@ describe('flipCard', () => {
       expect(topResult!.revealed.chosenHalf.attack).toBe(CARD_A.top.attack);
 
       const bottomResult = flipCard([CARD_A], () => 0.9);
-      expect(bottomResult!.revealed.chosenHalf.attack).toBe(CARD_A.bottom.attack);
+      expect(bottomResult!.revealed.chosenHalf.attack).toBe(CARD_A.bottom!.attack);
     });
 
     it('should call the RNG exactly once per flip', () => {
@@ -118,6 +125,33 @@ describe('flipCard', () => {
   describe('default RNG', () => {
     it('should not throw when called without an explicit RNG', () => {
       expect(() => flipCard([CARD_A])).not.toThrow();
+    });
+  });
+
+  describe('single-half cards (no bottom)', () => {
+    it('should always reveal top when bottom is absent, even if rng >= 0.5', () => {
+      const card = makeSingleHalfCard('trail-1');
+      const result = flipCard([card], () => 0.9);
+      expect(result!.revealed.source).toBe('top');
+      expect(result!.revealed.chosenHalf).toEqual(card.top);
+    });
+
+    it('should still reveal top when rng < 0.5 and bottom is absent', () => {
+      const card = makeSingleHalfCard('trail-2');
+      const result = flipCard([card], () => 0.1);
+      expect(result!.revealed.source).toBe('top');
+      expect(result!.revealed.chosenHalf).toEqual(card.top);
+    });
+
+    it('should set chosenHalf to the top CardHalf object', () => {
+      const card = makeSingleHalfCard('trail-3', 7);
+      const result = flipCard([card], () => 0.5);
+      expect(result!.revealed.chosenHalf.attack).toBe(7);
+      expect(result!.revealed.chosenHalf.name).toBe('Trail');
+    });
+
+    it('should not throw for a single-half card', () => {
+      expect(() => flipCard([makeSingleHalfCard('trail-4')])).not.toThrow();
     });
   });
 });
