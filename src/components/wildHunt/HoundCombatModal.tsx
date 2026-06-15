@@ -148,20 +148,18 @@ export function HoundCombatModal({ hound, onClose }: HoundCombatModalProps) {
               {result.defeated ? (
                 <div className="space-y-3">
                   <div className="rounded-lg bg-cyan-900/30 border border-cyan-700/50 p-4 text-center space-y-1">
-                    <p className="text-2xl">✅</p>
                     <p className="text-cyan-300 font-bold text-lg">Hound Defeated!</p>
                   </div>
                   {result.excessDamage > 0 ? (
                     <div className="rounded-lg bg-red-900/30 border border-red-700/50 p-3 text-sm text-red-200 text-center">
-                      🛡️ Wild Hunt loses <span className="font-bold">{result.excessDamage} shield{result.excessDamage !== 1 ? 's' : ''}</span> from excess damage.
+                      Wild Hunt loses <span className="font-bold">{result.excessDamage} shield{result.excessDamage !== 1 ? 's' : ''}</span> from excess damage.
                     </div>
                   ) : (
                     <p className="text-center text-sm text-stone-400">No excess damage — shields unaffected.</p>
                   )}
                   {reward && (
                     <div className="rounded-lg bg-stone-900/70 border border-amber-700/40 p-4 space-y-2">
-                      <p className="text-xs text-amber-400 uppercase tracking-wide font-semibold">🎁 Reward</p>
-                      <p className="text-white font-bold text-base">{reward.name}</p>
+                      <p className="text-xs text-amber-400 uppercase tracking-wide font-semibold">Reward</p>
                       <p className="text-sm text-stone-300 leading-relaxed">{reward.description}</p>
                     </div>
                   )}

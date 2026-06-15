@@ -114,7 +114,7 @@ export function WildHuntEncounterScreen() {
         >
           <div className="bg-stone-800 border-2 border-cyan-600 rounded-2xl p-6 space-y-4 max-w-sm w-full">
             <p className="text-cyan-300 font-semibold text-base">
-              ⚡ {specialCard.discardAbility.name}
+              {specialCard.discardAbility.name}
             </p>
             <p className="text-stone-300 text-sm">{specialCard.discardAbility.description}</p>
             <p className="text-stone-500 text-xs text-center">Tap anywhere to dismiss</p>
@@ -126,7 +126,7 @@ export function WildHuntEncounterScreen() {
       {phase === 'victory' && (
         <div className="fixed inset-0 bg-stone-950/90 flex items-center justify-center z-40 p-6">
           <div className="bg-stone-800 border-2 border-cyan-500 rounded-2xl p-8 text-center space-y-6 max-w-sm">
-            <h2 className="text-3xl font-bold text-cyan-400">🏆 Wild Hunt Defeated!</h2>
+            <h2 className="text-3xl font-bold text-cyan-400">Wild Hunt Defeated!</h2>
             <p className="text-stone-300">
               {monster.name} has been vanquished. The Wild Hunt's reign of terror ends here.
             </p>

@@ -30,7 +30,7 @@ export function WildHuntVictoryScreen() {
         )}
 
         <div className="bg-stone-900/80 border border-cyan-800/40 rounded-2xl p-6 space-y-3 w-full">
-          <p className="text-cyan-300 font-semibold">🛡️ The Wild Hunt has been defeated!</p>
+          <p className="text-cyan-300 font-semibold">The Wild Hunt has been defeated!</p>
           <p className="text-stone-400 text-sm">
             The portals are sealed. Tedd Deireadh has been averted.
           </p>

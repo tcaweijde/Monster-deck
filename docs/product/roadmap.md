@@ -158,7 +158,7 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 - Pre-fight screen before every regular monster encounter: asks if Wild Hunt is nearby and how many hounds are adjacent
 - Each nearby Wild Hunt/hound unit adds +1 card drawn from the monster's card pool to the deck before the fight starts
 
-### 🔲 FEAT-010-L — Defeat Screen & Auto-Detect *(S)*
+### ✅ FEAT-010-L — Defeat Screen *(S)*
 - `triggerDefeat()` exists in the store and the `'defeat'` phase is defined, but:
   - **No `WildHuntDefeatScreen` component** — `App.tsx` falls back to `wh-board` with a `// TODO` comment
 - Required to make losing a run a complete, intentional UX flow
