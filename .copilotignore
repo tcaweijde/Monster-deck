@@ -1,0 +1,10 @@
+# Secrets and sensitive files — Copilot will not read these
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.*
+*secrets*
+*credentials*
