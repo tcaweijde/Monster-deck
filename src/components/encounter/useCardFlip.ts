@@ -1,4 +1,5 @@
-import { useState, MutableRefObject } from 'react';
+import { useState } from 'react';
+import type { RefObject } from 'react';
 import { MotionValue, animate } from 'framer-motion';
 import type { RevealedCard } from '../../types';
 
@@ -7,7 +8,7 @@ interface UseCardFlipOptions {
   currentCard: RevealedCard | null;
   deckEmpty: boolean;
   /** Shared ref from useCardSwipe — prevents tap firing at the end of a drag. */
-  swiping: MutableRefObject<boolean>;
+  swiping: RefObject<boolean>;
   /** Shared x MotionValue from useCardSwipe — used to animate card off-screen on pass. */
   x: MotionValue<number>;
   onFlip: () => void;
@@ -27,7 +28,7 @@ export function useCardFlip({
   const [justRevealed, setJustRevealed] = useState(false);
 
   const handleTap = () => {
-    if (swiping.current) return;
+    if (swiping.current === true) return;
     if (isFlipping) return;
 
     if (turn === 'monster') {
