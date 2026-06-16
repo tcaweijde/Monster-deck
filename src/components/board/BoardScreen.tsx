@@ -7,8 +7,9 @@ import { getMonsterById } from '../../data/monsters';
 import { BoardSlotCard } from './BoardSlotCard';
 import { TrailTokenBoard } from '../trail/TrailTokenBoard';
 import { TrailPreFightModal } from '../trail/TrailPreFightModal';
-import type { PlacedWeaknessToken } from '../../types';
+import type { PlacedWeaknessToken, TrailCard } from '../../types';
 import type { TrailDeckOptions } from '../../engine/deck';
+import { makeDefaultTrailCards } from '../../engine/trail';
 
 export function BoardScreen() {
   const board = useBoardStore((s) => s.board);
@@ -44,8 +45,13 @@ export function BoardScreen() {
 
     if (token) setPendingEffect(token);
 
-    const trailDeckOpts: TrailDeckOptions | undefined = monster?.trailCards
-      ? { trailCards: monster.trailCards }
+    // Always use trail cards in trail mode — authored data if available, otherwise defaults.
+    const trailCards: [TrailCard, TrailCard, TrailCard, TrailCard] | null = trailModeEnabled && monster
+      ? (monster.trailCards ?? makeDefaultTrailCards(monster))
+      : null;
+
+    const trailDeckOpts: TrailDeckOptions | undefined = trailCards
+      ? { trailCards }
       : undefined;
 
     setActiveSlot(pendingSlotIndex);
@@ -54,7 +60,7 @@ export function BoardScreen() {
       false,
       0,
       trailDeckOpts,
-      monster?.trailCards ?? null,
+      trailCards,
     );
     clearPendingEffect();
     setPendingSlotIndex(null);

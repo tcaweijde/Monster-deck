@@ -94,7 +94,7 @@ export function EncounterScreen() {
           />
         </div>
 
-        {monster.discardAbility && (
+        {monster.discardAbility && turn === 'player' && (
           <DiscardAlert ability={monster.discardAbility} triggered={lastDiscardTriggered} />
         )}
 
@@ -107,7 +107,7 @@ export function EncounterScreen() {
           />
         )}
 
-        {lastTrailDiscardAbility && (
+        {lastTrailDiscardAbility && turn === 'player' && (
           <TrailDiscardAlert
             ability={lastTrailDiscardAbility}
             triggered={!!lastTrailDiscardAbility}

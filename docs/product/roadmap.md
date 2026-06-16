@@ -2,6 +2,7 @@
 
 > Digital opponent for The Witcher Old World solo play.
 > Last updated: 2026-06-16 · Living document — update at each release milestone.
+> Trail Mode (FEAT-020) fully implemented; monster ability content pending.
 
 ---
 
@@ -32,14 +33,14 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | FEAT-011 | New Attack Types | — | ~~Removed — not in Trail expansion~~ |
 | FEAT-012 | New Card Types | — | ~~Removed — not in Trail expansion~~ |
 | FEAT-013 | Special Attacks | — | ~~Subsumed by FEAT-020-B/C/D~~ |
-| FEAT-020-A | Trail Mode Toggle | 3.0 | 🔲 Todo |
-| FEAT-020-B | Special Card Data Model | 3.0 | 🔲 Todo |
-| FEAT-020-C | Special Card Draw-Trigger Resolution | 3.0 | 🔲 Todo |
-| FEAT-020-D | Special Card Discard-Trigger Resolution | 3.0 | 🔲 Todo |
-| FEAT-020-E | Weakness Token Board System | 3.0 | 🔲 Todo |
-| FEAT-020-F | Weakness Effect Pre-Fight | 3.0 | 🔲 Todo |
-| FEAT-020-G | Weakness Post-Defeat Reset | 3.0 | 🔲 Todo |
-| FEAT-020-H | Weakness Token Data Model | 3.0 | 🔲 Todo |
+| FEAT-020-A | Trail Mode Toggle | 3.0 | ✅ Done |
+| FEAT-020-B | Special Card Data Model | 3.0 | ✅ Done (ability content TODO per monster) |
+| FEAT-020-C | Special Card Draw-Trigger Resolution | 3.0 | ✅ Done |
+| FEAT-020-D | Special Card Discard-Trigger Resolution | 3.0 | ✅ Done |
+| FEAT-020-E | Weakness Token Board System | 3.0 | ✅ Done |
+| FEAT-020-F | Weakness Effect Pre-Fight | 3.0 | ✅ Done |
+| FEAT-020-G | Weakness Post-Defeat Reset | 3.0 | ✅ Done |
+| FEAT-020-H | Weakness Token Data Model | 3.0 | ✅ Done |
 | FEAT-SKELLIGE-001 | Skellige Locations | 5.0 | 🔲 Todo |
 | FEAT-SKELLIGE-002 | Dagon's Lair | 5.0 | 🔲 Todo |
 | FEAT-SKELLIGE-003 | Dagon Monster Data | 5.0 | 🔲 Todo |
@@ -172,12 +173,16 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 
 ---
 
-## 3.0 — Monster Trail Expansion
+## ✅ 3.0 — Monster Trail Expansion *(Complete)*
 
 > **Goal:** Support the Monster Trail expansion, which adds two interlocking opt-in
 > mechanisms to every monster encounter: numbered special cards with dual draw/discard
 > triggers, and a weakness token board system that grants pre-fight advantages. Both
 > are toggled together at game start. Full spec: [`docs/specs/FEAT-020-monster-trail.md`](../specs/FEAT-020-monster-trail.md)
+>
+> **Status (2026-06-16):** All engine, store, and UI sub-features complete.
+> Monster-specific ability content (discardAbility + trailCards text) is stubbed as
+> `TODO` placeholders in each monster file — to be filled in manually.
 >
 > **Retired stubs:** FEAT-004, FEAT-005, FEAT-006, FEAT-013 are subsumed by FEAT-020.
 > FEAT-011 and FEAT-012 are **removed** — confirmed absent from the physical expansion.
@@ -192,44 +197,44 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 
 ---
 
-### FEAT-020-A — Trail Mode Toggle *(S)*
+### ✅ FEAT-020-A — Trail Mode Toggle *(S)*
 - Single on/off toggle at game start; enables both the special card system and weakness token system together
 - No partial activation — both mechanisms are always on or always off
 - Stored in session state; does not persist across sessions
 
-### FEAT-020-B — Special Card Data Model *(M)*
+### ✅ FEAT-020-B — Special Card Data Model *(M)*
 - Extend the `Monster` type with an optional `trailCards` field: exactly 4 `TrailCard` entries when present
 - Each `TrailCard` has a `number` (1–4), a `drawAbility` (fires on monster flip), and a `discardAbility` (fires on player discard)
 - Both abilities follow the existing `Ability` structure (name + description)
 - When Trail Mode is on, deck generation appends the 4 special cards to the monster's standard deck
-- Trail monsters are already in the app data — this adds Trail-specific fields to existing entries
+- All 29 monsters have `discardAbility` and `trailCards` scaffolded; ability text is `TODO` — fill in per monster
 - Spec: [`docs/specs/FEAT-020-monster-trail.md`](../specs/FEAT-020-monster-trail.md)
 
-### FEAT-020-C — Special Card Draw-Trigger Resolution *(M)*
+### ✅ FEAT-020-C — Special Card Draw-Trigger Resolution *(M)*
 - During an encounter, when the monster flips a special card (number 1–4), the app fires the card's `drawAbility`
 - Displayed via the existing encounter alert overlay (same UX pattern as `DiscardAlert`)
 
-### FEAT-020-D — Special Card Discard-Trigger Resolution *(M)*
+### ✅ FEAT-020-D — Special Card Discard-Trigger Resolution *(M)*
 - During an encounter, when the player discards a special card as damage, the app fires the card's `discardAbility`
 - Both the global monster discard ability (if any) and the card-specific `discardAbility` can fire in the same event — displayed in sequence
 - Uses the existing `DiscardAlert` component pattern
 
-### FEAT-020-E — Weakness Token Board System *(M)*
+### ✅ FEAT-020-E — Weakness Token Board System *(M)*
 - At game start, app draws 6 weakness tokens and shows a terrain-type checklist to guide physical token placement (max 1 token per terrain type)
 - During the game, player can tap "Claim Token" in the app when on the same board location as a token
 - On claim: token moves to player's held set; a replacement is auto-drawn and added to the board
 - Board overview shows active tokens and their terrain types
 
-### FEAT-020-F — Weakness Effect Pre-Fight *(M)*
+### ✅ FEAT-020-F — Weakness Effect Pre-Fight *(M)*
 - Pre-fight screen shows the player's held tokens and offers an optional weakness declaration
 - Applying a token triggers one of four effects: combat advantage (player goes first), reduce deck size (remove N cards), remove a specific special card (#1–4) from the deck, or bonus reward on victory
 - Consumed token is removed from the player's hand after declaration
 
-### FEAT-020-G — Weakness Post-Defeat Reset *(S)*
+### ✅ FEAT-020-G — Weakness Post-Defeat Reset *(S)*
 - After monster victory: all 6 board token slots reset; app draws and displays a fresh token set
 - Player-held tokens (claimed but unused) are NOT reset — player keeps them
 
-### FEAT-020-H — Weakness Token Data Model *(S)*
+### ✅ FEAT-020-H — Weakness Token Data Model *(S)*
 - Define the `WeaknessToken` type: `id`, `terrainType`, `effectType` (`combatAdvantage | reduceDeckSize | removeSpecialCard | bonusReward`), `effectMagnitude?`
 - Token pool contents transcribed from physical rulebook
 

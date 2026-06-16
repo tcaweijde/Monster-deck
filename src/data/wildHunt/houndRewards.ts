@@ -1,5 +1,4 @@
 // ─── Hound Reward Data ───────────────────────────────────────────────────────
-// TODO: Replace all placeholder entries with actual reward data from the
 //       physical Wild Hunt expansion reward table.
 
 export interface HoundReward {

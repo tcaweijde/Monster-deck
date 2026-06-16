@@ -1,7 +1,18 @@
 import { useState } from 'react';
 import { useTrailStore } from '../../store/trailStore';
+import type { TerrainType } from '../../types';
 
-const TERRAIN_EMOJI: Record<string, string> = {
+const BASE = import.meta.env.BASE_URL ?? '/';
+const resolveUrl = (path: string) => `${BASE}${path.replace(/^\//, '')}`;
+const FALLBACK_IMAGE = resolveUrl('images/terrain/fallback.png');
+
+const TERRAIN_IMAGE: Record<TerrainType, string> = {
+  water:    resolveUrl('images/terrain/water.png'),
+  mountain: resolveUrl('images/terrain/mountain.png'),
+  woods:    resolveUrl('images/terrain/woods.png'),
+};
+
+const TERRAIN_EMOJI: Record<TerrainType, string> = {
   water: '🌊',
   mountain: '⛰️',
   woods: '🌲',
@@ -23,32 +34,17 @@ export function TrailTokenBoard() {
         Weakness Tokens
       </h2>
 
-      <div className="flex flex-col gap-2">
+      {/* Horizontal row — one card per terrain token */}
+      <div className="flex gap-2">
         {weaknessTokenBoard.map((token) => {
           const isPlaced = placementConfirmed.includes(token.id);
           return (
-            <div
+            <TerrainTokenCard
               key={token.id}
-              className="flex items-center gap-3 p-3 rounded-lg bg-stone-800 border border-stone-600"
-            >
-              <span className="text-xl">{TERRAIN_EMOJI[token.terrainType] ?? '📍'}</span>
-              <div className="flex-1">
-                <div className="text-sm font-semibold text-stone-200 capitalize">
-                  {token.terrainType}
-                </div>
-                <div className="text-xs text-stone-400">Weakness #{token.number}</div>
-              </div>
-              {isPlaced ? (
-                <button
-                  onClick={() => claimToken(token.id)}
-                  className="py-1.5 px-3 rounded-lg bg-stone-700 hover:bg-stone-600 border border-stone-500 text-stone-200 text-xs font-semibold transition-colors"
-                >
-                  Claim
-                </button>
-              ) : (
-                <span className="text-xs text-stone-500 italic">not placed</span>
-              )}
-            </div>
+              token={token}
+              isPlaced={isPlaced}
+              onClaim={() => claimToken(token.id)}
+            />
           );
         })}
       </div>
@@ -66,12 +62,12 @@ export function TrailTokenBoard() {
           </button>
           {heldExpanded && (
             <div className="mt-2 flex flex-col gap-1.5 pl-2">
-              {weaknessTokensHeld.map((token) => (
-                <div key={token.id} className="flex items-center gap-2 text-xs text-stone-400">
-                  <span>{TERRAIN_EMOJI[token.terrainType] ?? '📍'}</span>
-                  <span className="capitalize">{token.terrainType}</span>
+              {weaknessTokensHeld.map((t) => (
+                <div key={t.id} className="flex items-center gap-2 text-xs text-stone-400">
+                  <span>{TERRAIN_EMOJI[t.terrainType] ?? '📍'}</span>
+                  <span className="capitalize">{t.terrainType}</span>
                   <span>—</span>
-                  <span>Weakness #{token.number}</span>
+                  <span>Weakness #{t.number}</span>
                 </div>
               ))}
             </div>
@@ -81,3 +77,51 @@ export function TrailTokenBoard() {
     </div>
   );
 }
+
+interface TerrainTokenCardProps {
+  token: { id: string; terrainType: TerrainType; number: number };
+  isPlaced: boolean;
+  onClaim: () => void;
+}
+
+function TerrainTokenCard({ token, isPlaced, onClaim }: TerrainTokenCardProps) {
+  const [imgSrc, setImgSrc] = useState(TERRAIN_IMAGE[token.terrainType]);
+
+  return (
+    <div
+      className={`flex-1 rounded-xl border overflow-hidden transition-colors ${
+        isPlaced ? 'border-stone-600' : 'border-stone-500'
+      }`}
+    >
+      {/* Terrain art */}
+      <div className="relative h-20 bg-stone-900">
+        <img
+          src={imgSrc}
+          alt={token.terrainType}
+          onError={() => setImgSrc(FALLBACK_IMAGE)}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-stone-950/40" />
+      </div>
+
+      {/* Info + action */}
+      <div className="bg-stone-800 px-2 py-2 flex flex-col items-center gap-1.5">
+        <div className="text-center">
+          <div className="text-xs text-stone-400 capitalize">{token.terrainType}</div>
+          <div className="text-xs font-semibold text-stone-200">#{token.number}</div>
+        </div>
+        {isPlaced ? (
+          <button
+            onClick={onClaim}
+            className="w-full py-1 rounded-lg bg-stone-700 hover:bg-stone-600 border border-stone-500 text-stone-200 text-xs font-semibold transition-colors"
+          >
+            Claim
+          </button>
+        ) : (
+          <span className="text-xs text-stone-500 italic">not placed</span>
+        )}
+      </div>
+    </div>
+  );
+}
+

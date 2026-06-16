@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { MonsterAbility } from '../../types';
 
 interface DiscardAlertProps {
@@ -8,25 +8,34 @@ interface DiscardAlertProps {
 
 export function DiscardAlert({ ability, triggered }: DiscardAlertProps) {
   const [visible, setVisible] = useState(false);
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
-    if (!triggered) return;
-    const t1 = setTimeout(() => setVisible(true), 0);
-    const t2 = setTimeout(() => setVisible(false), 3000);
-    timersRef.current = [t1, t2];
-    return () => timersRef.current.forEach(clearTimeout);
+    if (triggered) setVisible(true);
   }, [triggered]);
 
   if (!visible) return null;
 
   return (
     <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75"
       onClick={() => setVisible(false)}
-      className="fixed inset-x-0 top-4 mx-auto max-w-sm bg-red-900/90 border border-red-500 text-red-100 rounded-lg px-4 py-2 text-center text-sm cursor-pointer z-50"
     >
-      <div className="font-semibold">{ability.name}</div>
-      <div className="text-red-300">{ability.description}</div>
+      <div
+        className="bg-red-950 border-2 border-red-500 rounded-2xl px-8 py-8 text-center max-w-sm mx-4 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="text-xs text-red-400 font-semibold uppercase tracking-widest mb-4">
+          Discard Trigger
+        </div>
+        <div className="text-xl font-bold text-red-100 mb-2">{ability.name}</div>
+        <div className="text-red-300 mb-8">{ability.description}</div>
+        <button
+          className="w-full bg-red-700 hover:bg-red-600 active:bg-red-800 text-white font-semibold px-6 py-3 rounded-xl transition-colors text-lg"
+          onClick={() => setVisible(false)}
+        >
+          Got it
+        </button>
+      </div>
     </div>
   );
 }

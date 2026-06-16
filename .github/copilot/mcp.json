@@ -8,5 +8,9 @@
    "ts-mcp-server": {
       "command": "npx",
       "args": ["ts-mcp-server"]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
     }
 }

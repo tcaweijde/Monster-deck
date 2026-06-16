@@ -9,7 +9,7 @@ export type WildHuntPhase =
   | 'playing'       // active run, rounds 1–8
   | 'finalBattle'   // boss fight triggered
   | 'victory'       // player won the boss fight
-  | 'defeat';       // placeholder — defeat condition TBD from physical rulebook
+  | 'defeat';       // player lost the boss fight
 
 /** Difficulty setting for a Wild Hunt run. */
 export type WildHuntDifficulty = 'easy' | 'normal' | 'hard' | 'very-hard';

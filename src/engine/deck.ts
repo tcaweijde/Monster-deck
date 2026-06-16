@@ -17,16 +17,19 @@ export function generateDeck(
   const size = monster.deckSize + bonusCount;
   const pool = [...monster.cardPool, ...genericCards];
 
-  if (pool.length < size) {
+  // When trail cards are present, reserve 4 slots for them so total stays at `size`.
+  const standardSize = trailOptions?.trailCards ? Math.max(0, size - 4) : size;
+
+  if (pool.length < standardSize) {
     throw new Error(
-      `Monster "${monster.id}" has ${pool.length} cards but needs ${size}`,
+      `Monster "${monster.id}" has ${pool.length} cards but needs ${standardSize}`,
     );
   }
 
   const shuffledPool = shuffle(pool, rng);
-  const selected = shuffledPool.slice(0, size);
+  const selected = shuffledPool.slice(0, standardSize);
 
-  // Append trail special cards
+  // Append trail special cards and reshuffle the combined deck
   if (trailOptions?.trailCards) {
     const trailMonsterCards = trailOptions.trailCards.map(trailCardToMonsterCard);
     return shuffle([...selected, ...trailMonsterCards], rng);

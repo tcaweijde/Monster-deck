@@ -7,8 +7,6 @@ import type { WeaknessToken } from '../types';
  * The number on a drawn token indexes the active monster's printed weakness list.
  * The app shows the number as a reminder — effect text lives on the monster sheet.
  *
- * ⚠️  AUTHORING REQUIRED: Monster weakness text (per monster, per number) must be
- * added to each monster's data file before 3.0 ships (see Monster.weaknesses — future field).
  */
 export const WEAKNESS_TOKEN_POOL: WeaknessToken[] = [
   // water

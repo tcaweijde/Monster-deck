@@ -47,8 +47,11 @@ export function useEncounterHandlers() {
       absorbDamage(level);
       defeatWildHuntSlot(activeWildHuntSlotIndex);
     } else {
+      const defeatedTerrainType = boardActiveSlotIndex !== null
+        ? boardSlots?.[boardActiveSlotIndex]?.locationType
+        : undefined;
       handleBoardVictory();
-      if (trailModeEnabled) handleTrailVictoryReset();
+      if (trailModeEnabled) handleTrailVictoryReset(defeatedTerrainType);
     }
     resetToSetup();
   };

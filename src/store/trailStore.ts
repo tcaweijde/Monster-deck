@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { WeaknessToken, PlacedWeaknessToken } from '../types';
+import type { WeaknessToken, PlacedWeaknessToken, TerrainType } from '../types';
 import { WEAKNESS_TOKEN_POOL } from '../data/weaknessTokenPool';
 import { initWeaknessTokenBoard, drawPlacedToken, redrawPlacedTokenLocation } from '../engine/trail';
 
@@ -34,8 +34,10 @@ interface TrailStore {
   setPendingEffect: (token: PlacedWeaknessToken) => void;
   /** Consume pendingWeaknessEffect. Call after encounterStore.startEncounter. */
   clearPendingEffect: () => void;
-  /** Post-defeat reset: discard board tokens back to pool, re-draw fresh board. Held tokens are NOT cleared. */
-  handleVictoryReset: (rng?: () => number) => void;
+  /** Post-defeat reset: return the defeated slot's terrain token to pool and draw a fresh one.
+   *  If `terrainType` is provided, only that token is cycled; other board tokens are unchanged.
+   *  Omit `terrainType` to fall back to a full board redraw (e.g. game-start). */
+  handleVictoryReset: (terrainType?: TerrainType, rng?: () => number) => void;
 }
 
 const INITIAL_STATE = {
@@ -123,19 +125,40 @@ export const useTrailStore = create<TrailStore>()(
 
       clearPendingEffect: () => set({ pendingWeaknessEffect: null }),
 
-      handleVictoryReset: (rng = Math.random) => {
-        const { tokenPool, weaknessTokenBoard } = get();
-        // Strip locationId before returning board tokens to the plain WeaknessToken pool
-        const returned = weaknessTokenBoard.map(({ locationId: _loc, ...t }) => t);
-        const returnedPool = [...tokenPool, ...returned];
-        const { board, remainingPool } = initWeaknessTokenBoard(returnedPool, rng);
-        set({
-          tokenPool: remainingPool,
-          weaknessTokenBoard: board,
-          placementConfirmed: [],
-          pendingWeaknessEffect: null,
-          // weaknessTokensHeld intentionally NOT cleared — player keeps held tokens
-        });
+      handleVictoryReset: (terrainType?: TerrainType, rng = Math.random) => {
+        const { tokenPool, weaknessTokenBoard, placementConfirmed } = get();
+
+        if (terrainType) {
+          // Only cycle the token for the defeated monster's terrain type.
+          const oldToken = weaknessTokenBoard.find((t) => t.terrainType === terrainType);
+          if (!oldToken) return;
+
+          const { locationId: _loc, ...bareOldToken } = oldToken;
+          const poolWithOld = [...tokenPool, bareOldToken];
+          const { token: newToken, remainingPool } = drawPlacedToken(poolWithOld, terrainType, rng);
+
+          const newBoard = newToken
+            ? weaknessTokenBoard.map((t) => (t.id === oldToken.id ? newToken : t))
+            : weaknessTokenBoard.filter((t) => t.id !== oldToken.id);
+
+          set({
+            tokenPool: remainingPool,
+            weaknessTokenBoard: newBoard,
+            placementConfirmed: placementConfirmed.filter((id) => id !== oldToken.id),
+            pendingWeaknessEffect: null,
+          });
+        } else {
+          // Full board redraw — used as fallback.
+          const returned = weaknessTokenBoard.map(({ locationId: _loc, ...t }) => t);
+          const returnedPool = [...tokenPool, ...returned];
+          const { board, remainingPool } = initWeaknessTokenBoard(returnedPool, rng);
+          set({
+            tokenPool: remainingPool,
+            weaknessTokenBoard: board,
+            placementConfirmed: [],
+            pendingWeaknessEffect: null,
+          });
+        }
       },
     }),
     {
