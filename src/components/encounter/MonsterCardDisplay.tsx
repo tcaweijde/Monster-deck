@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { RevealedCard } from '../../types';
+import { useCardSwipe } from './useCardSwipe';
+import { useCardFlip } from './useCardFlip';
 
 const BASE = import.meta.env.BASE_URL ?? '/';
 const CARD_BACK_IMAGE = `${BASE}images/card-back.png`;
@@ -38,68 +39,21 @@ export function MonsterCardDisplay({
   onPass,
   theme = 'default',
 }: MonsterCardDisplayProps) {
-  const [isFlipping, setIsFlipping] = useState(false);
-  const [justRevealed, setJustRevealed] = useState(false);
-  const swiping = useRef(false);
+  const { x, rotate, opacity, swiping, handleDragEnd } = useCardSwipe({
+    turn,
+    deckEmpty,
+    onSwipeDamage,
+  });
 
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15]);
-  const opacity = useTransform(x, [-200, -100, 0, 100, 200], [0.5, 1, 1, 1, 0.5]);
-
-  // Reset drag position when turn returns to monster so the card stays still.
-  useEffect(() => {
-    if (turn === 'monster') {
-      x.set(0);
-    }
-  }, [turn, x]);
-
-  const handleTap = () => {
-    if (swiping.current) return;
-    if (isFlipping) return;
-
-    if (turn === 'monster') {
-      if (!currentCard && deckEmpty) return;
-
-      if (currentCard) {
-        // Second tap on monster turn: swipe card right and hand over to player.
-        animate(x, 300, { duration: 0.2 }).then(() => {
-          onPass();
-          x.set(0);
-        });
-      } else {
-        // First tap on monster turn: reveal card but keep monster turn.
-        setIsFlipping(true);
-        setTimeout(() => {
-          onFlip();
-          setJustRevealed(false);
-          setIsFlipping(false);
-        }, 300);
-      }
-      return;
-    }
-
-    // Player turn tap: flip out then pass back to monster.
-    setTimeout(() => {
-      onPass();
-      setJustRevealed(false);
-    }, 10);
-  };
-
-  const handleDragEnd = () => {
-    const currentX = x.get();
-    if (Math.abs(currentX) > 80 && turn === 'player' && !deckEmpty) {
-      const direction = currentX > 0 ? 300 : -300;
-      animate(x, direction, { duration: 0.15 }).then(() => {
-        onSwipeDamage();
-        x.set(0);
-        swiping.current = false;
-      });
-    } else {
-      animate(x, 0, { type: 'spring', stiffness: 500, damping: 30 }).then(() => {
-        swiping.current = false;
-      });
-    }
-  };
+  const { isFlipping, justRevealed, setJustRevealed, handleTap } = useCardFlip({
+    turn,
+    currentCard,
+    deckEmpty,
+    swiping,
+    x,
+    onFlip,
+    onPass,
+  });
 
   const isPlayerTurn = turn === 'player';
   const backgroundImage = deckEmpty

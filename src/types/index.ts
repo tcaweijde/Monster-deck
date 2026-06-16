@@ -69,3 +69,14 @@ export interface BoardSlot {
 export interface BoardState {
   slots: [BoardSlot, BoardSlot, BoardSlot]; // always exactly 3
 }
+
+// Re-export Wild Hunt types so consumers can import from one place.
+export type {
+  WildHuntPhase,
+  WildHuntDifficulty,
+  WildHuntSpecialCard,
+  WildHuntCharacter,
+  HoundSlot,
+  WildHuntBoardSlot,
+  WildHuntState,
+} from './wildHunt';
