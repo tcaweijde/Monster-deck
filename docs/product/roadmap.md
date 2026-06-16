@@ -45,9 +45,9 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | FEAT-010-E | Wild Hunt Encounter (Boss Fight) | 2.0 | ✅ Done |
 | FEAT-010-F | Shield Counter | 2.0 | ✅ Done |
 | FEAT-010-G | Monster Spawn System | 2.0 | ✅ Done |
-| FEAT-010-H | Hound Enemy Type | 2.0 | ⚠️ Partially Done |
+| FEAT-010-H | Hound Enemy Type | 2.0 | ✅ Done |
 | FEAT-010-I | Story Card Reminder | 2.0 | ✅ Done |
-| FEAT-010-J | Wild Hunt Character Data | 2.0 | ⚠️ Partially Done |
+| FEAT-010-J | Wild Hunt Character Data | 2.0 | ✅ Done |
 | FEAT-010-K | Monster Proximity Card Bonus | 2.0 | ✅ Done |
 | FEAT-010-L | Defeat Screen & Auto-Detect | 2.0 | 🔲 Todo |
 
@@ -95,15 +95,14 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 
 ---
 
-## 2.0 — Wild Hunt Expansion *(In Progress — ~90% complete)*
+## 2.0 — Wild Hunt Expansion *(Complete)*
 
 > **Goal:** Support the Wild Hunt expansion — an 8-round campaign mode with a boss fight
 > against one of 4 Wild Hunt characters. Introduces campaign state, round stage tracking,
 > a shield counter, hound enemies, and a monster spawn system. Largest scope expansion in
 > the roadmap. Full spec: [`docs/specs/FEAT-010-wild-hunt.md`](../specs/FEAT-010-wild-hunt.md)
 >
-> **Status (2026-06-10):** Largely implemented. Store (`wildHuntStore.ts`), all UI screens,
-> and data files exist. Three gaps remain before 2.0 can ship — see below.
+> **Status (2026-06-15):** All sub-features complete.
 
 ### ✅ FEAT-010-A — Campaign State Engine *(M)*
 - Track an 8-round campaign session with persistent state (survives refresh)

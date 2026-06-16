@@ -34,9 +34,9 @@ Store and all UI components are implemented. Three gaps remain before 2.0 ships.
 | 010-E Boss Fight | ✅ Done | `WildHuntEncounterScreen` — shields absorb damage, special card alerts, victory/concede |
 | 010-F Shield Counter | ✅ Done | Shown on all WH screens, absorbs damage, manually adjustable |
 | 010-G Monster Spawn System | ✅ Done | `spawnTable.ts`, board-full → +1 shield, spawn preview at stage 4 |
-| 010-H Hound Enemy Type |⚠️ Partial | Full `HoundCombatModal` flow, excess damage → shield loss, inline reward popup (level-scaled, placeholder data for reward should be updated) |
+| 010-H Hound Enemy Type | ✅ Done | Full `HoundCombatModal` flow, excess damage → shield loss, inline reward popup with level-scaled reward data |
 | 010-I Story Card Reminder | ✅ Done | Stage 2 shows exploration card image + "Read Story Card" |
-| 010-J Character Data | ⚠️ Partial  | `characters.ts`, `bossMonster.ts`, `bossGenericDeck.ts`, should be validated with actual cards |
+| 010-J Character Data | ✅ Done  | `characters.ts`, `bossMonster.ts`, `bossGenericDeck.ts` validated against actual cards |
 | 010-K Proximity Card Bonus | ✅ Done | `ProximitySetupScreen` with Wild Hunt nearby + hound count + Monster Trail toggle |
 | 010-L Defeat Screen | ✅ Done | 
 
