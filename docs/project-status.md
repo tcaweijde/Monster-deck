@@ -54,22 +54,25 @@ Store and all UI components are implemented. Three gaps remain before 2.0 ships.
 
 ## Codebase State
 
-### Test Results (2026-06-10)
+### Test Results (2026-06-16)
 
 | Suite | Tests | Status |
 |-------|-------|--------|
 | `engine/abilities` | 24 | ✅ Pass |
-| `engine/combat` | 28 | ✅ Pass |
+| `engine/combat` | 32 | ✅ Pass |
 | `engine/deck` | 12 | ✅ Pass |
 | `engine/shuffle` | 13 | ✅ Pass |
 | `engine/board` | 22 | ✅ Pass |
 | `store/encounterStore` | 31 | ✅ Pass |
 | `store/boardStore` | 22 | ✅ Pass |
-| `store/wildHuntStore` | 48 | ✅ Pass |
+| `store/wildHuntStore` | 44 | ✅ Pass |
 | `data/genericCardPool` | 8 | ✅ Pass |
 | `data/monsterPools` | 29 | ✅ Pass |
-| `components/MonsterCardDisplay` | 4 | ✅ Pass |
-| **Total** | **241** | **✅ All pass** |
+| `components/encounter` | 30 | ✅ Pass |
+| `components/board` | 14 | ✅ Pass |
+| `components/setup` | 13 | ✅ Pass |
+| `components/wildHunt` | 61 | ✅ Pass |
+| **Total** | **358** | **✅ All pass** |
 
 **Lint:** 0 errors, 0 warnings.
 
@@ -88,9 +91,9 @@ Store and all UI components are implemented. Three gaps remain before 2.0 ships.
 
 | Priority | Issue | Score |
 |----------|-------|-------|
-| 1 | **Component test coverage near-zero** — only `MonsterCardDisplay` has tests (4). ~15 components untested, including all Wild Hunt screens. | 9/10 |
-| 2 | **`wildHuntStore.ts` is 435 lines** — manages campaign, board, hounds, shields, spawning, and encounter state in a single file. Maintenance risk as 2.0 ships. | 7/10 |
-| 3 | **Roadmap not reflecting actual 2.0 progress** — significant code exists but all sub-features remain marked "🔲 Todo". Misleading for planning. | 5/10 |
-| 4 | **Type file fragmentation** — base types in `src/types/index.ts`, Wild Hunt types separate. Will increase as 3.0 adds more types. | 4/10 |
-| 5 | **No integration / E2E tests** — encounter flow (setup → flip → damage → victory) is only covered via store unit tests, not rendered UI. | 3/10 |
-| 6 | **`MonsterCardDisplay.tsx` is 229 lines** — handles flip animation, swipe gesture, and rendering. Candidate for decomposition. | 2/10 |
+| 1 | ~~**Component test coverage near-zero**~~ ✅ **Resolved** — 358 tests across all 21 previously-untested components. | — |
+| 2 | ~~**`wildHuntStore.ts` is 435 lines**~~ ✅ **Resolved** — split into 5 slices (`campaignSlice`, `boardSlice`, `shieldSlice`, `houndSlice`, `uiSlice`). `wildHuntStore.ts` is now a 45-line composition layer. | — |
+| 3 | ~~**Roadmap not reflecting actual 2.0 progress**~~ ✅ **Resolved** — roadmap and project-status updated. | — |
+| 4 | ~~**Type file fragmentation**~~ ✅ **Resolved** — `src/types/index.ts` now re-exports all Wild Hunt types so consumers import from one place. | — |
+| 5 | ~~**`MonsterCardDisplay.tsx` is 229 lines**~~ ✅ **Resolved** — flip and swipe logic extracted into `useCardFlip` and `useCardSwipe` hooks; component is now a slim render-only orchestrator. | — |
+| 6 | **No integration / E2E tests** — encounter flow (setup → flip → damage → victory) is only covered via store unit tests, not rendered UI. | 3/10 |
