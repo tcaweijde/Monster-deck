@@ -87,4 +87,9 @@ describe('ProximitySetupScreen', () => {
     fireEvent.click(screen.getByText('Yes (+1 card)'));
     expect(screen.getByText(/1 bonus card/i)).toBeInTheDocument();
   });
+
+  it('uses a scrollable content container for smaller screens', () => {
+    const { container } = render(<ProximitySetupScreen />);
+    expect(container.querySelector('.overflow-y-auto')).toBeInTheDocument();
+  });
 });

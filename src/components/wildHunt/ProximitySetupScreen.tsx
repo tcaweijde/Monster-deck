@@ -45,7 +45,7 @@ export function ProximitySetupScreen() {
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${BG})` }} />
       <div className="absolute inset-0 bg-stone-950/80" />
 
-      <div className="relative h-full flex flex-col p-6 gap-6 max-w-lg mx-auto">
+      <div className="relative h-full flex flex-col p-6 gap-6 max-w-lg mx-auto overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -188,4 +188,3 @@ export function ProximitySetupScreen() {
     </div>
   );
 }
-
