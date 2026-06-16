@@ -1,6 +1,7 @@
 import { useWildHuntStore } from '../store/wildHuntStore';
 import { useBoardStore } from '../store/boardStore';
 import { useEncounterStore } from '../store/encounterStore';
+import { useTrailStore } from '../store/trailStore';
 
 /**
  * Adapts quit and victory encounter callbacks to the active game mode
@@ -20,6 +21,9 @@ export function useEncounterHandlers() {
   const clearActiveSlot = useBoardStore((s) => s.clearActiveSlot);
 
   const resetToSetup = useEncounterStore((s) => s.resetToSetup);
+
+  const trailModeEnabled = useTrailStore((s) => s.trailModeEnabled);
+  const handleTrailVictoryReset = useTrailStore((s) => s.handleVictoryReset);
 
   const inWildHunt = wildHuntPhase !== 'inactive';
 
@@ -44,6 +48,7 @@ export function useEncounterHandlers() {
       defeatWildHuntSlot(activeWildHuntSlotIndex);
     } else {
       handleBoardVictory();
+      if (trailModeEnabled) handleTrailVictoryReset();
     }
     resetToSetup();
   };

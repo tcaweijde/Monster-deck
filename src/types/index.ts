@@ -37,6 +37,12 @@ export interface Monster {
   cardPool: MonsterCard[];
   /** Images shown on the card front face. One is picked per card based on the card's position. */
   cardFrontImages?: string[];
+  /**
+   * Monster Trail expansion: exactly 4 numbered special cards.
+   * Present only for monsters that appear in the Trail expansion.
+   * When Trail Mode is on and this field is defined, all four cards are appended to the encounter deck.
+   */
+  trailCards?: [TrailCard, TrailCard, TrailCard, TrailCard];
 }
 
 export interface EncounterState {
@@ -80,3 +86,35 @@ export type {
   WildHuntBoardSlot,
   WildHuntState,
 } from './wildHunt';
+
+// ─── Monster Trail types (FEAT-020) ──────────────────────────────────────────
+
+export type TerrainType = 'water' | 'mountain' | 'woods';
+
+/**
+ * A physical weakness token from the Monster Trail expansion.
+ * Tokens are numbered 1–6 per terrain type; the number indexes into the
+ * specific monster's weakness list on its card. The app shows the number
+ * as a reminder — the actual effect text lives on the monster sheet.
+ */
+export interface WeaknessToken {
+  id: string;
+  terrainType: TerrainType;
+  /** 1–6: indexes into the defeated monster's printed weakness list. */
+  number: 1 | 2 | 3 | 4 | 5 | 6;
+}
+
+export interface TrailCard {
+  number: 1 | 2 | 3 | 4;
+  /** Shown immediately when the monster flips this card (draw trigger). */
+  drawAbility: MonsterAbility;
+  /** Shown when the player discards this card as damage (discard trigger). */
+  discardAbility: MonsterAbility;
+}
+
+/**
+ * A `WeaknessToken` that has been placed on the board — it carries the id of the
+ * specific `Location` the player must place the physical token on.
+ * Pool tokens do NOT have a locationId; only board / held tokens do.
+ */
+export type PlacedWeaknessToken = WeaknessToken & { locationId: number };

@@ -1,7 +1,7 @@
 # Monster Deck — Roadmap
 
 > Digital opponent for The Witcher Old World solo play.
-> Last updated: 2026-06-03 · Living document — update at each release milestone.
+> Last updated: 2026-06-16 · Living document — update at each release milestone.
 
 ---
 
@@ -25,13 +25,21 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | FEAT-001 | Monster Placement | 1.0 | ✅ Done |
 | FEAT-002 | Generic Card Data + Charge/Bite Display | 1.0 | ✅ Done |
 | FEAT-003 | Monster Art on Attack Cards | 1.0 | ✅ Done |
-| FEAT-004 | Monster-Specific Attack Cards | 3.0 | 🔲 Todo |
-| FEAT-005 | Monster Weaknesses | 3.0 | 🔲 Todo |
-| FEAT-006 | Monster-Specific Discard-Trigger Abilities | 3.0 | 🔲 Todo |
+| FEAT-004 | Monster-Specific Attack Cards | — | ~~Subsumed by FEAT-020-B~~ |
+| FEAT-005 | Monster Weaknesses | — | ~~Subsumed by FEAT-020-E/F~~ |
+| FEAT-006 | Monster-Specific Discard-Trigger Abilities | — | ~~Subsumed by FEAT-020-D~~ |
 | FEAT-007 | Monster-Specific Card Art | 3.0 | 🔲 Could-have |
-| FEAT-011 | New Attack Types | 6.0 | 🔲 Todo |
-| FEAT-012 | New Card Types | 6.0 | 🔲 Todo |
-| FEAT-013 | Special Attacks | 6.0 | 🔲 Todo |
+| FEAT-011 | New Attack Types | — | ~~Removed — not in Trail expansion~~ |
+| FEAT-012 | New Card Types | — | ~~Removed — not in Trail expansion~~ |
+| FEAT-013 | Special Attacks | — | ~~Subsumed by FEAT-020-B/C/D~~ |
+| FEAT-020-A | Trail Mode Toggle | 3.0 | 🔲 Todo |
+| FEAT-020-B | Special Card Data Model | 3.0 | 🔲 Todo |
+| FEAT-020-C | Special Card Draw-Trigger Resolution | 3.0 | 🔲 Todo |
+| FEAT-020-D | Special Card Discard-Trigger Resolution | 3.0 | 🔲 Todo |
+| FEAT-020-E | Weakness Token Board System | 3.0 | 🔲 Todo |
+| FEAT-020-F | Weakness Effect Pre-Fight | 3.0 | 🔲 Todo |
+| FEAT-020-G | Weakness Post-Defeat Reset | 3.0 | 🔲 Todo |
+| FEAT-020-H | Weakness Token Data Model | 3.0 | 🔲 Todo |
 | FEAT-SKELLIGE-001 | Skellige Locations | 5.0 | 🔲 Todo |
 | FEAT-SKELLIGE-002 | Dagon's Lair | 5.0 | 🔲 Todo |
 | FEAT-SKELLIGE-003 | Dagon Monster Data | 5.0 | 🔲 Todo |
@@ -166,43 +174,69 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 
 ## 3.0 — Monster Trail Expansion
 
-> **Goal:** Support the Monster Trail expansion, which introduces monster-specific attack
-> cards, weaknesses, and richer discard mechanics. Scoped as a separate release because
-> it extends the core data model and card engine — not just content.
+> **Goal:** Support the Monster Trail expansion, which adds two interlocking opt-in
+> mechanisms to every monster encounter: numbered special cards with dual draw/discard
+> triggers, and a weakness token board system that grants pre-fight advantages. Both
+> are toggled together at game start. Full spec: [`docs/specs/FEAT-020-monster-trail.md`](../specs/FEAT-020-monster-trail.md)
+>
+> **Retired stubs:** FEAT-004, FEAT-005, FEAT-006, FEAT-013 are subsumed by FEAT-020.
+> FEAT-011 and FEAT-012 are **removed** — confirmed absent from the physical expansion.
 
-### FEAT-004 — Monster-Specific Attack Cards *(M)*
-- Extend the card data model to support monster-specific cards alongside generic cards
-- Each monster's deck contains a mix of generic and monster-specific cards
-- Fill in real card values and effect text for all Monster Trail cards
+### MoSCoW
 
-### FEAT-005 — Monster Weaknesses *(S)*
-- Each Monster Trail monster has one or more weaknesses (e.g., silver, fire)
-- Display weakness during encounter so the player knows which card types are effective
-- Store as static data on the `Monster` type
+| Priority | Features |
+|----------|---------|
+| **Must Have** | FEAT-020-A, FEAT-020-B, FEAT-020-C, FEAT-020-D, FEAT-020-E, FEAT-020-F, FEAT-020-G, FEAT-020-H |
+| **Could Have** | FEAT-007 (asset-dependent) |
+| **Won't Have** | FEAT-011 (removed), FEAT-012 (removed), multiplayer, player location tracking |
 
-### FEAT-006 — Monster-Specific Discard-Trigger Abilities *(M)*
-- Some abilities trigger specifically when a *monster-specific* card is discarded (distinct from the existing generic discard trigger)
-- Extend the ability model to differentiate trigger conditions: `onAnyDiscard` vs `onMonsterCardDiscard`
-- Show a trigger alert in the UI (same `DiscardAlert` pattern as today)
+---
+
+### FEAT-020-A — Trail Mode Toggle *(S)*
+- Single on/off toggle at game start; enables both the special card system and weakness token system together
+- No partial activation — both mechanisms are always on or always off
+- Stored in session state; does not persist across sessions
+
+### FEAT-020-B — Special Card Data Model *(M)*
+- Extend the `Monster` type with an optional `trailCards` field: exactly 4 `TrailCard` entries when present
+- Each `TrailCard` has a `number` (1–4), a `drawAbility` (fires on monster flip), and a `discardAbility` (fires on player discard)
+- Both abilities follow the existing `Ability` structure (name + description)
+- When Trail Mode is on, deck generation appends the 4 special cards to the monster's standard deck
+- Trail monsters are already in the app data — this adds Trail-specific fields to existing entries
+- Spec: [`docs/specs/FEAT-020-monster-trail.md`](../specs/FEAT-020-monster-trail.md)
+
+### FEAT-020-C — Special Card Draw-Trigger Resolution *(M)*
+- During an encounter, when the monster flips a special card (number 1–4), the app fires the card's `drawAbility`
+- Displayed via the existing encounter alert overlay (same UX pattern as `DiscardAlert`)
+
+### FEAT-020-D — Special Card Discard-Trigger Resolution *(M)*
+- During an encounter, when the player discards a special card as damage, the app fires the card's `discardAbility`
+- Both the global monster discard ability (if any) and the card-specific `discardAbility` can fire in the same event — displayed in sequence
+- Uses the existing `DiscardAlert` component pattern
+
+### FEAT-020-E — Weakness Token Board System *(M)*
+- At game start, app draws 6 weakness tokens and shows a terrain-type checklist to guide physical token placement (max 1 token per terrain type)
+- During the game, player can tap "Claim Token" in the app when on the same board location as a token
+- On claim: token moves to player's held set; a replacement is auto-drawn and added to the board
+- Board overview shows active tokens and their terrain types
+
+### FEAT-020-F — Weakness Effect Pre-Fight *(M)*
+- Pre-fight screen shows the player's held tokens and offers an optional weakness declaration
+- Applying a token triggers one of four effects: combat advantage (player goes first), reduce deck size (remove N cards), remove a specific special card (#1–4) from the deck, or bonus reward on victory
+- Consumed token is removed from the player's hand after declaration
+
+### FEAT-020-G — Weakness Post-Defeat Reset *(S)*
+- After monster victory: all 6 board token slots reset; app draws and displays a fresh token set
+- Player-held tokens (claimed but unused) are NOT reset — player keeps them
+
+### FEAT-020-H — Weakness Token Data Model *(S)*
+- Define the `WeaknessToken` type: `id`, `terrainType`, `effectType` (`combatAdvantage | reduceDeckSize | removeSpecialCard | bonusReward`), `effectMagnitude?`
+- Token pool contents transcribed from physical rulebook
 
 ### FEAT-007 — Monster-Specific Card Art *(S — could-have)*
-- Display unique artwork per individual monster-specific card (not just per monster)
-- Dependent on asset availability; can ship without if art is unavailable
-
-### FEAT-011 — New Attack Types *(M)*
-- Cards can carry a typed attack (e.g., silver, fire, poison) stored on the card definition
-- Required to make FEAT-005 (Monster Weaknesses) mechanically meaningful — weakness checks need a typed attack to compare against
-- Extend the `MonsterCard` data model with an optional `attackType` field
-
-### FEAT-012 — New Card Types *(M)*
-- Monster Trail introduces card archetypes beyond standard attack cards (e.g., special, event)
-- Extend the card data model to support a `cardType` discriminator
-- Encounter UI handles non-attack card types correctly (different display / effect resolution)
-
-### FEAT-013 — Special Attacks *(M)*
-- Cards with compound or conditional effects — e.g., a card that triggers differently depending on context or has multiple named ability entries
-- Extend the ability model on `MonsterCard` to support multiple definitions per card
-- Required for faithful Trail card representation where some cards have dual or context-dependent effects
+- Display unique artwork per individual special card face (card numbers 1–4 per monster)
+- Falls back to the existing monster portrait if assets are unavailable
+- Does not block Trail Mode launch; ships when assets are ready
 
 ---
 

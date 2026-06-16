@@ -46,6 +46,7 @@ dist-ssr
 
 # GitHub agent definitions
 .github/agents/
+.github/copilot/
 
 # package
 package-lock.json
