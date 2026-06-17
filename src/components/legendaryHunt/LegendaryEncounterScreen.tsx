@@ -27,7 +27,6 @@ export function LegendaryEncounterScreen() {
   const lastDiscardedCard = useEncounterStore((s) => s.lastDiscardedCard);
   const flipMonsterCard = useEncounterStore((s) => s.flipMonsterCard);
   const passTurn = useEncounterStore((s) => s.passTurn);
-  const applyPlayerDamageWithProtection = useEncounterStore((s) => s.applyPlayerDamageWithProtection);
   const discardOneWithProtection = useEncounterStore((s) => s.discardOneWithProtection);
   const clearLastDiscardedCard = useEncounterStore((s) => s.clearLastDiscardedCard);
   const resetToSetup = useEncounterStore((s) => s.resetToSetup);

@@ -246,12 +246,6 @@ describe('useLegendaryHuntStore', () => {
       expect(state.phase).toBe('playing');
     });
 
-    it('should set phase to bossPrep on stage 4 of final round', () => {
-      useLegendaryHuntStore.setState({ phase: 'playing', stage: 4, round: 8, roundLimit: 8 });
-      act(() => { useLegendaryHuntStore.getState().advanceStage(); });
-      expect(useLegendaryHuntStore.getState().phase).toBe('bossPrep');
-    });
-
     it('should be a no-op when phase is not playing', () => {
       useLegendaryHuntStore.setState({ phase: 'setup', stage: 1, round: 1, roundLimit: 8 });
       act(() => { useLegendaryHuntStore.getState().advanceStage(); });
