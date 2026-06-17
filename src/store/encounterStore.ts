@@ -20,10 +20,26 @@ interface EncounterStore {
   startEncounter: (monsterId: string, playerFirst?: boolean, bonusCards?: number) => void;
   /** Start an encounter with a pre-built Monster object (used for boss fights). */
   startEncounterWithMonster: (monster: Monster, playerFirst?: boolean) => void;
+  /**
+   * Start an encounter with a pre-built deck (used for Legendary Hunt boss fights
+   * where deck size has been reduced before the encounter starts).
+   * Does NOT call generateDeck — uses the provided deck directly.
+   */
+  startEncounterWithDeck: (deck: MonsterCard[], monster: Monster, playerFirst?: boolean) => void;
   flipMonsterCard: () => void;
   discardOne: () => void;
   passTurn: () => void;
   applyPlayerDamage: (damage: number) => void;
+  /**
+   * Apply player damage with a protection value that negates part of each attack.
+   * effectiveDamage = max(0, declared - protection). Used in Legendary Hunt boss fight.
+   */
+  applyPlayerDamageWithProtection: (declared: number, protection: number) => void;
+  /**
+   * Discard one card reduced by protection, without ending the player's turn.
+   * effectiveDamage = max(0, 1 - protection). Used for per-swipe damage in Legendary Hunt.
+   */
+  discardOneWithProtection: (protection: number) => void;
   /** Clear lastDiscardedCard — call when a discard alert has been acted on. */
   clearLastDiscardedCard: () => void;
   resetToSetup: () => void;
@@ -152,8 +168,46 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
     });
   },
 
+  discardOneWithProtection: (protection) => {
+    const effective = Math.max(0, 1 - protection);
+    if (effective === 0) return;
+
+    const { deck, discardPile, monster } = get();
+    if (deck.length === 0) return;
+
+    const result = applyDamage(deck, effective);
+    const hasDiscardAbility = !!monster?.discardAbility;
+
+    set({
+      deck: result.remainingDeck,
+      discardPile: [...discardPile, ...result.discardedCards],
+      lastDiscardTriggered: hasDiscardAbility,
+      lastDiscardedCard: result.discardedCards[0] ?? null,
+      phase: result.remainingDeck.length === 0 ? 'victory' : 'playing',
+    });
+  },
+
   clearLastDiscardedCard: () => {
     set({ lastDiscardedCard: null });
+  },
+
+  startEncounterWithDeck: (deck, monster, playerFirst = false) => {
+    set({
+      monster,
+      deck: [...deck],
+      discardPile: [],
+      currentCard: null,
+      turn: playerFirst ? 'player' : 'monster',
+      phase: deck.length === 0 ? 'victory' : 'playing',
+      lastDiscardTriggered: false,
+      lastDiscardedCard: null,
+      proximityBonus: 0,
+    });
+  },
+
+  applyPlayerDamageWithProtection: (declared, protection) => {
+    const effective = Math.max(0, declared - protection);
+    get().applyPlayerDamage(effective);
   },
 
   resetToSetup: () => {

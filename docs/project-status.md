@@ -52,6 +52,25 @@ Store and all UI components are implemented. Three gaps remain before 2.0 ships.
 
 ---
 
+### 🔨 Next Iteration (3.0 — Legendary Hunt) — *~80% complete*
+
+All major UI and store code is implemented. 4 missing files are blocking a buildable feature.
+
+| Sub-feature | Status | Notes |
+|---|---|---|
+| 030-A Campaign Setup Screen | ✅ Done | Multi-step setup, overwrite + WH guard |
+| 030-B Round & Stage Driver | ✅ Done | `LegendaryHuntBoardScreen` — 4-stage loop |
+| 030-C Movement Deck Engine | 🔴 Blocked | `movementDeck.ts` engine + `MovementCardDisplay.tsx` missing |
+| 030-D Destruction Token Tracker | ✅ Done | `DestructionTokenCounter` |
+| 030-E Boss Fight Prep Screen | ✅ Done | Trophy count → protection + deck size |
+| 030-F Legendary Fight Deck Engine | ✅ Done | `buildLegendaryFightDeck` + `lookupProtectionValue` |
+| 030-G Legendary Encounter Screen | ✅ Done | Protection mechanic + special card discard alerts |
+| FEAT-009 Placeholder Monster Data | ✅ Done | 22-card placeholder fight deck |
+| Store tests | ❌ Missing | `legendaryHuntStore.test.ts` not yet written |
+| Trophy protection table data | ❌ Missing | `trophyProtectionTables.ts` not yet created |
+
+---
+
 ## Codebase State
 
 ### Test Results (2026-06-16)

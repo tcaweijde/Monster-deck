@@ -36,8 +36,14 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | FEAT-SKELLIGE-002 | Dagon's Lair | 5.0 | 🔲 Todo |
 | FEAT-SKELLIGE-003 | Dagon Monster Data | 5.0 | 🔲 Todo |
 | FEAT-SKELLIGE-004 | Random Encounter | 5.0 | 🔲 Todo |
-| FEAT-008 | Legendary Monster Engine | 4.0 | 🔲 Todo |
-| FEAT-009 | Legendary Monster Data | 4.0 | 🔲 Todo |
+| FEAT-030 | Legendary Hunt — Campaign Engine (umbrella) | 4.0 | 🔲 Todo |
+| FEAT-030-A | Campaign Setup | 4.0 | 🔲 Todo |
+| FEAT-030-B | Round & Stage Driver | 4.0 | 🔲 Todo |
+| FEAT-030-C | Movement Deck Engine | 4.0 | 🔲 Todo |
+| FEAT-030-D | Destruction Token Tracker | 4.0 | 🔲 Todo |
+| FEAT-030-E | Boss Fight Preparation Screen | 4.0 | 🔲 Todo |
+| FEAT-030-F | Legendary Fight Deck Engine | 4.0 | 🔲 Todo |
+| FEAT-009 | Legendary Monster Data (7 monsters) | 4.0 | 🔲 Todo |
 | FEAT-010-A | Campaign State Engine | 2.0 | ✅ Done |
 | FEAT-010-B | Round Stage Driver | 2.0 | ✅ Done |
 | FEAT-010-C | Wild Hunt Character Selection | 2.0 | ✅ Done |
@@ -206,21 +212,77 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 
 ---
 
-## 4.0 — Legendary Monsters
+## 4.0 — Legendary Hunt Expansion
 
-> **Goal:** Add the Legendary (L4) monster tier. This is a meaningful scope increase —
-> Legendary monsters have movement mechanics, larger decks, and stronger cards —
-> warranting a major version.
+> **Goal:** Add the Legendary (L4) monster tier as a full campaign mode. The player places
+> the Legendary monster on the board at game start alongside regular monsters and must defeat
+> it within a round limit (7 / 8 / 9 rounds on hard / normal / easy). Regular encounters
+> continue during the campaign — trophies earned there determine the boss fight deck size.
+> Destruction tokens earned during the monster's movement phases further reduce the deck and
+> grant initiative. Equivalent complexity to Wild Hunt; warrants its own major version.
+>
+> **Rulebook confirmations:**
+> - ✅ Movement deck reshuffles when exhausted
+> - ✅ Fight deck reaching 0 = monster defeated
 
-### FEAT-008 — Legendary Monster Engine *(L)*
-- New `level: 4` tier with deck sizes of 20+ cards
-- Movement mechanic: Legendary monsters can move between board locations
-- New engine module for movement resolution (location-to-location rules)
-- Update `boardStore` to handle movement events
+### FEAT-030 — Legendary Hunt Campaign Engine *(umbrella — L)*
+
+Umbrella for all campaign engine sub-features. Tracks campaign state (round, board position, token count, trophy count) with persistence across refresh.
+
+### FEAT-030-A — Campaign Setup *(S)*
+- Difficulty selection screen: **Easy** (9 rounds) / **Normal** (8 rounds) / **Hard** (7 rounds)
+- Legendary monster selection: pick one of the 7 available Legendary monsters
+- App initialises campaign state: round counter = 1, board position = starting location, destruction token count = 0
+- Campaign state persisted to `localStorage`
+
+### FEAT-030-B — Round & Stage Driver *(M)*
+- Drives player through the ordered stages of each round (same structural pattern as Wild Hunt FEAT-010-B)
+- Round counter incremented at end of each round; displayed prominently with round limit
+- Final round: stage driver triggers **Boss Fight Preparation** (FEAT-030-E) instead of a new round
+- Win condition: Legendary monster defeated within round limit → victory screen
+- Loss condition: Round limit reached without defeating the monster → defeat screen
+
+### FEAT-030-C — Movement Deck Engine *(M)*
+- Each Legendary monster has its own movement deck; cards are separate from the fight deck
+- During the movement stage: app draws the top card and displays **2 target locations**
+  - Monster moves toward **Location 1**; if it reaches Location 1, it continues toward **Location 2**
+  - Movement distance is fixed for solo play
+- App updates and persistently displays the monster's **current board location**
+- Player places physical destruction tokens at each location the monster passes through; app drives the reminder
+- ✅ When movement deck is exhausted: deck reshuffles
+
+### FEAT-030-D — Destruction Token Tracker *(S)*
+- Tap-based **+/− counter** in app displayed throughout the campaign
+- Player taps to claim tokens when ending their movement phase (Phase 1 of each round)
+- Token count **carries forward** between rounds; resets only when the boss fight begins
+- Counter feeds directly into FEAT-030-E (deck size reduction) and FEAT-030-E (initiative)
+
+### FEAT-030-E — Boss Fight Preparation Screen *(M)*
+- Shown at the start of the final round before the fight begins
+- **One-time trophy input**: player enters the number of trophies earned during the campaign
+- App calculates final fight deck size using the formula:
+  ```
+  base deck size − trophy protection reduction − destruction token count = actual fight deck size
+  ```
+- Displays **initiative ruling**: player goes first if destruction token count > 0; otherwise normal initiative
+- Confirmation tap transitions to the boss fight (FEAT-030-F)
+
+### FEAT-030-F — Legendary Fight Deck Engine *(M)*
+- Each Legendary monster has a dedicated fight deck of **stronger special attack cards**
+- **4 special attacks per monster**, following the Monster Trail card pattern (FEAT-013)
+- Fight deck size reduction from FEAT-030-E is applied before the fight starts (cards removed from deck, not revealed)
+- Fight uses the existing encounter engine for card flip, damage, and discard
+- ✅ Deck reaching 0 = monster defeated
+- Distinct from the movement deck; movement deck is never used in the boss fight
 
 ### FEAT-009 — Legendary Monster Data *(M)*
-- Define Legendary-tier cards and abilities for each Legendary monster
-- Fill in art assets
+- Static data for all **7 Legendary monsters**, each requiring:
+  - **Movement deck cards**: 2 target location names per card
+  - **Fight deck cards**: 4 special attacks with ability text, attack values, and trigger conditions
+  - **Base deck size** and **trophy protection table** (how many cards are removed per trophy bracket)
+  - **Monster abilities** (base + any special)
+  - **Art assets**: card front images per monster
+- Data model extends the existing `Monster` type with `legendaryData: { movementDeck, fightDeck, baseDeckSize, trophyTable }`
 
 ---
 

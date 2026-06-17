@@ -39,6 +39,7 @@ These are the behavior changes we want to cause for the Solo Player:
 | I1 | Instant encounter setup -- no shuffling, no counting cards | Setup takes under 10 seconds from "start encounter" to "ready to play" |
 | I2 | Faster turn resolution -- app handles flipping, discarding, tracking deck size | Turns require only a single tap to resolve the monster's action |
 | I3 | Reliable ability tracking -- monster abilities are always applied, never forgotten | Monster ability is visible on screen at all times during the encounter |
+| I4 | Campaign board position always visible -- no manual tracking of Legendary monster movement | Player can always see the Legendary monster's current board location in the app; does not need to write it down or remember it |
 
 ---
 
@@ -55,7 +56,7 @@ Enables the player to pick which monster to fight.
 | F1.1 Random monster selection | App presents a random monster (or choice from a small random set) for the player to fight | I1 | Eliminates the need to dig through a box of monster cards | ✅ Shipped |
 | F1.2 Monster level selection | Player picks the monster level (L1, L2, L3). Determines deck size: L1 = 8-12, L2 = 12-16, L3 = 16-20 cards | I1 | Different levels require different deck sizes; the app handles the count | ✅ Shipped |
 
-> **Legendary monsters (L4, 20+ stronger cards, can move):** FEAT-008 / FEAT-009 — planned for 2.0.
+> **Legendary monsters (L4, campaign mode with movement, boss fight, trophy/token mechanics):** FEAT-030 / FEAT-009 — planned for 4.0.
 
 ### Epic 2: Card Data Model
 
@@ -116,14 +117,19 @@ Adds monster-specific cards, weaknesses, and richer discard mechanics from the M
 | F6.6 New card types | Monster Trail introduces new card archetypes beyond standard attack cards (e.g., special, event) | I2, I3 | Expands encounter variety and faithfully represents the Trail expansion's card set | FEAT-012 |
 | F6.7 Special attacks | Cards with multiple ability definitions — e.g., a card that triggers differently depending on context | I2, I3 | Needed to represent Trail cards that have compound or conditional effects | FEAT-013 |
 
-### Epic 7: Legendary Monsters
+### Epic 7: Legendary Hunt Expansion
 
-Adds the L4 monster tier with movement mechanics.
+Adds the Legendary (L4) monster tier as a multi-round campaign mode. The Legendary monster is placed on the board at game start alongside regular monsters. The campaign goal is to defeat it within the round limit (7 / 8 / 9 rounds on hard / normal / easy). Regular monster encounters continue during the campaign — trophies earned there determine the Legendary monster's boss fight deck size. Before the final boss fight, a one-time trophy input and destruction token count collapse into a single fight deck size and initiative ruling.
 
 | Feature | Description | Impact | Rationale | Roadmap |
 |---------|-------------|--------|-----------|---------|
-| F7.1 Legendary monster engine | Level 4 tier with 20+ card decks and movement between board locations | I2 | New monster class with fundamentally different behavior | FEAT-008 |
-| F7.2 Legendary monster data | Card definitions, abilities, and art for each Legendary monster | I2, I3 | Content required to make the engine useful | FEAT-009 |
+| F7.1 Campaign setup | Difficulty selection (easy/normal/hard → 9/8/7 round limit); Legendary monster selection; campaign state initialised (round counter, board position, token count) | I1, I4 | Entry point for the entire Legendary Hunt campaign. Without this, none of the other features are reachable | FEAT-030-A |
+| F7.2 Round & stage driver | Tracks current round against the round limit; drives player through the ordered stages of each round (same structural pattern as Wild Hunt); triggers boss fight preparation on the final round | I2, I4 | The campaign scaffold — ensures the player always knows which round they're in and when the hunt ends. Round limit enforces the win/loss condition | FEAT-030-B |
+| F7.3 Movement deck engine | Separate movement deck per Legendary monster; app draws a card and displays 2 target locations; monster moves toward location 1 (and continues to location 2 if reached); app updates and persistently displays current board position. Deck reshuffles when exhausted | I2, I3, I4 | Core Legendary mechanic. Replaces manual card drawing and board tracking. App must own the board position so destruction token logic and boss fight prep are accurate | FEAT-030-C |
+| F7.4 Destruction token tracker | Tap-based counter in app; player taps to claim tokens when ending their movement phase (Phase 1); token count is carried into boss fight preparation and is not reset between rounds; resets only when boss fight begins | I2, I3 | Replaces physical token counting. Token count feeds directly into fight deck size reduction and initiative — accuracy is mandatory | FEAT-030-D |
+| F7.5 Boss fight preparation screen | One-time trophy input before the boss fight begins; app calculates final fight deck size using the formula: `base deck size − trophy protection reduction − destruction token count = actual fight deck size`; displays initiative ruling (player goes first if token count > 0, otherwise normal initiative) | I1, I2, I3 | Distills all campaign decisions into a single, explicit pre-fight summary. Eliminates manual arithmetic and ensures the trophy/token interaction is never applied incorrectly | FEAT-030-E |
+| F7.6 Legendary fight deck engine | Each Legendary monster has its own fight deck of stronger special attack cards (4 special attacks per monster, following Monster Trail card pattern); deck size reduction from FEAT-030-E is applied before the fight starts; fight uses the existing encounter engine for card flip, damage, and discard. Reaching deck size 0 = monster defeated | I2, I3 | The Legendary boss fight uses a distinct, stronger card set that cannot be mapped to the generic or Trail decks. Requires its own deck composition layer on top of the existing encounter engine | FEAT-030-F |
+| F7.7 Legendary monster data | Static data for all 7 Legendary monsters: movement deck cards (2 target locations per card), fight deck cards (4 special attacks per monster with ability text and values), base deck sizes, trophy protection table, abilities, and art assets | I2, I3 | Content required to make the engine useful. Without real card data, the campaign is unplayable | FEAT-009 |
 
 ### Epic 8: Wild Hunt Expansion
 
@@ -200,20 +206,25 @@ The product fails without every feature listed here. Each one was challenged and
 | 3 | Dagon monster data | FEAT-SKELLIGE-003 | 🔲 Todo |
 | 4 | Random encounter | FEAT-SKELLIGE-004 | 🔲 Todo |
 
-### 2.0 — Legendary Monsters
+### 2.0 — Wild Hunt Expansion ✅ Done
 
 | # | Feature | FEAT | Status |
 |---|---------|------|--------|
-| 1 | Legendary monster engine | FEAT-008 | 🔲 Todo |
-| 2 | Legendary monster data | FEAT-009 | 🔲 Todo |
+| 1 | Wild Hunt expansion (A–L) | FEAT-010 | ✅ Done |
 
-### 3.0 — Wild Hunt Expansion
+### 4.0 — Legendary Hunt Expansion
 
 | # | Feature | FEAT | Status |
 |---|---------|------|--------|
-| 1 | Wild Hunt expansion | FEAT-010 | 🔲 Needs spec |
+| 1 | Campaign setup | FEAT-030-A | 🔲 Todo |
+| 2 | Round & stage driver | FEAT-030-B | 🔲 Todo |
+| 3 | Movement deck engine | FEAT-030-C | 🔲 Todo |
+| 4 | Destruction token tracker | FEAT-030-D | 🔲 Todo |
+| 5 | Boss fight preparation screen | FEAT-030-E | 🔲 Todo |
+| 6 | Legendary fight deck engine | FEAT-030-F | 🔲 Todo |
+| 7 | Legendary monster data (7 monsters) | FEAT-009 | 🔲 Todo |
 
-### Beyond 3.0 — Future possibilities
+### Beyond 4.0 — Future possibilities
 
 | Feature | Why parked |
 |---------|-----------|
@@ -227,8 +238,11 @@ The product fails without every feature listed here. Each one was challenged and
 |----------|-----------|
 | Top/bottom card halves display in scope for 1.0 (FEAT-002) | Originally resolved internally via RNG with no UI. Revised: the app still picks the half, but now shows the player which half (Charge / Bite) was resolved. Adds clarity without giving the player a choice. |
 | Expansion abilities are IN MVP | Thomas always plays with the expansion. These are not optional for his use case. |
-| Multiplayer is BEYOND 3.0 | Solo player is the only persona for MVP and 1.0. |
-| Legendary monsters planned for 2.0 (FEAT-008/009) | Movement mechanics add significant complexity. Deferred until base game and Trail expansion are complete. |
+| Multiplayer is BEYOND 4.0 | Solo player is the only persona for MVP and 1.0. |
+| Legendary Hunt is a full campaign mode, not just a monster tier (FEAT-030/009, v4.0) | Movement deck, destruction token tracking, trophy input, boss fight prep — this is equivalent complexity to Wild Hunt. Deserves its own major version. Deferred until Monster Trail expansion is complete. |
+| Legendary fight deck size is variable, not fixed | Formula: `base deck size − trophy protection reduction − destruction token count`. Trophies and tokens are the player's agency mechanism in the campaign. |
+| Movement deck reshuffles when exhausted | Confirmed with rulebook. FEAT-030-C reshuffles the movement deck when the last card is drawn. |
+| Deck-empty = monster defeated | Confirmed with rulebook. FEAT-030-F follows existing encounter logic: deck reaching 0 ends the fight as a victory. |
 | Card variety requires a real data model | Every card has different attacks/abilities. A simple random-number approach would not be faithful to the game. |
-| Monster Trail is a separate 1.1 release | Trail extends the data model and card engine — not just content. Warrants its own release to keep 1.0 scope clean. |
-| Wild Hunt requires a spec before planning (FEAT-010) | Mechanics are not yet understood well enough to estimate or commit. |
+| Monster Trail is a separate 3.0 release | Trail extends the data model and card engine — not just content. Warrants its own release to keep 1.0 scope clean. |
+| Wild Hunt (FEAT-010) is complete as of 2.0 | All A–L sub-features implemented. FEAT-010-L (Defeat Screen) was the final item. |

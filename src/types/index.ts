@@ -80,3 +80,15 @@ export type {
   WildHuntBoardSlot,
   WildHuntState,
 } from './wildHunt';
+
+// Re-export Legendary Hunt types so consumers can import from one place.
+export type {
+  LegendaryPhase,
+  LegendaryDifficulty,
+  MovementCard,
+  TrophyProtectionEntry,
+  TrophyProtectionTable,
+  LegendaryMonsterCard,
+  LegendaryMonster,
+  LegendaryCampaignState,
+} from './legendary';

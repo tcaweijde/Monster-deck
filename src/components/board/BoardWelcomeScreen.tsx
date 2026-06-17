@@ -1,9 +1,11 @@
 import { useBoardStore } from '../../store/boardStore';
 import { useWildHuntStore } from '../../store/wildHuntStore';
+import { useLegendaryHuntStore } from '../../store/legendaryHuntStore';
 
 export function BoardWelcomeScreen() {
   const initNewGame = useBoardStore((s) => s.initNewGame);
   const initiateSetup = useWildHuntStore((s) => s.initiateSetup);
+  const initiateLegendarySetup = useLegendaryHuntStore((s) => s.initiateSetup);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 space-y-8">
@@ -21,6 +23,12 @@ export function BoardWelcomeScreen() {
           className="w-full py-4 rounded-lg bg-stone-700 hover:bg-stone-600 border border-stone-500 text-stone-200 font-bold text-lg transition-colors"
         >
           Wild Hunt mode
+        </button>
+        <button
+          onClick={initiateLegendarySetup}
+          className="w-full py-4 rounded-lg bg-stone-700 hover:bg-stone-600 border border-stone-500 text-stone-200 font-bold text-lg transition-colors"
+        >
+          Legendary Hunt mode
         </button>
       </div>
     </div>
