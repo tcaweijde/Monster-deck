@@ -47,16 +47,6 @@ interface EncounterStore {
   discardOne: () => void;
   passTurn: () => void;
   applyPlayerDamage: (damage: number) => void;
-  /**
-   * Apply player damage with a protection value that negates part of each attack.
-   * effectiveDamage = max(0, declared - protection). Used in Legendary Hunt boss fight.
-   */
-  applyPlayerDamageWithProtection: (declared: number, protection: number) => void;
-  /**
-   * Discard one card reduced by protection, without ending the player's turn.
-   * effectiveDamage = max(0, 1 - protection). Used for per-swipe damage in Legendary Hunt.
-   */
-  discardOneWithProtection: (protection: number) => void;
   /** Clear lastDiscardedCard — call when a discard alert has been acted on. */
   clearLastDiscardedCard: () => void;
   /** Clear pendingTrailDrawAbility — call when the draw-trigger alert is dismissed. */
@@ -244,25 +234,6 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
     });
   },
 
-  discardOneWithProtection: (protection) => {
-    const effective = Math.max(0, 1 - protection);
-    if (effective === 0) return;
-
-    const { deck, discardPile, monster } = get();
-    if (deck.length === 0) return;
-
-    const result = applyDamage(deck, effective);
-    const hasDiscardAbility = !!monster?.discardAbility;
-
-    set({
-      deck: result.remainingDeck,
-      discardPile: [...discardPile, ...result.discardedCards],
-      lastDiscardTriggered: hasDiscardAbility,
-      lastDiscardedCard: result.discardedCards[0] ?? null,
-      phase: result.remainingDeck.length === 0 ? 'victory' : 'playing',
-    });
-  },
-
   clearLastDiscardedCard: () => {
     set({ lastDiscardedCard: null });
   },
@@ -315,11 +286,6 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       lastDiscardedCard: null,
       proximityBonus: 0,
     });
-  },
-
-  applyPlayerDamageWithProtection: (declared, protection) => {
-    const effective = Math.max(0, declared - protection);
-    get().applyPlayerDamage(effective);
   },
 
   resetToSetup: () => {

@@ -17,8 +17,8 @@ export function generateDeck(
   const size = monster.deckSize + bonusCount;
   const pool = [...monster.cardPool, ...genericCards];
 
-  // When trail cards are present, reserve 4 slots for them so total stays at `size`.
-  const standardSize = trailOptions?.trailCards ? Math.max(0, size - 4) : size;
+  // Trail cards are appended on top of the standard deck — total grows by 4 when present.
+  const standardSize = size;
 
   if (pool.length < standardSize) {
     throw new Error(

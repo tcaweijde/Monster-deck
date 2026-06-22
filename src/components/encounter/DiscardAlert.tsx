@@ -13,6 +13,12 @@ export function DiscardAlert({ ability, triggered }: DiscardAlertProps) {
     if (triggered) setVisible(true);
   }, [triggered]);
 
+  useEffect(() => {
+    if (!visible) return;
+    const id = setTimeout(() => setVisible(false), 3000);
+    return () => clearTimeout(id);
+  }, [visible]);
+
   if (!visible) return null;
 
   return (

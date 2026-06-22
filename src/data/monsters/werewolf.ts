@@ -11,11 +11,6 @@ export const werewolf: Monster = {
     description: 'Before the Player creates their Life Pool, they lower their Shield level by 2.',
     trigger: 'passive',
   },
-  discardAbility: {
-    name: 'TODO',
-    description: 'TODO',
-    trigger: 'discard',
-  },
   cardPool: GENERIC_CARD_POOL,
   cardFrontImages: [
     '/images/monsters/werewolf/1.jpg',

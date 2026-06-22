@@ -29,7 +29,7 @@ export function LegendaryEncounterScreen() {
   const lastDiscardedCard = useEncounterStore((s) => s.lastDiscardedCard);
   const flipMonsterCard = useEncounterStore((s) => s.flipMonsterCard);
   const passTurn = useEncounterStore((s) => s.passTurn);
-  const discardOneWithProtection = useEncounterStore((s) => s.discardOneWithProtection);
+  const discardOne = useEncounterStore((s) => s.discardOne);
   const clearLastDiscardedCard = useEncounterStore((s) => s.clearLastDiscardedCard);
   const resetToSetup = useEncounterStore((s) => s.resetToSetup);
 
@@ -56,7 +56,7 @@ export function LegendaryEncounterScreen() {
   };
 
   const handleSwipeDamage = () => {
-    discardOneWithProtection(protectionValue);
+    discardOne();
   };
 
   return (

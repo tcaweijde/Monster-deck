@@ -22,7 +22,7 @@ export function trailCardToMonsterCard(tc: TrailCard): MonsterCard {
     id: `${TRAIL_CARD_ID_PREFIX}${tc.number}`,
     top: {
       name: `Special Card ${tc.number}`,
-      effect: `Use special attack #${tc.number}`,
+      effect: tc.drawAbility.description,
     },
     // bottom is absent — single-half trail card
   };

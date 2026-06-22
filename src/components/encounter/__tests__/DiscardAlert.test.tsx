@@ -41,7 +41,7 @@ describe('DiscardAlert', () => {
   it('dismisses immediately on click', () => {
     render(<DiscardAlert ability={ability} triggered={true} />);
     act(() => vi.advanceTimersByTime(50));
-    fireEvent.click(screen.getByText('Poison Claw'));
+    fireEvent.click(screen.getByRole('button', { name: 'Got it' }));
     expect(screen.queryByText('Poison Claw')).not.toBeInTheDocument();
   });
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LOCATIONS } from '../../data/locations';
 import type { PlacedWeaknessToken } from '../../types';
 
@@ -10,9 +10,12 @@ const locationById = Object.fromEntries(LOCATIONS.map((l) => [l.id, l]));
 
 export function TokenLocationArt({ token }: { token: PlacedWeaknessToken }) {
   const location = locationById[token.locationId];
-  const [imgSrc, setImgSrc] = useState(
-    location?.image ? resolveUrl(location.image) : FALLBACK_IMAGE,
-  );
+  const resolvedImage = location?.image ? resolveUrl(location.image) : FALLBACK_IMAGE;
+  const [imgSrc, setImgSrc] = useState(resolvedImage);
+
+  useEffect(() => {
+    setImgSrc(location?.image ? resolveUrl(location.image) : FALLBACK_IMAGE);
+  }, [token.locationId]);
   return (
     <div className="relative h-24 bg-stone-900 overflow-hidden">
       <img
