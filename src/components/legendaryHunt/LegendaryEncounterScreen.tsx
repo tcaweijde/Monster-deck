@@ -4,9 +4,12 @@ import type { LegendaryMonsterCard } from '../../types';
 import { MonsterCardDisplay } from '../encounter/MonsterCardDisplay';
 import { AbilityPanel } from '../encounter/AbilityPanel';
 import { DeckTracker } from '../encounter/DeckTracker';
+import { LEGENDARY_MONSTERS } from '../../data/legendary';
+import { PLACEHOLDER_LEGENDARY } from '../../data/legendary/placeholder-legendary';
 
 const BASE = import.meta.env.BASE_URL ?? '/';
 const BG = `${BASE}images/monsters/wild-hunt/background.jpg`;
+const LEGENDARY_CARD_BACK = `${BASE}images/legendary/card-back-legendary.png`;
 
 function isLegendarySpecialCard(card: unknown): card is LegendaryMonsterCard {
   return (
@@ -32,10 +35,14 @@ export function LegendaryEncounterScreen() {
   const resetToSetup = useEncounterStore((s) => s.resetToSetup);
 
   const protectionValue = useLegendaryHuntStore((s) => s.protectionValue);
+  const legendaryMonsterId = useLegendaryHuntStore((s) => s.legendaryMonsterId);
   const triggerVictory = useLegendaryHuntStore((s) => s.triggerVictory);
   const abandonBossFight = useLegendaryHuntStore((s) => s.abandonBossFight);
 
   if (!monster) return null;
+
+  const legendaryMonster =
+    LEGENDARY_MONSTERS.find((m) => m.id === legendaryMonsterId) ?? PLACEHOLDER_LEGENDARY;
 
   const specialCard = isLegendarySpecialCard(lastDiscardedCard) ? lastDiscardedCard : null;
 
@@ -103,6 +110,8 @@ export function LegendaryEncounterScreen() {
             onFlip={flipMonsterCard}
             onSwipeDamage={handleSwipeDamage}
             onPass={passTurn}
+            cardBackImage={LEGENDARY_CARD_BACK}
+            specialAttacks={legendaryMonster.specialAttacks}
           />
         </div>
 

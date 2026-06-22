@@ -1,7 +1,7 @@
 # Monster Deck — Roadmap
 
 > Digital opponent for The Witcher Old World solo play.
-> Last updated: 2026-06-03 · Living document — update at each release milestone.
+> Last updated: 2026-06-22 · Living document — update at each release milestone.
 
 ---
 
@@ -36,14 +36,14 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | FEAT-SKELLIGE-002 | Dagon's Lair | 5.0 | 🔲 Todo |
 | FEAT-SKELLIGE-003 | Dagon Monster Data | 5.0 | 🔲 Todo |
 | FEAT-SKELLIGE-004 | Random Encounter | 5.0 | 🔲 Todo |
-| FEAT-030 | Legendary Hunt — Campaign Engine (umbrella) | 4.0 | 🔲 Todo |
-| FEAT-030-A | Campaign Setup | 4.0 | 🔲 Todo |
-| FEAT-030-B | Round & Stage Driver | 4.0 | 🔲 Todo |
-| FEAT-030-C | Movement Deck Engine | 4.0 | 🔲 Todo |
-| FEAT-030-D | Destruction Token Tracker | 4.0 | 🔲 Todo |
-| FEAT-030-E | Boss Fight Preparation Screen | 4.0 | 🔲 Todo |
-| FEAT-030-F | Legendary Fight Deck Engine | 4.0 | 🔲 Todo |
-| FEAT-009 | Legendary Monster Data (7 monsters) | 4.0 | 🔲 Todo |
+| FEAT-030 | Legendary Hunt — Campaign Engine (umbrella) | 3.0 | ✅ Done |
+| FEAT-030-A | Campaign Setup | 3.0 | ✅ Done |
+| FEAT-030-B | Round & Stage Driver | 3.0 | ✅ Done |
+| FEAT-030-C | Movement Deck Engine | 3.0 | ✅ Done |
+| FEAT-030-D | Destruction Token Tracker | 3.0 | ✅ Done |
+| FEAT-030-E | Boss Fight Preparation Screen | 3.0 | ✅ Done |
+| FEAT-030-F | Legendary Fight Deck Engine | 3.0 | ✅ Done |
+| FEAT-009 | Legendary Monster Data (7 monsters) | 3.0 | 🔨 In Progress (1/7) |
 | FEAT-010-A | Campaign State Engine | 2.0 | ✅ Done |
 | FEAT-010-B | Round Stage Driver | 2.0 | ✅ Done |
 | FEAT-010-C | Wild Hunt Character Selection | 2.0 | ✅ Done |
@@ -212,7 +212,7 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 
 ---
 
-## 4.0 — Legendary Hunt Expansion
+## 🔨 3.0 — Legendary Hunt Expansion *(In Progress)*
 
 > **Goal:** Add the Legendary (L4) monster tier as a full campaign mode. The player places
 > the Legendary monster on the board at game start alongside regular monsters and must defeat

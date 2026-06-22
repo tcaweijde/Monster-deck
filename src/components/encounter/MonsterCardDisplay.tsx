@@ -1,10 +1,16 @@
 import { motion } from 'framer-motion';
-import type { RevealedCard } from '../../types';
+import type { MonsterAbility, RevealedCard } from '../../types';
 import { useCardSwipe } from './useCardSwipe';
 import { useCardFlip } from './useCardFlip';
 
+function resolveSpecialEffect(effect: string, specialAttacks?: MonsterAbility[]): string {
+  if (!specialAttacks || !effect.startsWith('special:')) return effect;
+  const idx = parseInt(effect.split(':')[1], 10) - 1;
+  return specialAttacks[idx]?.description ?? effect;
+}
+
 const BASE = import.meta.env.BASE_URL ?? '/';
-const CARD_BACK_IMAGE = `${BASE}images/card-back.png`;
+const DEFAULT_CARD_BACK = `${BASE}images/card-back.png`;
 
 function resolvePublicUrl(path: string): string {
   return `${BASE}${path.replace(/^\//, '')}`;
@@ -20,6 +26,9 @@ interface MonsterCardDisplayProps {
   onSwipeDamage: () => void;
   onPass: () => void;
   theme?: 'default' | 'frost';
+  cardBackImage?: string;
+  /** Special attacks for this monster. Used to resolve "special:N" effect strings. */
+  specialAttacks?: MonsterAbility[];
 }
 
 function getCardFrontImage(cardId: string, images: string[]): string {
@@ -38,6 +47,8 @@ export function MonsterCardDisplay({
   onSwipeDamage,
   onPass,
   theme = 'default',
+  cardBackImage,
+  specialAttacks,
 }: MonsterCardDisplayProps) {
   const { x, rotate, opacity, swiping, handleDragEnd } = useCardSwipe({
     turn,
@@ -55,15 +66,16 @@ export function MonsterCardDisplay({
     onPass,
   });
 
+  const cardBack = cardBackImage ?? DEFAULT_CARD_BACK;
   const isPlayerTurn = turn === 'player';
   const backgroundImage = deckEmpty
     ? undefined
-    : `url(${currentCard ? getCardFrontImage(currentCard.cardId, cardFrontImages) : CARD_BACK_IMAGE})`;
+    : `url(${currentCard ? getCardFrontImage(currentCard.cardId, cardFrontImages) : cardBack})`;
 
   // Show up to 2 ghost cards behind the main card to suggest a physical deck.
   const stackCount = deckEmpty ? 0 : Math.min(2, deckSize - 1);
   const cardBackStyle = {
-    backgroundImage: `url(${CARD_BACK_IMAGE})`,
+    backgroundImage: `url(${cardBack})`,
     backgroundSize: 'cover' as const,
     backgroundPosition: 'center' as const,
   };
@@ -150,7 +162,9 @@ export function MonsterCardDisplay({
           ) : currentCard ? (
             <div className="text-center flex flex-col items-center bg-stone-950/80 rounded-lg px-4 py-2 w-full">
               <div className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-1">
-                {currentCard.chosenHalf.name}
+                {currentCard.chosenHalf.effect?.startsWith('special:')
+                  ? (specialAttacks?.[parseInt(currentCard.chosenHalf.effect.split(':')[1], 10) - 1]?.name ?? currentCard.chosenHalf.name)
+                  : currentCard.chosenHalf.name}
               </div>
               {currentCard.chosenHalf.attack && (
                 <div className="text-3xl sm:text-5xl font-bold text-red-400">{currentCard.chosenHalf.attack} damage</div>
@@ -161,7 +175,7 @@ export function MonsterCardDisplay({
                     ? 'text-cyan-300 bg-cyan-500/20'
                     : 'text-amber-300 bg-amber-500/20'
                 }`}>
-                  {currentCard.chosenHalf.effect}
+                  {resolveSpecialEffect(currentCard.chosenHalf.effect, specialAttacks)}
                 </div>
               )}
             </div>

@@ -41,7 +41,7 @@ export function LegendaryHuntSetupScreen(): React.JSX.Element {
       <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg, #2d1a0e 0%, #1c1917 60%)' }} />
       <div className="absolute inset-0 bg-amber-950/20" />
 
-      <div className="relative flex flex-col min-h-screen px-4 py-8">
+      <div className="relative flex flex-col min-h-screen px-4 py-8 max-w-lg mx-auto">
         {/* Title */}
         <div className="mb-6">
           <h1 className="text-amber-400 font-bold text-2xl tracking-wide uppercase">

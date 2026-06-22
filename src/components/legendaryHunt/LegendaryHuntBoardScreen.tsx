@@ -45,10 +45,10 @@ export function LegendaryHuntBoardScreen(): React.JSX.Element {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg, #2d1a0e 0%, #1c1917 60%)' }} />
+      <div className="absolute inset-0 " style={{ background: 'linear-gradient(160deg, #2d1a0e 0%, #1c1917 60%)' }} />
       <div className="absolute inset-0 bg-amber-950/20" />
 
-      <div className="relative flex flex-col min-h-screen">
+      <div className="relative flex flex-col min-h-screen max-w-lg mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between px-4 pt-6 pb-3 border-b border-amber-700/40">
           <div>

@@ -2,8 +2,8 @@
 
 **Spec:** `docs/specs/FEAT-030-legendary-hunt.md`
 **Created:** 2026-06-17
-**Last audited:** 2026-06-17
-**Status:** In Progress — 4 missing files blocking the build
+**Last audited:** 2026-06-22
+**Status:** In Progress — engine/store/UI complete; FEAT-009 monster data 1/7 done
 
 ---
 
@@ -13,47 +13,50 @@
 |-------------|-------------|--------|
 | FEAT-030-A | Campaign Setup screen | ✅ Done |
 | FEAT-030-B | Round & Stage Driver (4 stages × N rounds) | ✅ Done |
-| FEAT-030-C | Movement Deck Engine (draw, display, reshuffle) | 🔴 Blocked — `movementDeck.ts` + `MovementCardDisplay.tsx` missing |
+| FEAT-030-C | Movement Deck Engine (draw, display, reshuffle) | ✅ Done |
 | FEAT-030-D | Destruction Token Tracker (+/− counter) | ✅ Done |
 | FEAT-030-E | Boss Fight Preparation Screen | ✅ Done |
 | FEAT-030-F | Legendary Fight Deck Engine (size reduction + protection) | ✅ Done |
-| FEAT-009 | Legendary Monster Data (placeholder monster) | ✅ Done (placeholder) |
+| FEAT-009 | Legendary Monster Data (real monsters) | 🔴 In Progress — Ice Giant complete; 6 monsters pending |
 
-### File-level audit (2026-06-17)
+### File-level audit (2026-06-22)
 
 | File | Status | Notes |
 |------|--------|-------|
-| `src/types/legendary.ts` | ✅ Complete | All types present |
-| `src/data/legendary/movementDeck.ts` | ✅ Complete | 8 movement cards |
-| `src/data/legendary/placeholder-legendary.ts` | ✅ Complete | 22-card deck, placeholder art |
-| `src/data/legendary/legendaryMonsters.ts` | ✅ Complete | Stub — only placeholder monster (expected) |
-| `src/data/legendary/index.ts` | 🔴 Broken | Imports `trophyProtectionTables.ts` which doesn't exist |
-| `src/data/legendary/trophyProtectionTables.ts` | ❌ Missing | **Must create** |
+| `src/types/index.ts` | ✅ Complete | `AbilityTrigger` extended with `'reveal'` |
+| `src/types/legendary.ts` | ✅ Complete | `LegendaryMonster.specialAttacks`, `MovementCard.movementDistanceBy5` added |
+| `src/data/legendary/movementDeck.ts` | ✅ Complete | 12 real movement cards with correct board location names; 5-player distances included |
+| `src/data/legendary/legendarySharedDeck.ts` | ✅ Complete | 20-card shared fight deck used by all Legendary monsters; `special:N` and `discard:3` effect tokens |
+| `src/data/legendary/ice-giant.ts` | ✅ Complete | Ice Giant — passive + 4 special attacks (Rock Throw, Ice Armor, Ice Blast, Powerful Hold); starts at Cidaris |
+| `src/data/legendary/trophyProtectionTables.ts` | ✅ Complete | Side A + B tables |
+| `src/data/legendary/placeholder-legendary.ts` | ✅ Complete | 22-card deck; retained for dev/testing only |
+| `src/data/legendary/legendaryMonsters.ts` | 🔴 In Progress | Ice Giant + placeholder registered; 6 real monsters pending |
+| `src/data/legendary/index.ts` | ✅ Complete | Re-exports all data modules |
 | `src/engine/legendaryFightDeck.ts` | ✅ Complete | `buildLegendaryFightDeck` + `lookupProtectionValue` |
 | `src/engine/__tests__/legendaryFightDeck.test.ts` | ✅ Complete | Full coverage |
-| `src/engine/movementDeck.ts` | ❌ Missing | **Must create** — store imports it |
-| `src/engine/__tests__/movementDeck.test.ts` | ❌ Missing | **Must create** |
+| `src/engine/movementDeck.ts` | ✅ Complete | `drawMovementCard` with transparent reshuffle |
+| `src/engine/__tests__/movementDeck.test.ts` | ✅ Complete | 11 tests |
 | `src/store/legendaryHuntStore.ts` | ✅ Complete | All actions implemented |
-| `src/store/__tests__/legendaryHuntStore.test.ts` | ❌ Missing | **Must create** |
+| `src/store/__tests__/legendaryHuntStore.test.ts` | ✅ Complete | 40 tests |
 | `src/store/encounterStore.ts` | ✅ Complete | `applyPlayerDamageWithProtection` + `startEncounterWithDeck` added |
+| `src/components/encounter/MonsterCardDisplay.tsx` | ✅ Complete | `cardBackImage` prop (legendary card back); `specialAttacks` prop + `resolveSpecialEffect()` resolves `special:N` tokens to ability name + description at render time |
 | `src/components/legendaryHunt/LegendaryHuntSetupScreen.tsx` | ✅ Complete | Multi-step setup with overwrite/WH guard |
-| `src/components/legendaryHunt/LegendaryHuntBoardScreen.tsx` | 🔴 Broken | Imports `MovementCardDisplay` which doesn't exist |
-| `src/components/legendaryHunt/MovementCardDisplay.tsx` | ❌ Missing | **Must create** |
+| `src/components/legendaryHunt/LegendaryHuntBoardScreen.tsx` | ✅ Complete | |
+| `src/components/legendaryHunt/MovementCardDisplay.tsx` | ✅ Complete | |
 | `src/components/legendaryHunt/DestructionTokenCounter.tsx` | ✅ Complete | |
 | `src/components/legendaryHunt/BossFightPrepScreen.tsx` | ✅ Complete | |
-| `src/components/legendaryHunt/LegendaryEncounterScreen.tsx` | ✅ Complete | Protection + discard alerts |
+| `src/components/legendaryHunt/LegendaryEncounterScreen.tsx` | ✅ Complete | Legendary card back; `special:N` effects resolved via monster `specialAttacks`; protection badge + discard alerts |
 | `src/components/legendaryHunt/LegendaryHuntVictoryScreen.tsx` | ✅ Complete | |
 | `src/components/legendaryHunt/LegendaryHuntDefeatScreen.tsx` | ✅ Complete | |
 | `src/components/board/BoardWelcomeScreen.tsx` | ✅ Complete | Legendary Hunt button added |
 | `src/App.tsx` | ✅ Complete | All LH routing in place |
 
-### Remaining work (in order)
+**Test suite:** 429 tests passing, TypeScript compiles clean (audited 2026-06-22).
 
-1. ❌ Create `src/data/legendary/trophyProtectionTables.ts` — unblocks `data/legendary/index.ts`, store, and `BossFightPrepScreen`
-2. ❌ Create `src/engine/movementDeck.ts` — unblocks `legendaryHuntStore.drawMovementCard()`
-3. ❌ Create `src/engine/__tests__/movementDeck.test.ts`
-4. ❌ Create `src/components/legendaryHunt/MovementCardDisplay.tsx` — unblocks `LegendaryHuntBoardScreen`
-5. ❌ Create `src/store/__tests__/legendaryHuntStore.test.ts`
+### Remaining work
+
+1. 🔴 Add 6 remaining Legendary monster fight decks (`src/data/legendary/<name>.ts` × 6, register in `legendaryMonsters.ts`) — FEAT-009
+2. 🔴 Add art assets for Ice Giant (`images/legendary/ice-giant/portrait.webp`, `card-front-1.webp`) and future monsters
 
 ---
 

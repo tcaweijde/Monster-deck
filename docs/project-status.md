@@ -1,6 +1,6 @@
 # Monster Deck — Project Status
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-22
 
 ---
 
@@ -52,28 +52,26 @@ Store and all UI components are implemented. Three gaps remain before 2.0 ships.
 
 ---
 
-### 🔨 Next Iteration (3.0 — Legendary Hunt) — *~80% complete*
+### 🔨 Next Iteration (3.0 — Legendary Hunt) — *~95% complete*
 
-All major UI and store code is implemented. 4 missing files are blocking a buildable feature.
+Engine, store, and all UI components are implemented and fully tested. Only real monster data remains.
 
 | Sub-feature | Status | Notes |
 |---|---|---|
 | 030-A Campaign Setup Screen | ✅ Done | Multi-step setup, overwrite + WH guard |
 | 030-B Round & Stage Driver | ✅ Done | `LegendaryHuntBoardScreen` — 4-stage loop |
-| 030-C Movement Deck Engine | 🔴 Blocked | `movementDeck.ts` engine + `MovementCardDisplay.tsx` missing |
+| 030-C Movement Deck Engine | ✅ Done | `movementDeck.ts` engine + `MovementCardDisplay.tsx`; 12 real cards with board locations |
 | 030-D Destruction Token Tracker | ✅ Done | `DestructionTokenCounter` |
 | 030-E Boss Fight Prep Screen | ✅ Done | Trophy count → protection + deck size |
 | 030-F Legendary Fight Deck Engine | ✅ Done | `buildLegendaryFightDeck` + `lookupProtectionValue` |
-| 030-G Legendary Encounter Screen | ✅ Done | Protection mechanic + special card discard alerts |
-| FEAT-009 Placeholder Monster Data | ✅ Done | 22-card placeholder fight deck |
-| Store tests | ❌ Missing | `legendaryHuntStore.test.ts` not yet written |
-| Trophy protection table data | ❌ Missing | `trophyProtectionTables.ts` not yet created |
+| 030-G Legendary Encounter Screen | ✅ Done | Legendary card back; `special:N` effects resolved to ability text; protection badge + discard alerts |
+| FEAT-009 Monster Data | 🔴 In Progress | Ice Giant complete (1/7); 6 monsters pending |
 
 ---
 
 ## Codebase State
 
-### Test Results (2026-06-16)
+### Test Results (2026-06-22)
 
 | Suite | Tests | Status |
 |-------|-------|--------|
@@ -82,16 +80,20 @@ All major UI and store code is implemented. 4 missing files are blocking a build
 | `engine/deck` | 12 | ✅ Pass |
 | `engine/shuffle` | 13 | ✅ Pass |
 | `engine/board` | 22 | ✅ Pass |
+| `engine/legendaryFightDeck` | — | ✅ Pass |
+| `engine/movementDeck` | 11 | ✅ Pass |
 | `store/encounterStore` | 31 | ✅ Pass |
 | `store/boardStore` | 22 | ✅ Pass |
 | `store/wildHuntStore` | 44 | ✅ Pass |
+| `store/legendaryHuntStore` | 40 | ✅ Pass |
 | `data/genericCardPool` | 8 | ✅ Pass |
 | `data/monsterPools` | 29 | ✅ Pass |
 | `components/encounter` | 30 | ✅ Pass |
 | `components/board` | 14 | ✅ Pass |
 | `components/setup` | 13 | ✅ Pass |
 | `components/wildHunt` | 61 | ✅ Pass |
-| **Total** | **358** | **✅ All pass** |
+| `components/legendaryHunt` | — | ✅ Pass |
+| **Total** | **429** | **✅ All pass** |
 
 **Lint:** 0 errors, 0 warnings.
 
@@ -101,7 +103,7 @@ All major UI and store code is implemented. 4 missing files are blocking a build
 
 - Clean 3-layer architecture: pure engine functions → Zustand stores → React UI
 - Engine functions use injectable RNG — deterministic and fully testable
-- All 241 tests green, ESLint clean
+- 429 tests passing, TypeScript compiles clean (2026-06-22)
 - Types are explicit and well-structured
 
 ---

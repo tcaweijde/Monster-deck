@@ -33,6 +33,8 @@ export interface MovementCard {
   movementDistanceBy3?: number;
   /** Number of steps the monster moves for 4-player game. */
   movementDistanceBy4?: number;
+  /** Number of steps the monster moves for 5-player game. */
+  movementDistanceBy5?: number;
 }
 
 // ─── Trophy Protection ────────────────────────────────────────────────────────
@@ -82,6 +84,8 @@ export interface LegendaryMonster {
   fightDeck: LegendaryMonsterCard[];
   /** Always-active ability that fires at the start of or during encounters. */
   passiveAbility: MonsterAbility;
+  /** Ordered list of special attacks (index 0 = 1st special attack). Referenced by card halves via effect: "special:N". */
+  specialAttacks?: MonsterAbility[];
   /** Fires when any card from this monster's fight deck is discarded by the player. */
   discardAbility?: MonsterAbility;
   /** Path to the monster portrait image, relative to public/. */

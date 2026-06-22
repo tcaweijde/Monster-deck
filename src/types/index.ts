@@ -18,7 +18,7 @@ export interface RevealedCard {
   source: 'top' | 'bottom';
 }
 
-export type AbilityTrigger = 'passive' | 'discard';
+export type AbilityTrigger = 'passive' | 'discard' | 'reveal';
 
 export interface MonsterAbility {
   name: string;

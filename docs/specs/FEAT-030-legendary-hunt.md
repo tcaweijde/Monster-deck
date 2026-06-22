@@ -1,6 +1,6 @@
 # FEAT-030 — Legendary Hunt Campaign Engine
 
-> Status: Draft · Last updated: 2026-06-17
+> Status: In Progress · Last updated: 2026-06-22
 
 ---
 
@@ -9,10 +9,10 @@
 | Field           | Value                                                                          |
 | --------------- | ------------------------------------------------------------------------------ |
 | Feature ID      | FEAT-030                                                                       |
-| Status          | Draft                                                                          |
+| Status          | In Progress                                                                    |
 | Author          | Thomas                                                                         |
 | Created         | 2026-06-17                                                                     |
-| Last updated    | 2026-06-17                                                                     |
+| Last updated    | 2026-06-22                                                                     |
 | Epic / Parent   | 3.0 Roadmap — Legendary Hunt expansion                                        |
 | Arc42 reference | §3 System Scope, §5 Building Block View, §6 Runtime View, §8 Crosscutting Concepts |
 
