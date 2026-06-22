@@ -1,7 +1,6 @@
 import { useLegendaryHuntStore } from '../../store/legendaryHuntStore';
 import { useBoardStore } from '../../store/boardStore';
 import { LEGENDARY_MONSTERS } from '../../data/legendary';
-import { PLACEHOLDER_LEGENDARY } from '../../data/legendary/placeholder-legendary';
 
 const BASE = import.meta.env.BASE_URL ?? '/';
 
@@ -12,7 +11,8 @@ export function LegendaryHuntVictoryScreen() {
   const resetCampaign = useLegendaryHuntStore((s) => s.resetCampaign);
   const endGame = useBoardStore((s) => s.endGame);
 
-  const monster = LEGENDARY_MONSTERS.find((m) => m.id === legendaryMonsterId) ?? PLACEHOLDER_LEGENDARY;
+  const monster = LEGENDARY_MONSTERS.find((m) => m.id === legendaryMonsterId);
+  if (!monster) return null;
 
   return (
     <div className="relative h-dvh overflow-hidden">

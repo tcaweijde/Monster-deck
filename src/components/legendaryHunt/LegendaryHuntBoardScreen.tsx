@@ -3,7 +3,6 @@ import { useLegendaryHuntStore } from '../../store/legendaryHuntStore';
 import { useBoardStore } from '../../store/boardStore';
 import { useEncounterStore } from '../../store/encounterStore';
 import { LEGENDARY_MONSTERS } from '../../data/legendary';
-import { PLACEHOLDER_LEGENDARY } from '../../data/legendary/placeholder-legendary';
 import { DestructionTokenCounter } from './DestructionTokenCounter';
 import { MovementCardDisplay } from './MovementCardDisplay';
 
@@ -32,7 +31,7 @@ export function LegendaryHuntBoardScreen(): React.JSX.Element {
   }
 
   const legendaryMonster =
-    LEGENDARY_MONSTERS.find((m) => m.id === legendaryMonsterId) ?? PLACEHOLDER_LEGENDARY;
+    LEGENDARY_MONSTERS.find((m) => m.id === legendaryMonsterId);
 
   // Draw movement card when stage 4 begins
   useEffect(() => {
@@ -79,7 +78,7 @@ export function LegendaryHuntBoardScreen(): React.JSX.Element {
             <StageTwo
               slots={slots}
               onSelectSlot={handleSelectSlot}
-              legendaryMonsterName={legendaryMonster.name}
+              legendaryMonsterName={legendaryMonster!.name}
               onFightLegendary={goToBossPrep}
             />
           )}

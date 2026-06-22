@@ -10,7 +10,6 @@ import type { WildHuntPhase } from '../types';
 import { drawMovementCard as drawMovementCardEngine } from '../engine/movementDeck';
 import { lookupProtectionValue } from '../engine/legendaryFightDeck';
 import { LEGENDARY_MOVEMENT_DECK, LEGENDARY_MONSTERS, TROPHY_PROTECTION_TABLES } from '../data/legendary';
-import { PLACEHOLDER_LEGENDARY } from '../data/legendary/placeholder-legendary';
 import { shuffle } from '../engine/shuffle';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -155,11 +154,11 @@ export const useLegendaryHuntStore = create<LegendaryHuntState>()(
         );
 
         const monster =
-          LEGENDARY_MONSTERS.find((m) => m.id === legendaryMonsterId) ?? PLACEHOLDER_LEGENDARY;
+          LEGENDARY_MONSTERS.find((m) => m.id === legendaryMonsterId);
 
         const actualFightDeckSize = Math.max(
           0,
-          monster.baseFightDeckSize - destructionTokenCount,
+          monster!.baseFightDeckSize - destructionTokenCount,
         );
 
         const playerGoesFirst = destructionTokenCount > 0;
