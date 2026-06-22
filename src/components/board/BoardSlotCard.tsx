@@ -43,9 +43,14 @@ export function BoardSlotCard({ slot, monsterName, onStartEncounter }: BoardSlot
           <span className="font-bold text-white text-lg drop-shadow">{monsterName}</span>
           <span className="text-sm font-semibold text-amber-400 drop-shadow">Lv.{slot.level}</span>
         </div>
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-between">
+          {location && (
+            <span className="text-xs text-stone-300 font-medium bg-stone-950/60 rounded px-1.5 py-0.5 drop-shadow">
+              {location.name}
+            </span>
+          )}
           {isEncountering && (
-            <span className="text-xs text-red-400 font-semibold drop-shadow">In combat</span>
+            <span className="text-xs text-red-400 font-semibold drop-shadow ml-auto">In combat</span>
           )}
         </div>
       </div>

@@ -3,6 +3,7 @@ import { useBoardStore } from './store/boardStore';
 import { useWildHuntStore } from './store/wildHuntStore';
 import { useLegendaryHuntStore } from './store/legendaryHuntStore';
 import { useEncounterStore } from './store/encounterStore';
+import { useTrailStore } from './store/trailStore';
 import { BoardWelcomeScreen } from './components/board/BoardWelcomeScreen';
 import { BoardScreen } from './components/board/BoardScreen';
 import { EncounterScreen } from './components/encounter/EncounterScreen';
@@ -19,6 +20,7 @@ import { BossFightPrepScreen } from './components/legendaryHunt/BossFightPrepScr
 import { LegendaryEncounterScreen } from './components/legendaryHunt/LegendaryEncounterScreen';
 import { LegendaryHuntVictoryScreen } from './components/legendaryHunt/LegendaryHuntVictoryScreen';
 import { LegendaryHuntDefeatScreen } from './components/legendaryHunt/LegendaryHuntDefeatScreen';
+import { TrailTokenPlacementScreen } from './components/trail/TrailTokenPlacementScreen';
 
 const slideUp: Variants = {
   initial: { y: '100%', opacity: 0 },
@@ -36,6 +38,14 @@ export default function App() {
   const activeWildHuntSlotIndex = useWildHuntStore((s) => s.activeWildHuntSlotIndex);
   const encounterPhase = useEncounterStore((s) => s.phase);
 
+  const trailModeEnabled = useTrailStore((s) => s.trailModeEnabled);
+  const weaknessTokenBoard = useTrailStore((s) => s.weaknessTokenBoard);
+  const placementConfirmed = useTrailStore((s) => s.placementConfirmed);
+  const trailPlacementPending =
+    trailModeEnabled &&
+    weaknessTokenBoard.length > 0 &&
+    placementConfirmed.length < weaknessTokenBoard.length;
+
   const inLH = legendaryPhase !== 'inactive';
   const inWH = wildHuntPhase !== 'inactive';
 
@@ -52,7 +62,9 @@ export default function App() {
               ? 'lh-boss'
               : activeSlotIndex !== null
                 ? 'encounter'
-                : 'lh-board'
+                : trailPlacementPending
+                  ? 'trail-placement'
+                  : 'lh-board'
     : inWH
     ? wildHuntPhase === 'setup'
       ? 'wh-setup'
@@ -67,7 +79,13 @@ export default function App() {
               : showMonsters
                 ? 'wh-monsters'
                 : 'wh-board'
-    : (!board ? 'welcome' : activeSlotIndex !== null ? 'encounter' : 'board');
+    : (!board
+        ? 'welcome'
+        : trailPlacementPending
+          ? 'trail-placement'
+          : activeSlotIndex !== null
+            ? 'encounter'
+            : 'board');
 
   return (
     <div className="relative w-full h-dvh overflow-hidden">
@@ -81,6 +99,7 @@ export default function App() {
           >
             {screen === 'welcome' && <BoardWelcomeScreen />}
             {screen === 'board' && <BoardScreen />}
+            {screen === 'trail-placement' && <TrailTokenPlacementScreen />}
             {screen === 'wh-setup' && <WildHuntSetupScreen />}
             {screen === 'wh-board' && <WildHuntBoardScreen />}
             {screen === 'wh-monsters' && <WildHuntMonstersScreen />}

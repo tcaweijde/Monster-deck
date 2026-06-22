@@ -1,10 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLegendaryHuntStore } from '../../store/legendaryHuntStore';
 import { useBoardStore } from '../../store/boardStore';
 import { useEncounterStore } from '../../store/encounterStore';
+import { useTrailStore } from '../../store/trailStore';
 import { LEGENDARY_MONSTERS } from '../../data/legendary';
+import { getMonsterById } from '../../data/monsters';
+import { makeDefaultTrailCards } from '../../engine/trail';
 import { DestructionTokenCounter } from './DestructionTokenCounter';
 import { MovementCardDisplay } from './MovementCardDisplay';
+import { TrailPreFightModal } from '../trail/TrailPreFightModal';
+import type { PlacedWeaknessToken, TrailCard } from '../../types';
+import type { TrailDeckOptions } from '../../engine/deck';
 
 export function LegendaryHuntBoardScreen(): React.JSX.Element {
   const round = useLegendaryHuntStore((s) => s.round);
@@ -23,11 +29,42 @@ export function LegendaryHuntBoardScreen(): React.JSX.Element {
   const endGame = useBoardStore((s) => s.endGame);
   const startEncounter = useEncounterStore((s) => s.startEncounter);
 
+  const trailModeEnabled = useTrailStore((s) => s.trailModeEnabled);
+  const weaknessTokensHeld = useTrailStore((s) => s.weaknessTokensHeld);
+  const setPendingEffect = useTrailStore((s) => s.setPendingEffect);
+  const clearPendingEffect = useTrailStore((s) => s.clearPendingEffect);
+
+  const [pendingSlotIndex, setPendingSlotIndex] = useState<0 | 1 | 2 | null>(null);
+
   function handleSelectSlot(index: 0 | 1 | 2): void {
-    const slot = slots?.[index];
+    if (trailModeEnabled) {
+      setPendingSlotIndex(index);
+    } else {
+      const slot = slots?.[index];
+      if (!slot) return;
+      setActiveSlot(index);
+      startEncounter(slot.monsterId);
+    }
+  }
+
+  function handlePreFightConfirm(token: PlacedWeaknessToken | null): void {
+    if (pendingSlotIndex === null) return;
+    const slot = slots?.[pendingSlotIndex];
     if (!slot) return;
-    setActiveSlot(index);
-    startEncounter(slot.monsterId);
+    const monster = getMonsterById(slot.monsterId);
+
+    if (token) setPendingEffect(token);
+
+    const trailCards: [TrailCard, TrailCard, TrailCard, TrailCard] | null =
+      trailModeEnabled && monster
+        ? (monster.trailCards ?? makeDefaultTrailCards(monster))
+        : null;
+    const trailDeckOpts: TrailDeckOptions | undefined = trailCards ? { trailCards } : undefined;
+
+    setActiveSlot(pendingSlotIndex);
+    startEncounter(slot.monsterId, false, 0, trailDeckOpts, trailCards);
+    clearPendingEffect();
+    setPendingSlotIndex(null);
   }
 
   const legendaryMonster =
@@ -105,11 +142,16 @@ export function LegendaryHuntBoardScreen(): React.JSX.Element {
           </button>
         </div>
       </div>
+      {pendingSlotIndex !== null && (
+        <TrailPreFightModal
+          heldTokens={weaknessTokensHeld}
+          onConfirm={handlePreFightConfirm}
+          onCancel={() => setPendingSlotIndex(null)}
+        />
+      )}
     </div>
   );
 }
-
-// ─── Stage sub-components ─────────────────────────────────────────────────────
 
 function StageOne(): React.JSX.Element {
   return (

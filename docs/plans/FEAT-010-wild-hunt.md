@@ -3,7 +3,7 @@
 **Spec:** `docs/specs/FEAT-010-wild-hunt.md`
 **Created:** 2026-06-04
 **Last Updated:** 2026-06-10
-**Status:** Active — All planned iterations complete; open TODOs remain (see below)
+**Status:** Active — All planned iterations complete;
 
 ---
 
@@ -26,13 +26,6 @@
 | — | Fill in all character abilities & special card stats | ✅ Done |
 | — | Add `WildHuntDefeatScreen` (currently falls back to `wh-board`) |  ✅ Done  |
 
-
-### Open TODOs
-
-| ID | Description | Blocked on |
-|----|-------------|------------|
-
----
 
 ## Key Design Decisions
 
@@ -64,7 +57,7 @@
 wildHuntPhase === 'inactive'               → board mode (welcome / board / encounter)
 wildHuntPhase === 'setup'                  → wh-setup
 wildHuntPhase === 'victory'                → wh-victory
-wildHuntPhase === 'defeat'                 → wh-board  (TODO: wh-defeat screen)
+wildHuntPhase === 'defeat'                 → wh-board  (wh-defeat screen)
 wildHuntPhase === 'finalBattle'
   + encounterPhase !== 'setup'             → wh-boss
   + encounterPhase === 'setup'             → wh-board  (Begin Final Battle button)

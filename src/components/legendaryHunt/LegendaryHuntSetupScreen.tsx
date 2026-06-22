@@ -3,7 +3,9 @@ import type { LegendaryDifficulty } from '../../types';
 import { useLegendaryHuntStore } from '../../store/legendaryHuntStore';
 import { useWildHuntStore } from '../../store/wildHuntStore';
 import { useBoardStore } from '../../store/boardStore';
+import { useTrailStore } from '../../store/trailStore';
 import { LEGENDARY_MONSTERS } from '../../data/legendary';
+import { TrailModeToggle } from '../trail/TrailModeToggle';
 
 type Step = 'difficulty' | 'side' | 'monster' | 'confirm';
 
@@ -18,12 +20,16 @@ export function LegendaryHuntSetupScreen(): React.JSX.Element {
   const [difficulty, setDifficulty] = useState<LegendaryDifficulty>('normal');
   const [side, setSide] = useState<'A' | 'B'>('A');
   const [monsterId, setMonsterId] = useState<string>(LEGENDARY_MONSTERS[0].id);
+  const [trailMode, setTrailMode] = useState(false);
 
   const startCampaign = useLegendaryHuntStore((s) => s.startCampaign);
   const legendaryPhase = useLegendaryHuntStore((s) => s.phase);
   const legendaryRound = useLegendaryHuntStore((s) => s.round);
   const wildHuntPhase = useWildHuntStore((s) => s.phase);
   const initBoard = useBoardStore((s) => s.initNewGame);
+
+  const resetTrailSession = useTrailStore((s) => s.resetTrailSession);
+  const startTrailSession = useTrailStore((s) => s.startTrailSession);
 
   const selectedMonster = LEGENDARY_MONSTERS.find((m) => m.id === monsterId) ?? LEGENDARY_MONSTERS[0];
   const selectedDifficulty = DIFFICULTY_OPTIONS.find((d) => d.value === difficulty)!;
@@ -32,6 +38,8 @@ export function LegendaryHuntSetupScreen(): React.JSX.Element {
 
   function handleStart(): void {
     if (isWildHuntActive) return;
+    resetTrailSession();
+    if (trailMode) startTrailSession();
     initBoard();
     startCampaign(monsterId, difficulty, side, wildHuntPhase);
   }
@@ -79,6 +87,8 @@ export function LegendaryHuntSetupScreen(): React.JSX.Element {
               isCampaignActive={isCampaignActive}
               currentRound={legendaryRound}
               isWildHuntActive={isWildHuntActive}
+              trailMode={trailMode}
+              onTrailModeChange={setTrailMode}
             />
           )}
         </div>
@@ -236,6 +246,8 @@ interface ConfirmStepProps {
   isCampaignActive: boolean;
   currentRound: number;
   isWildHuntActive: boolean;
+  trailMode: boolean;
+  onTrailModeChange: (v: boolean) => void;
 }
 
 function ConfirmStep({
@@ -247,6 +259,8 @@ function ConfirmStep({
   isCampaignActive,
   currentRound,
   isWildHuntActive,
+  trailMode,
+  onTrailModeChange,
 }: ConfirmStepProps): React.JSX.Element {
   return (
     <div className="space-y-4">
@@ -257,6 +271,8 @@ function ConfirmStep({
         <SummaryRow label="Round limit" value={`${roundLimit} rounds`} />
         <SummaryRow label="Starts at" value={startingLocationName} />
       </div>
+
+      <TrailModeToggle enabled={trailMode} onChange={onTrailModeChange} />
 
       {isCampaignActive && (
         <div className="bg-amber-900/30 border border-amber-600/40 rounded-xl p-3">
