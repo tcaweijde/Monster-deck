@@ -120,8 +120,6 @@ export interface TrailCard {
   number: 1 | 2 | 3 | 4;
   /** Shown immediately when the monster flips this card (draw trigger). */
   drawAbility: MonsterAbility;
-  /** Shown when the player discards this card as damage (discard trigger). */
-  discardAbility: MonsterAbility;
 }
 
 /**

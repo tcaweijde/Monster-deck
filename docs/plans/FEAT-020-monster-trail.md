@@ -40,13 +40,13 @@ FEAT-020 layers the Monster Trail expansion onto the existing board+encounter lo
 
 7. **App.tsx adds a single new `'trail-placement'` screen.** Condition: `trailModeEnabled && weaknessTokenBoard.length > 0 && placementConfirmed.length < weaknessTokenBoard.length`. This fires at two moments — immediately after `initNewGame` with trail mode on, and immediately after each `handleVictoryReset` — with no additional state machine needed.
 
-8. **`DiscardAlert` (global monster ability) and `TrailDiscardAlert` (trail card discard ability) are separate components that show simultaneously** when both fire in the same discard event (FR-013). They stack vertically in `EncounterScreen` with `TrailDiscardAlert` offset below `DiscardAlert`. This is simpler than a single component with a queue.
+8. **`DiscardAlert` (global monster ability) handles all discard events including trail special cards.** `TrailDiscardAlert` was removed — trail cards do not carry a separate `discardAbility`; when a trail special card is discarded, the monster's global `discardAbility` fires through the existing `DiscardAlert` path. This simplifies the discard flow and eliminates a redundant alert component.
 
 9. **`TerrainType` (3 values: water, mountain, woods) is distinct from the existing `LocationType` (3 values: water, mountain, woods).** They model different physical concepts: `LocationType` is the digital board slot biome; `TerrainType` is the physical token placement terrain from the Trail expansion. They intentionally overlap for 3 values and are never conflated in code.
 
 10. **`useEncounterHandlers.ts` is the single place that calls `trailStore.handleVictoryReset()` on base-game victory.** The hook already orchestrates multi-store calls for Wild Hunt vs base game; adding the trail store call there is consistent with the established pattern and avoids duplicating victory logic in components.
 
-11. **Monster `trailCards` data authoring is gated on physical rulebook access and must be complete before 3.0 ships (NFR-004).** The code and type infrastructure is implemented in this plan; the actual ability text is a separate data authoring task. The build will not block on absent `trailCards` fields — monsters without them work fine in trail mode (FR-008) — but no Trail monster should ship with empty ability text.
+11. **Monster `trailCards` data authoring is complete.** All 29 monsters have `discardAbility` and `trailCards` draw-ability text authored. `TrailCard.discardAbility` was removed as a design revision — trail cards only carry a `drawAbility`; discard events on trail cards are handled by the monster's global `discardAbility`.
 
 ---
 
@@ -84,8 +84,8 @@ export interface TrailCard {
   number: 1 | 2 | 3 | 4;
   /** Shown immediately when the monster flips this card (draw trigger). */
   drawAbility: MonsterAbility;
-  /** Shown when the player discards this card as damage (discard trigger). */
-  discardAbility: MonsterAbility;
+  // Note: discardAbility was removed — when a trail card is discarded,
+  // the monster's global discardAbility fires through the standard DiscardAlert path.
 }
 ```
 
@@ -304,8 +304,7 @@ import type { Monster, TrailCard } from '../../types';
 const trailCards: [TrailCard, TrailCard, TrailCard, TrailCard] = [
   {
     number: 1,
-    drawAbility:    { name: '...', description: '...', trigger: 'passive' },
-    discardAbility: { name: '...', description: '...', trigger: 'discard' },
+    drawAbility: { name: '...', description: '...', trigger: 'passive' },
   },
   // numbers 2, 3, 4 ...
 ];
@@ -316,7 +315,8 @@ export const griffin: Monster = {
 };
 ```
 
-All 29 monsters in `src/data/monsters/index.ts` must be checked against the physical Trail expansion to determine which receive `trailCards`. Monsters absent from the expansion keep `trailCards: undefined` and behave identically to the pre-Trail baseline in Trail Mode (FR-008 / EC-1).
+> ✅ **Authoring complete (2026-06-22).** All 29 monsters have full ability text.
+> All 29 monsters in `src/data/monsters/index.ts` carry `trailCards`.
 
 ---
 

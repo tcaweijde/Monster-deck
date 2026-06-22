@@ -12,8 +12,8 @@ export const griffin: Monster = {
     trigger: 'passive',
   },
   discardAbility: {
-    name: 'TODO',
-    description: 'TODO',
+    name: 'Wing Cover',
+    description: 'If this Player\'s Fight Turn combo has no Offensive Sign (purple) or Strong Attack (red) card, the Monster ignores 2 of the further damage in this Player\'s Fight Turn, if any.',
     trigger: 'discard',
   },
   cardPool: GENERIC_CARD_POOL,
@@ -23,23 +23,19 @@ export const griffin: Monster = {
   trailCards: [
     {
       number: 1 as const,
-      drawAbility: { name: 'Special Attack #1', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Beak Strike', description: 'The Player takes 2 damage and discards 1 Potion.', trigger: 'passive' as const },
     },
     {
       number: 2 as const,
-      drawAbility: { name: 'Special Attack #2', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Precise Beak Strike', description: 'The Player takes 3 damage and discards 2 Potions.', trigger: 'passive' as const },
     },
     {
       number: 3 as const,
-      drawAbility: { name: 'Special Attack #3', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Scratch', description: 'The Player discards 1 Offensive Sign (purple) card from their hands. If they are not able to discard it, they lower their Shield level to 0. The Griffin immediately takes its next Fight Turn.', trigger: 'passive' as const },
     },
     {
       number: 4 as const,
-      drawAbility: { name: 'Special Attack #4', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Air Charge', description: 'The Player takes 3 damage. During the Player\'s next Fight Turn, they may only play a combo of 1 or 2 cards.', trigger: 'passive' as const },
     },
   ],
 };

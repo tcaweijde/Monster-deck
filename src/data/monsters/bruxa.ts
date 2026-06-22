@@ -12,8 +12,8 @@ export const bruxa: Monster = {
     trigger: 'passive',
   },
   discardAbility: {
-    name: 'TODO',
-    description: 'TODO',
+    name: 'Polymorph',
+    description: 'Draw a random level 3 Monster Fight card and apply the passive attack of the drawn Monster.',
     trigger: 'discard',
   },
   cardPool: GENERIC_CARD_POOL,
@@ -23,23 +23,19 @@ export const bruxa: Monster = {
   trailCards: [
     {
       number: 1 as const,
-      drawAbility: { name: 'Special Attack #1', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Blood Hunger', description: 'If the Player\'s Shield level is 0, they take 3 damage. Otherwise, the Player takes 5 damage.', trigger: 'passive' as const },
     },
     {
       number: 2 as const,
-      drawAbility: { name: 'Special Attack #2', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Swarm of Claws', description: 'The Player takes 4 damage. The Player may not play any Strong Attack (red) cards during their next Fight Turn.', trigger: 'passive' as const },
     },
     {
       number: 3 as const,
-      drawAbility: { name: 'Special Attack #3', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Sound Wave', description: 'The Player discards 3 cards from the top of their deck. (empty deck: any card from their hands).', trigger: 'passive' as const },
     },
     {
       number: 4 as const,
-      drawAbility: { name: 'Special Attack #4', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Mighty Sound Wave', description: 'The Player discards any 3 cards from their hands. (empty hands: from the top of their deck). The Player may not play any Dodge (green) cards during the next Fight Turn.', trigger: 'passive' as const },
     },
   ],
 };

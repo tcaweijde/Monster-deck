@@ -12,8 +12,8 @@ export const glustyworp: Monster = {
     trigger: 'passive',
   },
   discardAbility: {
-    name: 'TODO',
-    description: 'TODO',
+    name: 'Hard Armor',
+    description: 'The Monster ignores all of the further damage in this Player\'s Fight Turn, if any. The Player draws 2 Potions and resets their Potion limits.',
     trigger: 'discard',
   },
   cardPool: GENERIC_CARD_POOL,
@@ -23,23 +23,19 @@ export const glustyworp: Monster = {
   trailCards: [
     {
       number: 1 as const,
-      drawAbility: { name: 'Special Attack #1', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Pulling Underwater', description: 'The Player discards 1 Defensive Sign (yellow) card from their hands. If they are not able to discard it, they take 5 damage. The Glustyworp immediately performs its next Fight Turn.', trigger: 'passive' as const },
     },
     {
       number: 2 as const,
-      drawAbility: { name: 'Special Attack #2', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Tongue Attack', description: 'The Player takes 4 damage. During the Player\'s next Fight Turn, ignore Shield symbols in the Player\'s combo.', trigger: 'passive' as const },
     },
     {
       number: 3 as const,
-      drawAbility: { name: 'Special Attack #3', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Sharp Teeth', description: 'The Player lowers their Shield level to 0 and discards any 2 cards from their hands. (empty hands: from the top of the deck).', trigger: 'passive' as const },
     },
     {
       number: 4 as const,
-      drawAbility: { name: 'Special Attack #4', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Tail Bash', description: 'The Player takes 5 damage. During Step 4 of the Player\'s next Fight Turn, they draw 2 cards less.', trigger: 'passive' as const },
     },
   ],
 };

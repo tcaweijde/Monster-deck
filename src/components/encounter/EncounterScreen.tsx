@@ -8,7 +8,6 @@ import { MonsterCardDisplay } from './MonsterCardDisplay';
 import { DiscardAlert } from './DiscardAlert';
 import { VictoryOverlay } from './VictoryOverlay';
 import { TrailDrawAlert } from '../trail/TrailDrawAlert';
-import { TrailDiscardAlert } from '../trail/TrailDiscardAlert';
 import { getTrailCardNumber } from '../../engine/trail';
 
 const BASE = import.meta.env.BASE_URL ?? '/';
@@ -25,7 +24,6 @@ export function EncounterScreen() {
   const lastDiscardTriggered = useEncounterStore((s) => s.lastDiscardTriggered);
   const proximityBonus = useEncounterStore((s) => s.proximityBonus);
   const pendingTrailDrawAbility = useEncounterStore((s) => s.pendingTrailDrawAbility);
-  const lastTrailDiscardAbility = useEncounterStore((s) => s.lastTrailDiscardAbility);
   const clearTrailDrawAbility = useEncounterStore((s) => s.clearTrailDrawAbility);
   const flipMonsterCard = useEncounterStore((s) => s.flipMonsterCard);
   const discardOne = useEncounterStore((s) => s.discardOne);
@@ -104,13 +102,6 @@ export function EncounterScreen() {
             cardNumber={trailCardNumber}
             triggered={!!pendingTrailDrawAbility}
             onDismiss={clearTrailDrawAbility}
-          />
-        )}
-
-        {lastTrailDiscardAbility && turn === 'player' && (
-          <TrailDiscardAlert
-            ability={lastTrailDiscardAbility}
-            triggered={!!lastTrailDiscardAbility}
           />
         )}
 

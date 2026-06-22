@@ -12,8 +12,8 @@ export const noonwraith: Monster = {
     trigger: 'passive',
   },
   discardAbility: {
-    name: 'TODO',
-    description: 'TODO',
+    name: 'Resistance to Signs',
+    description: 'The Player discards 1 Offensive Sign (purple) or Defensive Sign (yellow) card from their hands. If they are not able to discard it, they discard 1 card from the top of their deck. (empty deck: any 1 card from their hands).',
     trigger: 'discard',
   },
   cardPool: GENERIC_CARD_POOL,
@@ -23,23 +23,19 @@ export const noonwraith: Monster = {
   trailCards: [
     {
       number: 1 as const,
-      drawAbility: { name: 'Special Attack #1', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Duplication', description: 'The Player takes 3 damage. During the Monster\'s next Fight Turn, the Player controlling the Monster picks the attack type after revealing the Monster\'s Fight card. Solo: the Player picks the attack dealing more damage.', trigger: 'passive' as const },
     },
     {
       number: 2 as const,
-      drawAbility: { name: 'Special Attack #2', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Dematerialization', description: 'The Player takes 3 damage. During Step 4 of the Player\'s next Fight Turn, they draw a maximum of 1 card.', trigger: 'passive' as const },
     },
     {
       number: 3 as const,
-      drawAbility: { name: 'Special Attack #3', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Cast the Circle', description: 'The Player takes 2 damage, increased by the number of Potions they possess.', trigger: 'passive' as const },
     },
     {
       number: 4 as const,
-      drawAbility: { name: 'Special Attack #4', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Absorption', description: 'The Player takes 2 damage. During the Player\'s next Fight Turn, each Strong Attack (red) and Fast Attack (blue) card deals 1 damage less.', trigger: 'passive' as const },
     },
   ],
 };

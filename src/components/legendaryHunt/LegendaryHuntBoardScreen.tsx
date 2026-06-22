@@ -60,7 +60,7 @@ export function LegendaryHuntBoardScreen(): React.JSX.Element {
 
     const trailCards: [TrailCard, TrailCard, TrailCard, TrailCard] | null =
       trailModeEnabled && monster
-        ? (monster.trailCards ?? makeDefaultTrailCards(monster))
+        ? (monster.trailCards ?? makeDefaultTrailCards())
         : null;
     const trailDeckOpts: TrailDeckOptions | undefined = trailCards ? { trailCards } : undefined;
 

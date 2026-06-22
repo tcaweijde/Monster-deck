@@ -12,8 +12,8 @@ export const ekimmara: Monster = {
     trigger: 'passive',
   },
   discardAbility: {
-    name: 'TODO',
-    description: 'TODO',
+    name: 'Regeneration',
+    description: 'The Monster ignores 2 of the further damage in this Player\'s Fight Turn, if any.',
     trigger: 'discard',
   },
   cardPool: GENERIC_CARD_POOL,
@@ -23,23 +23,19 @@ export const ekimmara: Monster = {
   trailCards: [
     {
       number: 1 as const,
-      drawAbility: { name: 'Special Attack #1', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Incredible Speed', description: 'The Player discards 1 Fast Attack (blue) card from their hands. If they are not able to discard it, they take 3 damage.', trigger: 'passive' as const },
     },
     {
       number: 2 as const,
-      drawAbility: { name: 'Special Attack #2', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Sharp Claws', description: 'The Player discards 3 cards from the top of their deck. (empty deck: any card from their hands).', trigger: 'passive' as const },
     },
     {
       number: 3 as const,
-      drawAbility: { name: 'Special Attack #3', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Blood Loss', description: 'The Player discards 2 random cards from their hands. (empty hands: from the top of their deck).', trigger: 'passive' as const },
     },
     {
       number: 4 as const,
-      drawAbility: { name: 'Special Attack #4', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Blow Streak', description: 'The Player rolls a die: 1–2 they take 2 damage, 3–4 they take 3 damage, 5–6 they take 4 damage.', trigger: 'passive' as const },
     },
   ],
 };

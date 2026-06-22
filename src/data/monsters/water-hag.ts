@@ -12,8 +12,8 @@ export const waterHag: Monster = {
     trigger: 'passive',
   },
   discardAbility: {
-    name: 'TODO',
-    description: 'TODO',
+    name: 'Hiding in the Mud',
+    description: 'The Player discards 1 Strong Attack (red) card from their hands. If they are not able to discard it, they place any 2 cards from their hands on the bottom of their deck.',
     trigger: 'discard',
   },
   cardPool: GENERIC_CARD_POOL,
@@ -23,23 +23,19 @@ export const waterHag: Monster = {
   trailCards: [
     {
       number: 1 as const,
-      drawAbility: { name: 'Special Attack #1', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Mud Throw', description: 'The Player takes 2 damage. During the Player\'s next Fight Turn, they play the first card in their combo randomly.', trigger: 'passive' as const },
     },
     {
       number: 2 as const,
-      drawAbility: { name: 'Special Attack #2', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Claw Attack', description: 'The Player takes 3 damage. During the Player\'s next Fight Turn, ignore Shield symbols in the Player\'s combo.', trigger: 'passive' as const },
     },
     {
       number: 3 as const,
-      drawAbility: { name: 'Special Attack #3', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Flooding', description: 'The Player takes 3 damage. If the Player\'s next combo has no Defensive Sign (yellow) cards, it deals 3 damage less.', trigger: 'passive' as const },
     },
     {
       number: 4 as const,
-      drawAbility: { name: 'Special Attack #4', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Unforeseen Speed', description: 'The Player takes 3 damage. During Step 4 of the Player\'s next Fight Turn, they draw 0 cards.', trigger: 'passive' as const },
     },
   ],
 };

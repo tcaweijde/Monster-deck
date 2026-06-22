@@ -149,7 +149,6 @@ function makeTrailCard(number: 1 | 2 | 3 | 4): TrailCard {
   return {
     number,
     drawAbility: { name: `Draw ${number}`, description: `d${number}`, trigger: 'passive' },
-    discardAbility: { name: `Discard ${number}`, description: `x${number}`, trigger: 'discard' },
   };
 }
 

@@ -25,8 +25,6 @@ interface EncounterStore {
   activeTrailCards: [TrailCard, TrailCard, TrailCard, TrailCard] | null;
   /** Set when the monster flips a trail special card. Cleared by clearTrailDrawAbility(). */
   pendingTrailDrawAbility: MonsterAbility | null;
-  /** Set when the player discards a trail special card. Cleared alongside lastDiscardedCard. */
-  lastTrailDiscardAbility: MonsterAbility | null;
 
   startEncounter: (
     monsterId: string,
@@ -60,21 +58,7 @@ interface EncounterStore {
   resetToSetup: () => void;
 }
 
-/** Returns the discardAbility of the first trail special card found in discardedCards, or null. */
-function findTrailDiscardAbility(
-  discardedCards: MonsterCard[],
-  activeTrailCards: [TrailCard, TrailCard, TrailCard, TrailCard] | null,
-): MonsterAbility | null {
-  if (!activeTrailCards) return null;
-  for (const card of discardedCards) {
-    if (isTrailSpecialCard(card.id)) {
-      const num = getTrailCardNumber(card.id);
-      const tc = num !== null ? activeTrailCards.find((c) => c.number === num) : undefined;
-      if (tc) return tc.discardAbility;
-    }
-  }
-  return null;
-}
+/** Returns true when a trail special card is found among discardedCards. */
 
 export const useEncounterStore = create<EncounterStore>((set, get) => ({
   monster: null,
@@ -89,7 +73,6 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
   undealtPool: [],
   activeTrailCards: null,
   pendingTrailDrawAbility: null,
-  lastTrailDiscardAbility: null,
 
   startEncounter: (
     monsterId,
@@ -118,7 +101,6 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       undealtPool,
       activeTrailCards,
       pendingTrailDrawAbility: null,
-      lastTrailDiscardAbility: null,
     });
   },
 
@@ -138,7 +120,6 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       undealtPool,
       activeTrailCards: null,
       pendingTrailDrawAbility: null,
-      lastTrailDiscardAbility: null,
     });
   },
 
@@ -164,19 +145,16 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
   },
 
   discardOne: () => {
-    const { deck, discardPile, monster, activeTrailCards } = get();
-    if (deck.length === 0) return;
+    const { deck, discardPile, monster } = get();
 
     const result = applyDamage(deck, 1);
     const hasDiscardAbility = !!monster?.discardAbility;
-    const lastTrailDiscardAbility = findTrailDiscardAbility(result.discardedCards, activeTrailCards);
 
     set({
       deck: result.remainingDeck,
       discardPile: [...discardPile, ...result.discardedCards],
       lastDiscardTriggered: hasDiscardAbility,
       lastDiscardedCard: result.discardedCards[0] ?? null,
-      lastTrailDiscardAbility,
       phase: result.remainingDeck.length === 0 ? 'victory' : 'playing',
     });
   },
@@ -203,7 +181,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
   },
 
   applyPlayerDamage: (damage) => {
-    const { deck, discardPile, monster, activeTrailCards } = get();
+    const { deck, discardPile, monster } = get();
     if (damage < 0) return;
 
     if (damage === 0) {
@@ -211,7 +189,6 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
         currentCard: null,
         lastDiscardTriggered: false,
         lastDiscardedCard: null,
-        lastTrailDiscardAbility: null,
         turn: 'monster',
       });
       return;
@@ -220,7 +197,6 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
     const result = applyDamage(deck, damage);
     const hasDiscardAbility = !!monster?.discardAbility;
     const newPhase = result.remainingDeck.length === 0 ? 'victory' : 'playing';
-    const lastTrailDiscardAbility = findTrailDiscardAbility(result.discardedCards, activeTrailCards);
 
     set({
       deck: result.remainingDeck,
@@ -228,7 +204,6 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       currentCard: null,
       lastDiscardTriggered: hasDiscardAbility && result.discardedCards.length > 0,
       lastDiscardedCard: result.discardedCards[0] ?? null,
-      lastTrailDiscardAbility,
       turn: 'monster',
       phase: newPhase,
     });
@@ -302,7 +277,6 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       undealtPool: [],
       activeTrailCards: null,
       pendingTrailDrawAbility: null,
-      lastTrailDiscardAbility: null,
     });
   },
 }));

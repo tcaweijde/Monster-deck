@@ -12,8 +12,8 @@ export const barghest: Monster = {
     trigger: 'passive',
   },
   discardAbility: {
-    name: 'TODO',
-    description: 'TODO',
+    name: 'Summoning the Pack',
+    description: 'During Step 2 of this Fight Turn, the Player draws 2 cards less.',
     trigger: 'discard',
   },
   cardPool: GENERIC_CARD_POOL,
@@ -23,23 +23,19 @@ export const barghest: Monster = {
   trailCards: [
     {
       number: 1 as const,
-      drawAbility: { name: 'Special Attack #1', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Claws and Fangs', description: 'The Player takes 2 damage and discards 1 Potion.', trigger: 'passive' as const },
     },
     {
       number: 2 as const,
-      drawAbility: { name: 'Special Attack #2', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Call of the Pack', description: 'The Player discards all Defensive Sign (yellow) and Offensive Sign (purple) cards from their hands. If they are not able to discard at least 1, they take 2 damage.', trigger: 'passive' as const },
     },
     {
       number: 3 as const,
-      drawAbility: { name: 'Special Attack #3', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Ghastly Charge', description: 'The Player takes 4 damage and discards 1 Potion.', trigger: 'passive' as const },
     },
     {
       number: 4 as const,
-      drawAbility: { name: 'Special Attack #4', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Knockdown', description: 'The Player takes 1 damage. During Step 4 of the Player\'s next Fight Turn, they draw 0 cards.', trigger: 'passive' as const },
     },
   ],
 };

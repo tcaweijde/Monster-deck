@@ -12,8 +12,8 @@ export const wyvern: Monster = {
     trigger: 'passive',
   },
   discardAbility: {
-    name: 'TODO',
-    description: 'TODO',
+    name: 'Tail Stun',
+    description: 'The Player discards 1 card with the most extensions from their hands.',
     trigger: 'discard',
   },
   cardPool: GENERIC_CARD_POOL,
@@ -23,23 +23,19 @@ export const wyvern: Monster = {
   trailCards: [
     {
       number: 1 as const,
-      drawAbility: { name: 'Special Attack #1', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Charge from the Air', description: 'The Player discards 1 Fast Attack (blue) card from their hands. If they are not able to discard it, they take 4 damage.', trigger: 'passive' as const },
     },
     {
       number: 2 as const,
-      drawAbility: { name: 'Special Attack #2', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Murderous Claws', description: 'The Player takes 2 damage and trashes any 1 card from their hands.', trigger: 'passive' as const },
     },
     {
       number: 3 as const,
-      drawAbility: { name: 'Special Attack #3', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Poison Spike', description: 'The Player takes 2 damage. During the Player\'s next Fight Turn, they ignore drawing modifiers in their combo.', trigger: 'passive' as const },
     },
     {
       number: 4 as const,
-      drawAbility: { name: 'Special Attack #4', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Poisonous Saliva', description: 'The Player takes 3 damage. During the Player\'s next Fight Turn, they ignore all extension effects in their combo.', trigger: 'passive' as const },
     },
   ],
 };

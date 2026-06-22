@@ -12,8 +12,8 @@ export const penitent: Monster = {
     trigger: 'passive',
   },
   discardAbility: {
-    name: 'TODO',
-    description: 'TODO',
+    name: 'Disappearance',
+    description: 'During this Player\'s Fight Turn, they ignore drawing modifiers in the combo.',
     trigger: 'discard',
   },
   cardPool: GENERIC_CARD_POOL,
@@ -23,23 +23,19 @@ export const penitent: Monster = {
   trailCards: [
     {
       number: 1 as const,
-      drawAbility: { name: 'Special Attack #1', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Summoning Waves', description: 'The Player takes 1 damage, increased by the number of Penitent weakness tokens they possess.', trigger: 'passive' as const },
     },
     {
       number: 2 as const,
-      drawAbility: { name: 'Special Attack #2', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Lantern Strike', description: 'The Monster draws 1 random card from the Player\'s hands. (empty hands: from the top of their deck). The Monster deals damage equal to the number of Damage symbols shown on that card\'s Fight ability section. After that, the card is discarded.', trigger: 'passive' as const },
     },
     {
       number: 3 as const,
-      drawAbility: { name: 'Special Attack #3', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Spinning', description: 'The Player takes 3 damage and discards 1 random card from their hands.', trigger: 'passive' as const },
     },
     {
       number: 4 as const,
-      drawAbility: { name: 'Special Attack #4', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: { name: 'Swarm of Blows', description: 'The Player takes 3 damage. During the Player\'s next Fight Turn, they may only play Fast Attack (blue) and Defensive Sign (yellow) cards in their combo.', trigger: 'passive' as const },
     },
   ],
 };

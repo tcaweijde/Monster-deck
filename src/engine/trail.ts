@@ -1,4 +1,4 @@
-import type { Monster, MonsterCard, TrailCard, TerrainType, WeaknessToken, PlacedWeaknessToken } from '../types';
+import type { MonsterCard, TrailCard, TerrainType, WeaknessToken, PlacedWeaknessToken } from '../types';
 import { LOCATIONS } from '../data/locations';
 
 // ─── Trail card ID convention ─────────────────────────────────────────────────
@@ -31,26 +31,14 @@ export function trailCardToMonsterCard(tc: TrailCard): MonsterCard {
 /**
  * Generates 4 default TrailCards for a monster that has no authored trail data yet.
  * Draw ability prompts the player to use the numbered special attack.
- * Discard ability uses placeholder text referencing the monster's discard ability if present.
  */
-export function makeDefaultTrailCards(
-  monster: Monster,
-): [TrailCard, TrailCard, TrailCard, TrailCard] {
-  const discardDesc = monster.discardAbility
-    ? `[Placeholder: ${monster.discardAbility.description}]`
-    : '[Placeholder: monster discard ability]';
-
+export function makeDefaultTrailCards(): [TrailCard, TrailCard, TrailCard, TrailCard] {
   return [1, 2, 3, 4].map((n) => ({
     number: n as 1 | 2 | 3 | 4,
     drawAbility: {
       name: `Special Attack #${n}`,
       description: `Use special attack #${n}`,
       trigger: 'passive' as const,
-    },
-    discardAbility: {
-      name: 'Discard Trigger',
-      description: discardDesc,
-      trigger: 'discard' as const,
     },
   })) as [TrailCard, TrailCard, TrailCard, TrailCard];
 }

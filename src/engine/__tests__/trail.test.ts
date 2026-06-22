@@ -19,7 +19,6 @@ const makeToken = (id: string, terrainType: WeaknessToken['terrainType'], number
 const makeTrailCard = (number: 1 | 2 | 3 | 4): TrailCard => ({
   number,
   drawAbility: { name: `Draw ${number}`, description: `Draw ability ${number}`, trigger: 'passive' },
-  discardAbility: { name: `Discard ${number}`, description: `Discard ability ${number}`, trigger: 'discard' },
 });
 
 describe('isTrailSpecialCard', () => {

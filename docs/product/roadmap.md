@@ -2,7 +2,7 @@
 
 > Digital opponent for The Witcher Old World solo play.
 > Last updated: 2026-06-22 · Living document — update at each release milestone.
-> Trail Mode (FEAT-020) fully implemented; monster ability content pending.
+> Trail Mode (FEAT-020) fully implemented; all monster ability content authored.
 
 ---
 
@@ -34,7 +34,7 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | FEAT-012 | New Card Types | — | ~~Removed — not in Trail expansion~~ |
 | FEAT-013 | Special Attacks | — | ~~Subsumed by FEAT-020-B/C/D~~ |
 | FEAT-020-A | Trail Mode Toggle | 3.0 | ✅ Done |
-| FEAT-020-B | Special Card Data Model | 3.0 | ✅ Done (ability content TODO per monster) |
+| FEAT-020-B | Special Card Data Model | 3.0 | ✅ Done |
 | FEAT-020-C | Special Card Draw-Trigger Resolution | 3.0 | ✅ Done |
 | FEAT-020-D | Special Card Discard-Trigger Resolution | 3.0 | ✅ Done |
 | FEAT-020-E | Weakness Token Board System | 3.0 | ✅ Done |
@@ -186,9 +186,11 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 > triggers, and a weakness token board system that grants pre-fight advantages. Both
 > are toggled together at game start. Full spec: [`docs/specs/FEAT-020-monster-trail.md`](../specs/FEAT-020-monster-trail.md)
 >
-> **Status (2026-06-16):** All engine, store, and UI sub-features complete.
-> Monster-specific ability content (discardAbility + trailCards text) is stubbed as
-> `TODO` placeholders in each monster file — to be filled in manually.
+> **Status (2026-06-22):** All engine, store, and UI sub-features complete.
+> All monster `discardAbility` and `trailCards` draw-ability text authored for all 29
+> monsters. `TrailCard.discardAbility` was removed as a design revision — when a trail
+> special card is discarded, the monster's global `discardAbility` fires (same as any
+> other discarded card). See FEAT-020-D.
 >
 > **Retired stubs:** FEAT-004, FEAT-005, FEAT-006, FEAT-013 are subsumed by FEAT-020.
 > FEAT-011 and FEAT-012 are **removed** — confirmed absent from the physical expansion.
@@ -210,10 +212,11 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 
 ### ✅ FEAT-020-B — Special Card Data Model *(M)*
 - Extend the `Monster` type with an optional `trailCards` field: exactly 4 `TrailCard` entries when present
-- Each `TrailCard` has a `number` (1–4), a `drawAbility` (fires on monster flip), and a `discardAbility` (fires on player discard)
+- Each `TrailCard` has a `number` (1–4) and a `drawAbility` (fires on monster flip)
+- When a trail special card is discarded as damage, the monster's global `discardAbility` fires — trail cards do not carry a separate discard ability
 - Both abilities follow the existing `Ability` structure (name + description)
 - When Trail Mode is on, deck generation appends the 4 special cards to the monster's standard deck
-- All 29 monsters have `discardAbility` and `trailCards` scaffolded; ability text is `TODO` — fill in per monster
+- All 29 monsters have `discardAbility` and `trailCards` authored with full ability text
 - Spec: [`docs/specs/FEAT-020-monster-trail.md`](../specs/FEAT-020-monster-trail.md)
 
 ### ✅ FEAT-020-C — Special Card Draw-Trigger Resolution *(M)*
@@ -221,9 +224,8 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 - Displayed via the existing encounter alert overlay (same UX pattern as `DiscardAlert`)
 
 ### ✅ FEAT-020-D — Special Card Discard-Trigger Resolution *(M)*
-- During an encounter, when the player discards a special card as damage, the app fires the card's `discardAbility`
-- Both the global monster discard ability (if any) and the card-specific `discardAbility` can fire in the same event — displayed in sequence
-- Uses the existing `DiscardAlert` component pattern
+- During an encounter, when the player discards a trail special card as damage, the monster's global `discardAbility` fires (identical to any other discarded card)
+- No separate per-card discard ability exists on `TrailCard`; `TrailDiscardAlert` was removed in favour of the existing `DiscardAlert`
 
 ### ✅ FEAT-020-E — Weakness Token Board System *(M)*
 - At game start, app draws 6 weakness tokens and shows a terrain-type checklist to guide physical token placement (max 1 token per terrain type)

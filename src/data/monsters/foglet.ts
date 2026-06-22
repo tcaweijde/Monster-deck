@@ -12,8 +12,8 @@ export const foglet: Monster = {
     trigger: 'passive',
   },
   discardAbility: {
-    name: 'TODO',
-    description: 'TODO',
+    name: 'Dematerialization',
+    description: "If this Fight Turn's Player combo has no Offensive Sign (purple) cards, after resolving the combo the Monster adds a random card from their unused Monster Fight cards to the top of their Live Pool.",
     trigger: 'discard',
   },
   cardPool: GENERIC_CARD_POOL,
@@ -23,23 +23,36 @@ export const foglet: Monster = {
   trailCards: [
     {
       number: 1 as const,
-      drawAbility: { name: 'Special Attack #1', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: {
+        name: 'Sharp Claws',
+        description: 'The Player discards 3 cards from the top of their deck. (empty deck: any card from their hand).',
+        trigger: 'passive' as const,
+      },
     },
     {
       number: 2 as const,
-      drawAbility: { name: 'Special Attack #2', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: {
+        name: 'Illusion',
+        description: "The Player takes 2 damage during the Player's next Fight Turn. Ignore Shield symbols in the Player's combo that turn.",
+        trigger: 'passive' as const,
+      },
     },
     {
       number: 3 as const,
-      drawAbility: { name: 'Special Attack #3', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: {
+        name: 'Master Illusion',
+        description: "The Player takes 3 damage during the Player's next Fight Turn. Ignore Shield symbols in the Player's next combo.",
+        trigger: 'passive' as const,
+      },
     },
     {
       number: 4 as const,
-      drawAbility: { name: 'Special Attack #4', description: 'TODO', trigger: 'passive' as const },
-      discardAbility: { name: 'TODO', description: 'TODO', trigger: 'discard' as const },
+      drawAbility: {
+        name: 'Attack in the Fog',
+        description: "The Player takes 2 damage and the Foglet immediately performs their next Fight Turn.",
+        trigger: 'passive' as const,
+      },
     },
   ],
 };
+
