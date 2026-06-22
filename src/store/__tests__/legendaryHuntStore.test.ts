@@ -374,17 +374,6 @@ describe('useLegendaryHuntStore', () => {
       act(() => { useLegendaryHuntStore.getState().confirmBossPrep(0); });
       expect(useLegendaryHuntStore.getState().playerGoesFirst).toBe(false);
     });
-
-    it('should use PLACEHOLDER_LEGENDARY when monsterId is not found', () => {
-      useLegendaryHuntStore.setState({
-        legendaryMonsterId: 'nonexistent-id',
-        campaignSide: 'A',
-        destructionTokenCount: 0,
-      });
-      act(() => { useLegendaryHuntStore.getState().confirmBossPrep(0); });
-      // PLACEHOLDER_LEGENDARY.baseFightDeckSize = 22, destructionTokenCount = 0 → 22
-      expect(useLegendaryHuntStore.getState().bossFightDeckSize).toBe(22);
-    });
   });
 
   // ──────────────────────────────────────────────────────────────────────────

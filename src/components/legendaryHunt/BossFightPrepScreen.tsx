@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useLegendaryHuntStore } from '../../store/legendaryHuntStore';
 import { useEncounterStore } from '../../store/encounterStore';
 import { LEGENDARY_MONSTERS } from '../../data/legendary';
-import { PLACEHOLDER_LEGENDARY } from '../../data/legendary/placeholder-legendary';
 import { TROPHY_PROTECTION_TABLES } from '../../data/legendary';
 import { buildLegendaryFightDeck, lookupProtectionValue } from '../../engine/legendaryFightDeck';
 import type { Monster } from '../../types';
@@ -21,7 +20,9 @@ export function BossFightPrepScreen() {
   const beginBossFight = useLegendaryHuntStore((s) => s.beginBossFight);
   const startEncounterWithDeck = useEncounterStore((s) => s.startEncounterWithDeck);
 
-  const monster = LEGENDARY_MONSTERS.find((m) => m.id === legendaryMonsterId) ?? PLACEHOLDER_LEGENDARY;
+  const monster = LEGENDARY_MONSTERS.find((m) => m.id === legendaryMonsterId);
+
+  if (!monster) return null;
 
   const liveProtection = lookupProtectionValue(TROPHY_PROTECTION_TABLES, campaignSide, trophyCount);
   const liveDeckSize = Math.max(0, monster.baseFightDeckSize - destructionTokenCount);

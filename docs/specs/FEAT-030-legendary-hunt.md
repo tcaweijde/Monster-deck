@@ -675,8 +675,6 @@ Lightweight overlay on `EncounterState` for the boss fight. Extends the existing
 Example data structure for one placeholder Legendary monster plus the shared movement deck and shared protection tables.
 
 ```typescript
-// src/data/legendary/placeholder-legendary.ts
-
 import type {
   LegendaryMonster,
   SharedMovementDeck,

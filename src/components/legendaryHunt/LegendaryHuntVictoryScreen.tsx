@@ -1,7 +1,6 @@
 import { useLegendaryHuntStore } from '../../store/legendaryHuntStore';
 import { useBoardStore } from '../../store/boardStore';
 import { LEGENDARY_MONSTERS } from '../../data/legendary';
-import { PLACEHOLDER_LEGENDARY } from '../../data/legendary/placeholder-legendary';
 
 const BASE = import.meta.env.BASE_URL ?? '/';
 
