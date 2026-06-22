@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { useBoardStore } from './store/boardStore';
 import { useWildHuntStore } from './store/wildHuntStore';
+import { useLegendaryHuntStore } from './store/legendaryHuntStore';
 import { useEncounterStore } from './store/encounterStore';
 import { BoardWelcomeScreen } from './components/board/BoardWelcomeScreen';
 import { BoardScreen } from './components/board/BoardScreen';
@@ -12,6 +13,12 @@ import { ProximitySetupScreen } from './components/wildHunt/ProximitySetupScreen
 import { WildHuntEncounterScreen } from './components/wildHunt/WildHuntEncounterScreen';
 import { WildHuntVictoryScreen } from './components/wildHunt/WildHuntVictoryScreen';
 import { WildHuntDefeatScreen } from './components/wildHunt/WildHuntDefeatScreen';
+import { LegendaryHuntSetupScreen } from './components/legendaryHunt/LegendaryHuntSetupScreen';
+import { LegendaryHuntBoardScreen } from './components/legendaryHunt/LegendaryHuntBoardScreen';
+import { BossFightPrepScreen } from './components/legendaryHunt/BossFightPrepScreen';
+import { LegendaryEncounterScreen } from './components/legendaryHunt/LegendaryEncounterScreen';
+import { LegendaryHuntVictoryScreen } from './components/legendaryHunt/LegendaryHuntVictoryScreen';
+import { LegendaryHuntDefeatScreen } from './components/legendaryHunt/LegendaryHuntDefeatScreen';
 
 const slideUp: Variants = {
   initial: { y: '100%', opacity: 0 },
@@ -23,14 +30,30 @@ export default function App() {
   const board = useBoardStore((s) => s.board);
   const activeSlotIndex = useBoardStore((s) => s.activeSlotIndex);
   const wildHuntPhase = useWildHuntStore((s) => s.phase);
+  const legendaryPhase = useLegendaryHuntStore((s) => s.phase);
   const showMonsters = useWildHuntStore((s) => s.showMonsters);
   const showProximitySetup = useWildHuntStore((s) => s.showProximitySetup);
   const activeWildHuntSlotIndex = useWildHuntStore((s) => s.activeWildHuntSlotIndex);
   const encounterPhase = useEncounterStore((s) => s.phase);
 
-  const inWildHunt = wildHuntPhase !== 'inactive';
+  const inLH = legendaryPhase !== 'inactive';
+  const inWH = wildHuntPhase !== 'inactive';
 
-  const screen = inWildHunt
+  const screen = inLH
+    ? legendaryPhase === 'setup'
+      ? 'lh-setup'
+      : legendaryPhase === 'victory'
+        ? 'lh-victory'
+        : legendaryPhase === 'defeat'
+          ? 'lh-defeat'
+          : legendaryPhase === 'bossPrep'
+            ? 'lh-boss-prep'
+            : legendaryPhase === 'bossFight' && encounterPhase !== 'setup'
+              ? 'lh-boss'
+              : activeSlotIndex !== null
+                ? 'encounter'
+                : 'lh-board'
+    : inWH
     ? wildHuntPhase === 'setup'
       ? 'wh-setup'
       : wildHuntPhase === 'victory'
@@ -49,7 +72,7 @@ export default function App() {
   return (
     <div className="relative w-full h-dvh overflow-hidden">
       <AnimatePresence mode="sync">
-        {screen !== 'encounter' && screen !== 'wh-boss' && (
+        {screen !== 'encounter' && screen !== 'wh-boss' && screen !== 'lh-boss' && (
           <motion.div
             key="board"
             className="absolute inset-0"
@@ -64,10 +87,15 @@ export default function App() {
             {screen === 'wh-proximity' && <ProximitySetupScreen />}
             {screen === 'wh-victory' && <WildHuntVictoryScreen />}
             {screen === 'wh-defeat' && <WildHuntDefeatScreen />}
+            {screen === 'lh-setup' && <LegendaryHuntSetupScreen />}
+            {screen === 'lh-board' && <LegendaryHuntBoardScreen />}
+            {screen === 'lh-boss-prep' && <BossFightPrepScreen />}
+            {screen === 'lh-victory' && <LegendaryHuntVictoryScreen />}
+            {screen === 'lh-defeat' && <LegendaryHuntDefeatScreen />}
           </motion.div>
         )}
 
-        {(screen === 'encounter' || screen === 'wh-boss') && (
+        {(screen === 'encounter' || screen === 'wh-boss' || screen === 'lh-boss') && (
           <motion.div
             key="encounter"
             className="absolute inset-0"
@@ -76,7 +104,7 @@ export default function App() {
             animate="animate"
             exit="exit"
           >
-            {screen === 'wh-boss' ? <WildHuntEncounterScreen /> : <EncounterScreen />}
+            {screen === 'wh-boss' ? <WildHuntEncounterScreen /> : screen === 'lh-boss' ? <LegendaryEncounterScreen /> : <EncounterScreen />}
           </motion.div>
         )}
       </AnimatePresence>
