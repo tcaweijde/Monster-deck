@@ -145,10 +145,10 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
   },
 
   discardOne: () => {
-    const { deck, discardPile, monster } = get();
+    const { deck, discardPile, monster, activeTrailCards } = get();
 
     const result = applyDamage(deck, 1);
-    const hasDiscardAbility = !!monster?.discardAbility;
+    const hasDiscardAbility = !!monster?.discardAbility && activeTrailCards !== null;
 
     set({
       deck: result.remainingDeck,
@@ -181,7 +181,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
   },
 
   applyPlayerDamage: (damage) => {
-    const { deck, discardPile, monster } = get();
+    const { deck, discardPile, monster, activeTrailCards } = get();
     if (damage < 0) return;
 
     if (damage === 0) {
@@ -195,7 +195,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
     }
 
     const result = applyDamage(deck, damage);
-    const hasDiscardAbility = !!monster?.discardAbility;
+    const hasDiscardAbility = !!monster?.discardAbility && activeTrailCards !== null;
     const newPhase = result.remainingDeck.length === 0 ? 'victory' : 'playing';
 
     set({

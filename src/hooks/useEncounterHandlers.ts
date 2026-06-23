@@ -58,5 +58,5 @@ export function useEncounterHandlers() {
     resetToSetup();
   };
 
-  return { displayLevel, inWildHunt, quitEncounter, completeEncounter };
+  return { displayLevel, inWildHunt, trailModeEnabled, quitEncounter, completeEncounter };
 }

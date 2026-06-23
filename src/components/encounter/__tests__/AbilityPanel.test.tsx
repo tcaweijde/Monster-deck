@@ -40,11 +40,16 @@ describe('AbilityPanel', () => {
     expect(screen.queryByText('Screech:')).not.toBeInTheDocument();
   });
 
-  it('shows On Discard badge and ability when discardAbility is set', () => {
-    render(<AbilityPanel monster={monsterWithDiscard} />);
+  it('shows On Discard badge and ability when discardAbility is set and trailMode is true', () => {
+    render(<AbilityPanel monster={monsterWithDiscard} trailMode={true} />);
     expect(screen.getByText('On Discard')).toBeInTheDocument();
     expect(screen.getByText('Bleed:')).toBeInTheDocument();
     expect(screen.getByText('Player loses 1 HP.')).toBeInTheDocument();
+  });
+
+  it('does not show On Discard section when discardAbility is set but trailMode is false', () => {
+    render(<AbilityPanel monster={monsterWithDiscard} trailMode={false} />);
+    expect(screen.queryByText('On Discard')).not.toBeInTheDocument();
   });
 
   it('does not show On Discard section when no discardAbility', () => {

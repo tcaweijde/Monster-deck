@@ -211,9 +211,30 @@ describe('encounterStore', () => {
     });
 
     describe('discard trigger', () => {
-      it('should set lastDiscardTriggered true when monster has discardAbility', () => {
+      it('should set lastDiscardTriggered true when monster has discardAbility and trail is active', () => {
+        resetStore();
+        act(() => {
+          useEncounterStore.getState().startEncounter(
+            'test-griffin',
+            false,
+            0,
+            undefined,
+            [
+              { number: 1, drawAbility: { name: 'A', description: 'B', trigger: 'passive' } },
+              { number: 2, drawAbility: { name: 'C', description: 'D', trigger: 'passive' } },
+              { number: 3, drawAbility: { name: 'E', description: 'F', trigger: 'passive' } },
+              { number: 4, drawAbility: { name: 'G', description: 'H', trigger: 'passive' } },
+            ],
+          );
+        });
+        act(() => { useEncounterStore.getState().flipMonsterCard(); });
         act(() => { useEncounterStore.getState().applyPlayerDamage(1); });
         expect(useEncounterStore.getState().lastDiscardTriggered).toBe(true);
+      });
+
+      it('should set lastDiscardTriggered false when monster has discardAbility but trail is not active', () => {
+        act(() => { useEncounterStore.getState().applyPlayerDamage(1); });
+        expect(useEncounterStore.getState().lastDiscardTriggered).toBe(false);
       });
 
       it('should set lastDiscardTriggered false when monster has no discardAbility', () => {

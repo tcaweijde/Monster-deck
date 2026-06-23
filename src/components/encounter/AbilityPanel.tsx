@@ -4,11 +4,12 @@ import { getActiveAbilities, hasDiscardTrigger } from '../../engine/abilities';
 interface AbilityPanelProps {
   monster: Monster;
   theme?: 'default' | 'frost';
+  trailMode?: boolean;
 }
 
-export function AbilityPanel({ monster, theme = 'default' }: AbilityPanelProps) {
+export function AbilityPanel({ monster, theme = 'default', trailMode = false }: AbilityPanelProps) {
   const abilities = getActiveAbilities(monster);
-  const showDiscardAbility = hasDiscardTrigger(monster);
+  const showDiscardAbility = hasDiscardTrigger(monster) && trailMode;
 
   const headingColor = theme === 'frost' ? 'text-cyan-400' : 'text-amber-400';
 

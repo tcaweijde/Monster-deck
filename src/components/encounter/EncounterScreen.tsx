@@ -23,6 +23,7 @@ export function EncounterScreen() {
   const phase = useEncounterStore((s) => s.phase);
   const lastDiscardTriggered = useEncounterStore((s) => s.lastDiscardTriggered);
   const proximityBonus = useEncounterStore((s) => s.proximityBonus);
+  const activeTrailCards = useEncounterStore((s) => s.activeTrailCards);
   const pendingTrailDrawAbility = useEncounterStore((s) => s.pendingTrailDrawAbility);
   const clearTrailDrawAbility = useEncounterStore((s) => s.clearTrailDrawAbility);
   const flipMonsterCard = useEncounterStore((s) => s.flipMonsterCard);
@@ -36,7 +37,7 @@ export function EncounterScreen() {
 
   const trailCardNumber = currentCard ? getTrailCardNumber(currentCard.cardId) : null;
 
-  const { displayLevel, inWildHunt, quitEncounter, completeEncounter } = useEncounterHandlers();
+  const { displayLevel, inWildHunt, trailModeEnabled, quitEncounter, completeEncounter } = useEncounterHandlers();
 
   const frost = proximityBonus > 0;
 
@@ -64,7 +65,7 @@ export function EncounterScreen() {
           </div>
         </div>
 
-        <AbilityPanel monster={monster} theme={frost ? 'frost' : 'default'} />
+        <AbilityPanel monster={monster} theme={frost ? 'frost' : 'default'} trailMode={trailModeEnabled} />
 
         <div
           className={`text-center py-2 px-4 rounded-lg text-sm font-semibold ${
@@ -92,7 +93,7 @@ export function EncounterScreen() {
           />
         </div>
 
-        {monster.discardAbility && turn === 'player' && (
+        {monster.discardAbility && activeTrailCards !== null && turn === 'player' && (
           <DiscardAlert ability={monster.discardAbility} triggered={lastDiscardTriggered} />
         )}
 
