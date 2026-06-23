@@ -228,12 +228,12 @@ The product fails without every feature listed here. Each one was challenged and
 
 | # | Feature | FEAT | Status |
 |---|---------|------|--------|
-| 1 | Campaign setup | FEAT-030-A | 🔲 Todo |
-| 2 | Round & stage driver | FEAT-030-B | 🔲 Todo |
-| 3 | Movement deck engine | FEAT-030-C | 🔲 Todo |
-| 4 | Destruction token tracker | FEAT-030-D | 🔲 Todo |
-| 5 | Boss fight preparation screen | FEAT-030-E | 🔲 Todo |
-| 6 | Legendary fight deck engine | FEAT-030-F | 🔲 Todo |
+| 1 | Campaign setup | FEAT-030-A | ✅ Done  |
+| 2 | Round & stage driver | FEAT-030-B | v |
+| 3 | Movement deck engine | FEAT-030-C | ✅ Done  |
+| 4 | Destruction token tracker | FEAT-030-D | ✅ Done  |
+| 5 | Boss fight preparation screen | FEAT-030-E | ✅ Done  |
+| 6 | Legendary fight deck engine | FEAT-030-F | ✅ Done  |
 | 7 | Legendary monster data (7 monsters) | FEAT-009 | 🔲 Todo |
 
 ### Beyond 4.0 — Future possibilities
