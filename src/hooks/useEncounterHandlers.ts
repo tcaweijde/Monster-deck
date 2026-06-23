@@ -1,6 +1,7 @@
 import { useWildHuntStore } from '../store/wildHuntStore';
 import { useBoardStore } from '../store/boardStore';
 import { useEncounterStore } from '../store/encounterStore';
+import { useTrailStore } from '../store/trailStore';
 
 /**
  * Adapts quit and victory encounter callbacks to the active game mode
@@ -21,6 +22,10 @@ export function useEncounterHandlers() {
 
   const resetToSetup = useEncounterStore((s) => s.resetToSetup);
 
+  const trailModeEnabled = useTrailStore((s) => s.trailModeEnabled);
+  const handleTrailVictoryReset = useTrailStore((s) => s.handleVictoryReset);
+  const clearPendingEffect = useTrailStore((s) => s.clearPendingEffect);
+
   const inWildHunt = wildHuntPhase !== 'inactive';
 
   const displayLevel: number | null = inWildHunt
@@ -34,6 +39,7 @@ export function useEncounterHandlers() {
   const quitEncounter = () => {
     if (inWildHunt) clearActiveWildHuntSlot();
     else clearActiveSlot();
+    clearPendingEffect();
     resetToSetup();
   };
 
@@ -43,7 +49,11 @@ export function useEncounterHandlers() {
       absorbDamage(level);
       defeatWildHuntSlot(activeWildHuntSlotIndex);
     } else {
+      const defeatedTerrainType = boardActiveSlotIndex !== null
+        ? boardSlots?.[boardActiveSlotIndex]?.locationType
+        : undefined;
       handleBoardVictory();
+      if (trailModeEnabled) handleTrailVictoryReset(defeatedTerrainType);
     }
     resetToSetup();
   };

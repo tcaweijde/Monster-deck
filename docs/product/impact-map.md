@@ -1,7 +1,7 @@
 # Monster-deck Impact Map
 
 > Digital opponent for The Witcher Old World board game.
-> Created: 2026-06-01 · Last updated: 2026-06-03
+> Created: 2026-06-01 · Last updated: 2026-06-16 · Trail Mode (FEAT-020) complete.
 
 ---
 
@@ -103,19 +103,27 @@ Replaces the physical token bag and board setup entirely.
 | F5.4 Monster replacement | After a defeat, auto-spawn a replacement at the next level in the same location type | I1, I2 | Eliminates the mid-game token redraw that breaks immersion | FEAT-001 ✅ Done |
 | F5.5 Board persistence | Board state survives app refresh via localStorage | I1 | Session continuity; player can close and return without losing state | FEAT-001 ✅ Done |
 
-### Epic 6: Monster Trail Expansion
+### Epic 6: Monster Trail Expansion ✅ Complete
 
-Adds monster-specific cards, weaknesses, and richer discard mechanics from the Monster Trail expansion.
+Adds the two interlocking Trail Mode mechanics: numbered special cards with dual draw/discard triggers, and a weakness token board system. Both are enabled together via a single toggle at game start.
+
+> **Status (2026-06-16):** All engine, store, UI, and data-model sub-features complete.
+> Monster-specific `discardAbility` and `trailCards` ability text is scaffolded as `TODO` in each monster file — content to be entered manually.
+>
+> **Retired stubs:** F6.1–F6.3, F6.5–F6.7 (FEAT-004, 005, 006, 011, 012, 013) are replaced by FEAT-020 sub-features.
+> FEAT-011 and FEAT-012 are **removed** — confirmed absent from the physical Monster Trail expansion.
 
 | Feature | Description | Impact | Rationale | Roadmap |
 |---------|-------------|--------|-----------|---------|
-| F6.1 Monster-specific attack cards | Each Monster Trail monster has unique cards in addition to the shared generic pool | I2, I3 | Faithfully represents the expansion's card variety | FEAT-004 |
-| F6.2 Monster weaknesses | Each monster has one or more weaknesses (e.g., silver, fire) visible during the encounter | I3 | Player needs to know which attack types are effective | FEAT-005 |
-| F6.3 Monster-specific discard trigger | Abilities that fire specifically when a monster-specific card is discarded | I2, I3 | Extension of F3.3 — more precise trigger conditions for Trail monsters | FEAT-006 |
-| F6.4 Monster-specific card art | Unique artwork per monster-specific card | I2 | Visual richness; could-have dependent on art availability | FEAT-007 |
-| F6.5 New attack types | Cards can carry a typed attack (e.g., silver, fire, poison) that interacts with monster weaknesses | I2, I3 | Required to make weakness (F6.2) mechanically meaningful at the card level | FEAT-011 |
-| F6.6 New card types | Monster Trail introduces new card archetypes beyond standard attack cards (e.g., special, event) | I2, I3 | Expands encounter variety and faithfully represents the Trail expansion's card set | FEAT-012 |
-| F6.7 Special attacks | Cards with multiple ability definitions — e.g., a card that triggers differently depending on context | I2, I3 | Needed to represent Trail cards that have compound or conditional effects | FEAT-013 |
+| F6.1 Trail Mode Toggle | Single on/off toggle at game start enabling both special cards and weakness tokens together | I2, I3 | Mechanisms are balanced against each other — must be enabled as a pair | FEAT-020-A ✅ Done |
+| F6.2 Special Card Data Model | 4 numbered special cards per Trail monster, each with a draw-trigger ability and a discard-trigger ability; all 29 monsters scaffolded | I2, I3 | Extends the card model to faithfully represent Trail's dual-trigger cards | FEAT-020-B ✅ Done (content TODO) |
+| F6.3 Special Card Draw-Trigger Resolution | When the monster flips a special card, app fires the monster-specific draw ability | I2, I3 | Automatic resolution — player never has to remember to look up the ability | FEAT-020-C ✅ Done |
+| F6.4 Special Card Discard-Trigger Resolution | When the player discards a special card as damage, app fires the card's discard ability | I2, I3 | Extension of the existing discard-trigger pattern; Trail cards have their own per-card discard abilities | FEAT-020-D ✅ Done |
+| F6.5 Weakness Token Board System | App guides terrain-type token placement at game start; player claims tokens in-app when on the same location; replacement tokens are auto-drawn | I3 | Eliminates manual token tracking and placement bookkeeping | FEAT-020-E ✅ Done |
+| F6.6 Weakness Effect Pre-Fight | Before each encounter, player declares which held weakness token (if any) to apply; app resolves one of four effect types | I2, I3 | Gives the player a meaningful tactical choice while the app handles the mechanical effect | FEAT-020-F ✅ Done |
+| F6.7 Weakness Post-Defeat Reset | After victory, all board tokens reset and a fresh set is drawn and displayed | I3 | Keeps board token state accurate without manual tracking | FEAT-020-G ✅ Done |
+| F6.8 Weakness Token Data Model | Define the token pool: terrain type, effect type, and magnitude per token | I2, I3 | Foundation required by F6.5–F6.7 | FEAT-020-H ✅ Done |
+| F6.9 Monster-Specific Card Art | Unique artwork per special card face (1–4 per Trail monster) | I2 | Visual richness; could-have dependent on art asset availability | FEAT-007 🔲 Could-have |
 
 ### Epic 7: Legendary Hunt Expansion
 
@@ -185,43 +193,47 @@ The product fails without every feature listed here. Each one was challenged and
 | 4 | Swipe animations | — | ✅ Shipped |
 | 5 | Card turning animations | — | ✅ Shipped |
 
-### 1.1 — Monster Trail Expansion
+### 2.0 — Wild Hunt Expansion *(Complete)*
 
 | # | Feature | FEAT | Status |
 |---|---------|------|--------|
-| 1 | Monster-specific attack cards | FEAT-004 | 🔲 Todo |
-| 2 | Monster weaknesses | FEAT-005 | 🔲 Todo |
-| 3 | Monster-specific discard-trigger abilities | FEAT-006 | 🔲 Todo |
-| 4 | Monster-specific card art | FEAT-007 | 🔲 Could-have |
-| 5 | New attack types | FEAT-011 | 🔲 Todo |
-| 6 | New card types | FEAT-012 | 🔲 Todo |
-| 7 | Special attacks | FEAT-013 | 🔲 Todo |
+| 1 | Campaign State Engine | FEAT-010-A | ✅ Done |
+| 2 | Round Stage Driver | FEAT-010-B | ✅ Done |
+| 3 | Wild Hunt Character Selection | FEAT-010-C | ✅ Done |
+| 4 | Wild Hunt Location Tracking | FEAT-010-D | ✅ Done |
+| 5 | Wild Hunt Encounter (Boss Fight) | FEAT-010-E | ✅ Done |
+| 6 | Shield Counter | FEAT-010-F | ✅ Done |
+| 7 | Monster Spawn System | FEAT-010-G | ✅ Done |
+| 8 | Hound Enemy Type | FEAT-010-H | ✅ Done |
+| 9 | Story Card Reminder | FEAT-010-I | ✅ Done |
+| 10 | Wild Hunt Character Data | FEAT-010-J | ✅ Done |
+| 11 | Monster Proximity Card Bonus | FEAT-010-K | ✅ Done |
+| 12 | Defeat Screen | FEAT-010-L | 🔲 Todo |
 
-### 1.2 — Skellige Expansion
-
-| # | Feature | FEAT | Status |
-|---|---------|------|--------|
-| 1 | Skellige locations | FEAT-SKELLIGE-001 | 🔲 Todo |
-| 2 | Dagon's Lair | FEAT-SKELLIGE-002 | 🔲 Todo |
-| 3 | Dagon monster data | FEAT-SKELLIGE-003 | 🔲 Todo |
-| 4 | Random encounter | FEAT-SKELLIGE-004 | 🔲 Todo |
-
-### 2.0 — Wild Hunt Expansion ✅ Done
+### 3.0 — Monster Trail Expansion *(Complete)*
 
 | # | Feature | FEAT | Status |
 |---|---------|------|--------|
-| 1 | Wild Hunt expansion (A–L) | FEAT-010 | ✅ Done |
+| 1 | Trail Mode Toggle | FEAT-020-A | ✅ Done |
+| 2 | Special Card Data Model | FEAT-020-B | ✅ Done (content TODO) |
+| 3 | Special Card Draw-Trigger Resolution | FEAT-020-C | ✅ Done |
+| 4 | Special Card Discard-Trigger Resolution | FEAT-020-D | ✅ Done |
+| 5 | Weakness Token Board System | FEAT-020-E | ✅ Done |
+| 6 | Weakness Effect Pre-Fight | FEAT-020-F | ✅ Done |
+| 7 | Weakness Post-Defeat Reset | FEAT-020-G | ✅ Done |
+| 8 | Weakness Token Data Model | FEAT-020-H | ✅ Done |
+| 9 | Monster-Specific Card Art | FEAT-007 | 🔲 Could-have |
 
 ### 4.0 — Legendary Hunt Expansion
 
 | # | Feature | FEAT | Status |
 |---|---------|------|--------|
-| 1 | Campaign setup | FEAT-030-A | 🔲 Todo |
-| 2 | Round & stage driver | FEAT-030-B | 🔲 Todo |
-| 3 | Movement deck engine | FEAT-030-C | 🔲 Todo |
-| 4 | Destruction token tracker | FEAT-030-D | 🔲 Todo |
-| 5 | Boss fight preparation screen | FEAT-030-E | 🔲 Todo |
-| 6 | Legendary fight deck engine | FEAT-030-F | 🔲 Todo |
+| 1 | Campaign setup | FEAT-030-A | ✅ Done  |
+| 2 | Round & stage driver | FEAT-030-B | v |
+| 3 | Movement deck engine | FEAT-030-C | ✅ Done  |
+| 4 | Destruction token tracker | FEAT-030-D | ✅ Done  |
+| 5 | Boss fight preparation screen | FEAT-030-E | ✅ Done  |
+| 6 | Legendary fight deck engine | FEAT-030-F | ✅ Done  |
 | 7 | Legendary monster data (7 monsters) | FEAT-009 | 🔲 Todo |
 
 ### Beyond 4.0 — Future possibilities
@@ -246,3 +258,9 @@ The product fails without every feature listed here. Each one was challenged and
 | Card variety requires a real data model | Every card has different attacks/abilities. A simple random-number approach would not be faithful to the game. |
 | Monster Trail is a separate 3.0 release | Trail extends the data model and card engine — not just content. Warrants its own release to keep 1.0 scope clean. |
 | Wild Hunt (FEAT-010) is complete as of 2.0 | All A–L sub-features implemented. FEAT-010-L (Defeat Screen) was the final item. |
+| Monster Trail shipped as release 3.0 (not 1.1) | Wild Hunt expansion (2.0) was completed first; Trail is now the third major release. |
+| Monster Trail uses a single FEAT-020 with sub-features (not separate FEATs) | Early stubs (FEAT-004 through FEAT-013) were speculative. After full interviews, the mechanics resolved into two interlocking systems (special cards + weakness tokens) that are best scoped together. |
+| FEAT-011 (New Attack Types) removed | Confirmed absent from the physical Trail expansion. No typed attacks exist. Speculative stub — cut entirely. |
+| FEAT-012 (New Card Types) removed | Confirmed absent from the physical Trail expansion. Trail uses standard attack cards only. Speculative stub — cut entirely. |
+| Trail Mode is an all-or-nothing toggle | Special cards (harder for the player) and weakness tokens (easier for the player) are mechanically balanced against each other. Enabling one without the other breaks game balance. |
+| Trail monster ability content (discardAbility + trailCards text) is TODO | Engine and UI are fully wired. Ability text must be transcribed per monster from the physical expansion; scaffolded as `TODO` in each monster file. |

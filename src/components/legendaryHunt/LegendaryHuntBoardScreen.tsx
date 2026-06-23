@@ -1,10 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLegendaryHuntStore } from '../../store/legendaryHuntStore';
 import { useBoardStore } from '../../store/boardStore';
 import { useEncounterStore } from '../../store/encounterStore';
+import { useTrailStore } from '../../store/trailStore';
 import { LEGENDARY_MONSTERS } from '../../data/legendary';
+import { getMonsterById } from '../../data/monsters';
+import { MONSTERS } from '../../data/monsters';
+import { makeDefaultTrailCards } from '../../engine/trail';
 import { DestructionTokenCounter } from './DestructionTokenCounter';
 import { MovementCardDisplay } from './MovementCardDisplay';
+import { TrailPreFightModal } from '../trail/TrailPreFightModal';
+import { TrailTokenBoard } from '../trail/TrailTokenBoard';
+import { BoardSlotCard } from '../board/BoardSlotCard';
+import type { BoardSlot, PlacedWeaknessToken, TrailCard } from '../../types';
+import type { TrailDeckOptions } from '../../engine/deck';
 
 export function LegendaryHuntBoardScreen(): React.JSX.Element {
   const round = useLegendaryHuntStore((s) => s.round);
@@ -23,19 +32,49 @@ export function LegendaryHuntBoardScreen(): React.JSX.Element {
   const endGame = useBoardStore((s) => s.endGame);
   const startEncounter = useEncounterStore((s) => s.startEncounter);
 
+  const trailModeEnabled = useTrailStore((s) => s.trailModeEnabled);
+  const weaknessTokensHeld = useTrailStore((s) => s.weaknessTokensHeld);
+  const setPendingEffect = useTrailStore((s) => s.setPendingEffect);
+
+  const [pendingSlotIndex, setPendingSlotIndex] = useState<0 | 1 | 2 | null>(null);
+
   function handleSelectSlot(index: 0 | 1 | 2): void {
-    const slot = slots?.[index];
+    if (trailModeEnabled) {
+      setPendingSlotIndex(index);
+    } else {
+      const slot = slots?.[index];
+      if (!slot) return;
+      setActiveSlot(index);
+      startEncounter(slot.monsterId);
+    }
+  }
+
+  function handlePreFightConfirm(token: PlacedWeaknessToken | null): void {
+    if (pendingSlotIndex === null) return;
+    const slot = slots?.[pendingSlotIndex];
     if (!slot) return;
-    setActiveSlot(index);
-    startEncounter(slot.monsterId);
+    const monster = getMonsterById(slot.monsterId);
+
+    if (token) setPendingEffect(token);
+
+    const trailCards: [TrailCard, TrailCard, TrailCard, TrailCard] | null =
+      trailModeEnabled && monster
+        ? (monster.trailCards ?? makeDefaultTrailCards())
+        : null;
+    const trailDeckOpts: TrailDeckOptions | undefined = trailCards ? { trailCards } : undefined;
+
+    setActiveSlot(pendingSlotIndex);
+    startEncounter(slot.monsterId, false, 0, trailDeckOpts, trailCards);
+    setPendingSlotIndex(null);
   }
 
   const legendaryMonster =
     LEGENDARY_MONSTERS.find((m) => m.id === legendaryMonsterId);
 
-  // Draw movement card when stage 4 begins
+  // Draw movement card when stage 4 begins. Guard against re-drawing on remount
+  // (the board unmounts during encounters, so the effect fires again on return).
   useEffect(() => {
-    if (stage === 4) {
+    if (stage === 4 && !currentMovementCard) {
       doDrawMovementCard();
     }
   }, [stage]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -105,11 +144,16 @@ export function LegendaryHuntBoardScreen(): React.JSX.Element {
           </button>
         </div>
       </div>
+      {pendingSlotIndex !== null && (
+        <TrailPreFightModal
+          heldTokens={weaknessTokensHeld}
+          onConfirm={handlePreFightConfirm}
+          onCancel={() => setPendingSlotIndex(null)}
+        />
+      )}
     </div>
   );
 }
-
-// ─── Stage sub-components ─────────────────────────────────────────────────────
 
 function StageOne(): React.JSX.Element {
   return (
@@ -121,12 +165,13 @@ function StageOne(): React.JSX.Element {
         last move.
       </p>
       <DestructionTokenCounter />
+      <TrailTokenBoard />
     </div>
   );
 }
 
 interface StageTwoProps {
-  slots: readonly { monsterId: string; level: 1 | 2 | 3; status: string }[] | undefined;
+  slots: readonly BoardSlot[] | undefined;
   onSelectSlot: (index: 0 | 1 | 2) => void;
   legendaryMonsterName: string;
   onFightLegendary: () => void;
@@ -164,16 +209,19 @@ function StageTwo({ slots, onSelectSlot, legendaryMonsterName, onFightLegendary 
       {activeSlots.length > 0 && (
         <div className="space-y-2">
           <p className="text-stone-400 text-xs uppercase tracking-wider">Board Monsters</p>
-          {activeSlots.map(({ slot, index }) => (
-            <button
-              key={`slot-${index}`}
-              onClick={() => onSelectSlot(index)}
-              className="w-full flex items-center justify-between bg-stone-900/80 border border-amber-700/40 rounded-xl px-4 py-3 text-left hover:border-amber-500 transition-colors active:bg-stone-800"
-            >
-              <span className="text-stone-200 font-medium">{slot.monsterId}</span>
-              <span className="text-amber-400 text-sm font-semibold">Level {slot.level}</span>
-            </button>
-          ))}
+          <div className="flex gap-2 h-36">
+            {activeSlots.map(({ slot, index }) => {
+              const monsterName = MONSTERS.find((m) => m.id === slot.monsterId)?.name ?? slot.monsterId;
+              return (
+                <BoardSlotCard
+                  key={`slot-${index}`}
+                  slot={slot}
+                  monsterName={monsterName}
+                  onStartEncounter={() => onSelectSlot(index)}
+                />
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

@@ -1,8 +1,9 @@
 import { create } from 'zustand';
-import type { Monster, MonsterCard, RevealedCard } from '../types';
-import { generateDeck } from '../engine/deck';
+import type { Monster, MonsterCard, RevealedCard, MonsterAbility, TrailCard } from '../types';
+import { generateDeck, type TrailDeckOptions } from '../engine/deck';
 import { flipCard, applyDamage } from '../engine/combat';
 import { getMonsterById } from '../data/monsters';
+import { isTrailSpecialCard, getTrailCardNumber } from '../engine/trail';
 
 interface EncounterStore {
   monster: Monster | null;
@@ -16,8 +17,22 @@ interface EncounterStore {
   lastDiscardedCard: MonsterCard | null;
   /** Extra cards added due to Wild Hunt / hound proximity. >0 means frost theme applies. */
   proximityBonus: number;
+  /** Cards from the monster's pool that were not dealt into the initial deck. Can be added mid-encounter. */
+  undealtPool: MonsterCard[];
 
-  startEncounter: (monsterId: string, playerFirst?: boolean, bonusCards?: number) => void;
+  // Trail fields (FEAT-020)
+  /** The 4 Trail special cards for this encounter. null when trail mode is off or monster has none. */
+  activeTrailCards: [TrailCard, TrailCard, TrailCard, TrailCard] | null;
+  /** Set when the monster flips a trail special card. Cleared by clearTrailDrawAbility(). */
+  pendingTrailDrawAbility: MonsterAbility | null;
+
+  startEncounter: (
+    monsterId: string,
+    playerFirst?: boolean,
+    bonusCards?: number,
+    trailDeckOptions?: TrailDeckOptions,
+    activeTrailCards?: [TrailCard, TrailCard, TrailCard, TrailCard] | null,
+  ) => void;
   /** Start an encounter with a pre-built Monster object (used for boss fights). */
   startEncounterWithMonster: (monster: Monster, playerFirst?: boolean) => void;
   /**
@@ -30,20 +45,20 @@ interface EncounterStore {
   discardOne: () => void;
   passTurn: () => void;
   applyPlayerDamage: (damage: number) => void;
-  /**
-   * Apply player damage with a protection value that negates part of each attack.
-   * effectiveDamage = max(0, declared - protection). Used in Legendary Hunt boss fight.
-   */
-  applyPlayerDamageWithProtection: (declared: number, protection: number) => void;
-  /**
-   * Discard one card reduced by protection, without ending the player's turn.
-   * effectiveDamage = max(0, 1 - protection). Used for per-swipe damage in Legendary Hunt.
-   */
-  discardOneWithProtection: (protection: number) => void;
   /** Clear lastDiscardedCard — call when a discard alert has been acted on. */
   clearLastDiscardedCard: () => void;
+  /** Clear pendingTrailDrawAbility — call when the draw-trigger alert is dismissed. */
+  clearTrailDrawAbility: () => void;
+  /** Move a card from the active deck to the discard pile. */
+  removeCardFromDeck: (cardId: string) => void;
+  /** Move a card from the discard pile back into the deck (appended to end). */
+  addCardFromDiscard: (cardId: string) => void;
+  /** Move a card from the undealt pool into the deck (appended to end). */
+  addCardFromPool: (cardId: string) => void;
   resetToSetup: () => void;
 }
+
+/** Returns true when a trail special card is found among discardedCards. */
 
 export const useEncounterStore = create<EncounterStore>((set, get) => ({
   monster: null,
@@ -55,12 +70,23 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
   lastDiscardTriggered: false,
   lastDiscardedCard: null,
   proximityBonus: 0,
+  undealtPool: [],
+  activeTrailCards: null,
+  pendingTrailDrawAbility: null,
 
-  startEncounter: (monsterId, playerFirst = false, bonusCards = 0) => {
+  startEncounter: (
+    monsterId,
+    playerFirst = false,
+    bonusCards = 0,
+    trailDeckOptions,
+    activeTrailCards = null,
+  ) => {
     const monster = getMonsterById(monsterId);
     if (!monster) throw new Error(`Monster "${monsterId}" not found`);
 
-    const deck = generateDeck(monster, undefined, [], bonusCards);
+    const deck = generateDeck(monster, undefined, [], bonusCards, trailDeckOptions);
+    // Cards from the monster's pool that weren't dealt into the deck
+    const undealtPool = monster.cardPool.filter((c) => !deck.some((d) => d.id === c.id));
 
     set({
       monster,
@@ -72,11 +98,15 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       lastDiscardTriggered: false,
       lastDiscardedCard: null,
       proximityBonus: bonusCards,
+      undealtPool,
+      activeTrailCards,
+      pendingTrailDrawAbility: null,
     });
   },
 
   startEncounterWithMonster: (monster, playerFirst = false) => {
     const deck = generateDeck(monster);
+    const undealtPool = monster.cardPool.filter((c) => !deck.some((d) => d.id === c.id));
     set({
       monster,
       deck,
@@ -87,25 +117,35 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       lastDiscardTriggered: false,
       lastDiscardedCard: null,
       proximityBonus: 0,
+      undealtPool,
+      activeTrailCards: null,
+      pendingTrailDrawAbility: null,
     });
   },
 
   flipMonsterCard: () => {
-    const { deck } = get();
+    const { deck, activeTrailCards } = get();
     const result = flipCard(deck);
     if (!result) return;
+
+    let pendingTrailDrawAbility: MonsterAbility | null = null;
+    if (activeTrailCards && isTrailSpecialCard(result.revealed.cardId)) {
+      const num = getTrailCardNumber(result.revealed.cardId);
+      const tc = num !== null ? activeTrailCards.find((c) => c.number === num) : undefined;
+      if (tc) pendingTrailDrawAbility = tc.drawAbility;
+    }
 
     set({
       currentCard: result.revealed,
       deck: result.remainingDeck,
       lastDiscardTriggered: false,
       phase: 'playing',
+      pendingTrailDrawAbility,
     });
   },
 
   discardOne: () => {
     const { deck, discardPile, monster } = get();
-    if (deck.length === 0) return;
 
     const result = applyDamage(deck, 1);
     const hasDiscardAbility = !!monster?.discardAbility;
@@ -134,6 +174,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       currentCard: null,
       lastDiscardTriggered: false,
       lastDiscardedCard: null,
+      pendingTrailDrawAbility: null,
       turn: turn === 'monster' ? 'player' : 'monster',
       phase: deck.length === 0 ? 'victory' : 'playing',
     });
@@ -168,27 +209,46 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
     });
   },
 
-  discardOneWithProtection: (protection) => {
-    const effective = Math.max(0, 1 - protection);
-    if (effective === 0) return;
+  clearLastDiscardedCard: () => {
+    set({ lastDiscardedCard: null });
+  },
 
-    const { deck, discardPile, monster } = get();
-    if (deck.length === 0) return;
+  clearTrailDrawAbility: () => set({ pendingTrailDrawAbility: null }),
 
-    const result = applyDamage(deck, effective);
-    const hasDiscardAbility = !!monster?.discardAbility;
-
+  removeCardFromDeck: (cardId) => {
+    const { deck, discardPile, currentCard } = get();
+    const idx = deck.findIndex((c) => c.id === cardId);
+    if (idx === -1) return;
+    const card = deck[idx];
+    const newDeck = deck.filter((_, i) => i !== idx);
     set({
-      deck: result.remainingDeck,
-      discardPile: [...discardPile, ...result.discardedCards],
-      lastDiscardTriggered: hasDiscardAbility,
-      lastDiscardedCard: result.discardedCards[0] ?? null,
-      phase: result.remainingDeck.length === 0 ? 'victory' : 'playing',
+      deck: newDeck,
+      discardPile: [...discardPile, card],
+      // Only transition to victory when the deck is empty AND no card is currently
+      // face-up. If a card is face-up, the normal passTurn flow handles the check.
+      phase: newDeck.length === 0 && currentCard === null ? 'victory' : 'playing',
     });
   },
 
-  clearLastDiscardedCard: () => {
-    set({ lastDiscardedCard: null });
+  addCardFromDiscard: (cardId) => {
+    const { deck, discardPile } = get();
+    const card = discardPile.find((c) => c.id === cardId);
+    if (!card) return;
+    set({
+      deck: [...deck, card],
+      discardPile: discardPile.filter((c) => c.id !== cardId),
+      phase: 'playing',
+    });
+  },
+
+  addCardFromPool: (cardId) => {
+    const { deck, undealtPool } = get();
+    const card = undealtPool.find((c) => c.id === cardId);
+    if (!card) return;
+    set({
+      deck: [...deck, card],
+      undealtPool: undealtPool.filter((c) => c.id !== cardId),
+    });
   },
 
   startEncounterWithDeck: (deck, monster, playerFirst = false) => {
@@ -202,12 +262,10 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       lastDiscardTriggered: false,
       lastDiscardedCard: null,
       proximityBonus: 0,
+      undealtPool: [],
+      activeTrailCards: null,
+      pendingTrailDrawAbility: null,
     });
-  },
-
-  applyPlayerDamageWithProtection: (declared, protection) => {
-    const effective = Math.max(0, declared - protection);
-    get().applyPlayerDamage(effective);
   },
 
   resetToSetup: () => {
@@ -221,6 +279,9 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       lastDiscardTriggered: false,
       lastDiscardedCard: null,
       proximityBonus: 0,
+      undealtPool: [],
+      activeTrailCards: null,
+      pendingTrailDrawAbility: null,
     });
   },
 }));

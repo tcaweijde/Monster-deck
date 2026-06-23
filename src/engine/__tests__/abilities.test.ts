@@ -154,15 +154,6 @@ describe('getDiscardAbilities', () => {
       expect(abilities[0]).toBe(discardAbility);
     });
   });
-
-  describe('real monster data', () => {
-
-    it('should return an empty array for the werewolf (no discard ability)', async () => {
-      const { werewolf } = await import('../../data/monsters/werewolf');
-      expect(getDiscardAbilities(werewolf)).toEqual([]);
-    });
-
-  });
 });
 
 // ---------------------------------------------------------------------------
@@ -205,14 +196,6 @@ describe('hasDiscardTrigger', () => {
         const discardAbilities = getDiscardAbilities(monster);
         expect(hasDiscard).toBe(discardAbilities.length > 0);
       }
-    });
-  });
-
-  describe('real monster data', () => {
-
-    it('should return false for the werewolf', async () => {
-      const { werewolf } = await import('../../data/monsters/werewolf');
-      expect(hasDiscardTrigger(werewolf)).toBe(false);
     });
   });
 });

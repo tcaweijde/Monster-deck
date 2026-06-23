@@ -40,7 +40,7 @@ export function ProximitySetupScreen() {
   if (!slot || !monster) return null;
 
   return (
-    <div className="relative h-dvh overflow-hidden">
+    <div className="relative h-dvh">
       {/* Background */}
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${BG})` }} />
       <div className="absolute inset-0 bg-stone-950/80" />

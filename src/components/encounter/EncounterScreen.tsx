@@ -1,10 +1,14 @@
+import { useState } from 'react';
 import { useEncounterStore } from '../../store/encounterStore';
 import { useEncounterHandlers } from '../../hooks/useEncounterHandlers';
 import { AbilityPanel } from './AbilityPanel';
 import { DeckTracker } from './DeckTracker';
+import { DeckEditorModal } from './DeckEditorModal';
 import { MonsterCardDisplay } from './MonsterCardDisplay';
 import { DiscardAlert } from './DiscardAlert';
 import { VictoryOverlay } from './VictoryOverlay';
+import { TrailDrawAlert } from '../trail/TrailDrawAlert';
+import { getTrailCardNumber } from '../../engine/trail';
 
 const BASE = import.meta.env.BASE_URL ?? '/';
 const BG = `${BASE}images/monsters/wild-hunt/background.jpg`;
@@ -13,14 +17,24 @@ export function EncounterScreen() {
   const monster = useEncounterStore((s) => s.monster);
   const deck = useEncounterStore((s) => s.deck);
   const discardPile = useEncounterStore((s) => s.discardPile);
+  const undealtPool = useEncounterStore((s) => s.undealtPool);
   const currentCard = useEncounterStore((s) => s.currentCard);
   const turn = useEncounterStore((s) => s.turn);
   const phase = useEncounterStore((s) => s.phase);
   const lastDiscardTriggered = useEncounterStore((s) => s.lastDiscardTriggered);
   const proximityBonus = useEncounterStore((s) => s.proximityBonus);
+  const pendingTrailDrawAbility = useEncounterStore((s) => s.pendingTrailDrawAbility);
+  const clearTrailDrawAbility = useEncounterStore((s) => s.clearTrailDrawAbility);
   const flipMonsterCard = useEncounterStore((s) => s.flipMonsterCard);
   const discardOne = useEncounterStore((s) => s.discardOne);
   const passTurn = useEncounterStore((s) => s.passTurn);
+  const removeCardFromDeck = useEncounterStore((s) => s.removeCardFromDeck);
+  const addCardFromDiscard = useEncounterStore((s) => s.addCardFromDiscard);
+  const addCardFromPool = useEncounterStore((s) => s.addCardFromPool);
+
+  const [editorOpen, setEditorOpen] = useState(false);
+
+  const trailCardNumber = currentCard ? getTrailCardNumber(currentCard.cardId) : null;
 
   const { displayLevel, inWildHunt, quitEncounter, completeEncounter } = useEncounterHandlers();
 
@@ -78,8 +92,17 @@ export function EncounterScreen() {
           />
         </div>
 
-        {monster.discardAbility && (
+        {monster.discardAbility && turn === 'player' && (
           <DiscardAlert ability={monster.discardAbility} triggered={lastDiscardTriggered} />
+        )}
+
+        {pendingTrailDrawAbility && trailCardNumber && (
+          <TrailDrawAlert
+            ability={pendingTrailDrawAbility}
+            cardNumber={trailCardNumber}
+            triggered={!!pendingTrailDrawAbility}
+            onDismiss={clearTrailDrawAbility}
+          />
         )}
 
         {phase === 'victory' && (
@@ -89,7 +112,22 @@ export function EncounterScreen() {
             onClose={completeEncounter}
           />
         )}
-        <DeckTracker deckSize={deck.length} discardSize={discardPile.length} />
+        <DeckTracker
+          deckSize={deck.length}
+          discardSize={discardPile.length}
+          onOpenEditor={() => setEditorOpen(true)}
+        />
+        {editorOpen && (
+          <DeckEditorModal
+            deck={deck}
+            discardPile={discardPile}
+            undealtPool={undealtPool}
+            onRemoveFromDeck={removeCardFromDeck}
+            onAddFromDiscard={addCardFromDiscard}
+            onAddFromPool={addCardFromPool}
+            onClose={() => setEditorOpen(false)}
+          />
+        )}
       </div>
     </div>
   );

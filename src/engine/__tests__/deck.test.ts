@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { generateDeck } from '../deck';
-import type { Monster, MonsterCard } from '../../types';
+import type { Monster, MonsterCard, TrailCard } from '../../types';
 
 const zeroRng = () => 0;
 
@@ -140,5 +140,40 @@ describe('generateDeck', () => {
       const deck = generateDeck(monster, zeroRng);
       expect(deck).toHaveLength(monster.deckSize);
     });
+  });
+});
+
+// ─── Trail options ────────────────────────────────────────────────────────────
+
+function makeTrailCard(number: 1 | 2 | 3 | 4): TrailCard {
+  return {
+    number,
+    drawAbility: { name: `Draw ${number}`, description: `d${number}`, trigger: 'passive' },
+  };
+}
+
+const trailCards: [TrailCard, TrailCard, TrailCard, TrailCard] = [
+  makeTrailCard(1), makeTrailCard(2), makeTrailCard(3), makeTrailCard(4),
+];
+
+describe('generateDeck with trailOptions', () => {
+  it('includes 4 trail special cards when trailCards provided', () => {
+    const deck = generateDeck(testMonster, zeroRng, [], 0, { trailCards });
+    const trailIds = deck.filter((c) => c.id.startsWith('trail-special-'));
+    expect(trailIds).toHaveLength(4);
+  });
+
+  it('standard deck without trailOptions has no trail card IDs', () => {
+    const deck = generateDeck(testMonster, zeroRng);
+    const trailIds = deck.filter((c) => c.id.startsWith('trail-special-'));
+    expect(trailIds).toHaveLength(0);
+  });
+
+  it('trailCards are appended and all 4 are present', () => {
+    const deck = generateDeck(testMonster, zeroRng, [], 0, { trailCards });
+    const trailCount = deck.filter((c) => c.id.startsWith('trail-special-')).length;
+    const standardCount = deck.filter((c) => !c.id.startsWith('trail-special-')).length;
+    expect(trailCount).toBe(4);
+    expect(standardCount).toBe(testMonster.deckSize);
   });
 });
