@@ -20,7 +20,6 @@ export function BoardScreen() {
   const trailModeEnabled = useTrailStore((s) => s.trailModeEnabled);
   const weaknessTokensHeld = useTrailStore((s) => s.weaknessTokensHeld);
   const setPendingEffect = useTrailStore((s) => s.setPendingEffect);
-  const clearPendingEffect = useTrailStore((s) => s.clearPendingEffect);
 
   const [pendingSlotIndex, setPendingSlotIndex] = useState<0 | 1 | 2 | null>(null);
 
@@ -62,7 +61,6 @@ export function BoardScreen() {
       trailDeckOpts,
       trailCards,
     );
-    clearPendingEffect();
     setPendingSlotIndex(null);
   };
 

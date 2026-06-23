@@ -24,6 +24,7 @@ export function useEncounterHandlers() {
 
   const trailModeEnabled = useTrailStore((s) => s.trailModeEnabled);
   const handleTrailVictoryReset = useTrailStore((s) => s.handleVictoryReset);
+  const clearPendingEffect = useTrailStore((s) => s.clearPendingEffect);
 
   const inWildHunt = wildHuntPhase !== 'inactive';
 
@@ -38,6 +39,7 @@ export function useEncounterHandlers() {
   const quitEncounter = () => {
     if (inWildHunt) clearActiveWildHuntSlot();
     else clearActiveSlot();
+    clearPendingEffect();
     resetToSetup();
   };
 

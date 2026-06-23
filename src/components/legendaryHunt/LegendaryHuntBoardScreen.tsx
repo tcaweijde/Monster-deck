@@ -35,7 +35,6 @@ export function LegendaryHuntBoardScreen(): React.JSX.Element {
   const trailModeEnabled = useTrailStore((s) => s.trailModeEnabled);
   const weaknessTokensHeld = useTrailStore((s) => s.weaknessTokensHeld);
   const setPendingEffect = useTrailStore((s) => s.setPendingEffect);
-  const clearPendingEffect = useTrailStore((s) => s.clearPendingEffect);
 
   const [pendingSlotIndex, setPendingSlotIndex] = useState<0 | 1 | 2 | null>(null);
 
@@ -66,16 +65,16 @@ export function LegendaryHuntBoardScreen(): React.JSX.Element {
 
     setActiveSlot(pendingSlotIndex);
     startEncounter(slot.monsterId, false, 0, trailDeckOpts, trailCards);
-    clearPendingEffect();
     setPendingSlotIndex(null);
   }
 
   const legendaryMonster =
     LEGENDARY_MONSTERS.find((m) => m.id === legendaryMonsterId);
 
-  // Draw movement card when stage 4 begins
+  // Draw movement card when stage 4 begins. Guard against re-drawing on remount
+  // (the board unmounts during encounters, so the effect fires again on return).
   useEffect(() => {
-    if (stage === 4) {
+    if (stage === 4 && !currentMovementCard) {
       doDrawMovementCard();
     }
   }, [stage]); // eslint-disable-line react-hooks/exhaustive-deps

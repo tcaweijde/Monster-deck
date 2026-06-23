@@ -216,7 +216,7 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
   clearTrailDrawAbility: () => set({ pendingTrailDrawAbility: null }),
 
   removeCardFromDeck: (cardId) => {
-    const { deck, discardPile } = get();
+    const { deck, discardPile, currentCard } = get();
     const idx = deck.findIndex((c) => c.id === cardId);
     if (idx === -1) return;
     const card = deck[idx];
@@ -224,7 +224,9 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
     set({
       deck: newDeck,
       discardPile: [...discardPile, card],
-      phase: newDeck.length === 0 ? 'victory' : 'playing',
+      // Only transition to victory when the deck is empty AND no card is currently
+      // face-up. If a card is face-up, the normal passTurn flow handles the check.
+      phase: newDeck.length === 0 && currentCard === null ? 'victory' : 'playing',
     });
   },
 
@@ -260,6 +262,9 @@ export const useEncounterStore = create<EncounterStore>((set, get) => ({
       lastDiscardTriggered: false,
       lastDiscardedCard: null,
       proximityBonus: 0,
+      undealtPool: [],
+      activeTrailCards: null,
+      pendingTrailDrawAbility: null,
     });
   },
 

@@ -1,12 +1,6 @@
 import { useState } from 'react';
 import type { PlacedWeaknessToken } from '../../types';
 
-const TERRAIN_EMOJI: Record<string, string> = {
-  water: '🌊',
-  mountain: '⛰️',
-  woods: '🌲',
-};
-
 interface TrailPreFightModalProps {
   heldTokens: PlacedWeaknessToken[];
   onConfirm: (token: PlacedWeaknessToken | null) => void;
@@ -38,7 +32,6 @@ export function TrailPreFightModal({ heldTokens, onConfirm, onCancel }: TrailPre
                       : 'bg-stone-700 border-stone-600 hover:border-stone-400'
                   }`}
                 >
-                  <span className="text-xl">{TERRAIN_EMOJI[token.terrainType] ?? '📍'}</span>
                   <div className="flex-1">
                     <div className="text-sm font-semibold text-stone-200 capitalize">
                       {token.terrainType}
