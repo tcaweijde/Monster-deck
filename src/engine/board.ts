@@ -1,4 +1,4 @@
-import type { Monster, BoardSlot, BoardState, LocationType } from '../types';
+import type { Monster, BoardSlot, BoardState, Location, LocationType } from '../types';
 import { LOCATIONS } from '../data/locations';
 import { shuffle } from './shuffle';
 
@@ -17,6 +17,7 @@ const LOCATION_TYPES: LocationType[] = ['water', 'mountain', 'woods'];
 export function initBoard(
   monsters: Monster[],
   rng: () => number = Math.random,
+  locations: Location[] = LOCATIONS,
 ): BoardState {
   const assignedLevels = shuffle([1, 2, 3] as (1 | 2 | 3)[], rng) as [1 | 2 | 3, 1 | 2 | 3, 1 | 2 | 3];
   const assignedTypes = shuffle([...LOCATION_TYPES], rng) as [LocationType, LocationType, LocationType];
@@ -34,7 +35,7 @@ export function initBoard(
     const monster = shuffle(candidates, rng)[0];
     usedIds.add(monster.id);
 
-    const locationsOfType = LOCATIONS.filter((l) => l.type === locationType);
+    const locationsOfType = locations.filter((l) => l.type === locationType);
     const location = shuffle(locationsOfType, rng)[0];
 
     return { locationType, locationId: location.id, monsterId: monster.id, level, status: 'active' };
@@ -57,6 +58,7 @@ export function spawnReplacement(
   slotIndex: 0 | 1 | 2,
   monsters: Monster[],
   rng: () => number = Math.random,
+  locations: Location[] = LOCATIONS,
 ): BoardState {
   const defeated = board.slots[slotIndex];
   const newLevel = Math.min(defeated.level + 1, 3) as 1 | 2 | 3;
@@ -74,7 +76,7 @@ export function spawnReplacement(
 
   const newMonster = shuffle(candidates, rng)[0];
 
-  const locationsOfType = LOCATIONS.filter((location) => location.type === defeated.locationType);
+  const locationsOfType = locations.filter((location) => location.type === defeated.locationType);
   const locationCandidates = locationsOfType.filter((location) => location.id !== defeated.locationId);
   const newLocation = shuffle(locationCandidates, rng)[0];
 

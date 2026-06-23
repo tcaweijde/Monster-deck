@@ -3,10 +3,24 @@ import { BoardWelcomeScreen } from '../BoardWelcomeScreen';
 
 const mockInitNewGame = vi.fn();
 const mockInitiateSetup = vi.fn();
+const mockEnableDagonsLair = vi.fn();
+const mockDisableDagonsLair = vi.fn();
 
 vi.mock('../../../store/boardStore', () => ({
-  useBoardStore: (selector: (s: { initNewGame: () => void }) => unknown) =>
-    selector({ initNewGame: mockInitNewGame }),
+  useBoardStore: (
+    selector: (s: {
+      initNewGame: () => void;
+      dagonsLairEnabled: boolean;
+      enableDagonsLair: () => void;
+      disableDagonsLair: () => void;
+    }) => unknown,
+  ) =>
+    selector({
+      initNewGame: mockInitNewGame,
+      dagonsLairEnabled: false,
+      enableDagonsLair: mockEnableDagonsLair,
+      disableDagonsLair: mockDisableDagonsLair,
+    }),
 }));
 
 vi.mock('../../../store/wildHuntStore', () => ({
@@ -18,6 +32,8 @@ describe('BoardWelcomeScreen', () => {
   beforeEach(() => {
     mockInitNewGame.mockClear();
     mockInitiateSetup.mockClear();
+    mockEnableDagonsLair.mockClear();
+    mockDisableDagonsLair.mockClear();
   });
 
   it('renders the app title and subtitle', () => {
@@ -36,5 +52,17 @@ describe('BoardWelcomeScreen', () => {
     render(<BoardWelcomeScreen />);
     fireEvent.click(screen.getByText('Wild Hunt mode'));
     expect(mockInitiateSetup).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders the Skellige toggle', () => {
+    render(<BoardWelcomeScreen />);
+    expect(screen.getByLabelText('Toggle Skellige expansion')).toBeInTheDocument();
+  });
+
+  it('calls enableDagonsLair when the Skellige toggle is clicked while disabled', () => {
+    render(<BoardWelcomeScreen />);
+    fireEvent.click(screen.getByLabelText('Toggle Skellige expansion'));
+    expect(mockEnableDagonsLair).toHaveBeenCalledTimes(1);
+    expect(mockDisableDagonsLair).not.toHaveBeenCalled();
   });
 });

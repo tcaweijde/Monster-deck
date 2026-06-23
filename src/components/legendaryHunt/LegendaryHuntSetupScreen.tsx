@@ -6,6 +6,7 @@ import { useBoardStore } from '../../store/boardStore';
 import { useTrailStore } from '../../store/trailStore';
 import { LEGENDARY_MONSTERS } from '../../data/legendary';
 import { TrailModeToggle } from '../trail/TrailModeToggle';
+import { SkelligeModeToggle } from '../skellige/SkelligeModeToggle';
 
 type Step = 'difficulty' | 'side' | 'monster' | 'confirm';
 
@@ -27,9 +28,17 @@ export function LegendaryHuntSetupScreen(): React.JSX.Element {
   const legendaryRound = useLegendaryHuntStore((s) => s.round);
   const wildHuntPhase = useWildHuntStore((s) => s.phase);
   const initBoard = useBoardStore((s) => s.initNewGame);
+  const dagonsLairEnabled = useBoardStore((s) => s.dagonsLairEnabled);
+  const enableDagonsLair = useBoardStore((s) => s.enableDagonsLair);
+  const disableDagonsLair = useBoardStore((s) => s.disableDagonsLair);
 
   const resetTrailSession = useTrailStore((s) => s.resetTrailSession);
   const startTrailSession = useTrailStore((s) => s.startTrailSession);
+
+  const handleSkelligeChange = (enabled: boolean) => {
+    if (enabled) enableDagonsLair();
+    else disableDagonsLair();
+  };
 
   const selectedMonster = LEGENDARY_MONSTERS.find((m) => m.id === monsterId) ?? LEGENDARY_MONSTERS[0];
   const selectedDifficulty = DIFFICULTY_OPTIONS.find((d) => d.value === difficulty)!;
@@ -89,6 +98,8 @@ export function LegendaryHuntSetupScreen(): React.JSX.Element {
               isWildHuntActive={isWildHuntActive}
               trailMode={trailMode}
               onTrailModeChange={setTrailMode}
+              skelligeMode={dagonsLairEnabled}
+              onSkelligeModeChange={handleSkelligeChange}
             />
           )}
         </div>
@@ -248,6 +259,8 @@ interface ConfirmStepProps {
   isWildHuntActive: boolean;
   trailMode: boolean;
   onTrailModeChange: (v: boolean) => void;
+  skelligeMode: boolean;
+  onSkelligeModeChange: (v: boolean) => void;
 }
 
 function ConfirmStep({
@@ -261,6 +274,8 @@ function ConfirmStep({
   isWildHuntActive,
   trailMode,
   onTrailModeChange,
+  skelligeMode,
+  onSkelligeModeChange,
 }: ConfirmStepProps): React.JSX.Element {
   return (
     <div className="space-y-4">
@@ -273,6 +288,7 @@ function ConfirmStep({
       </div>
 
       <TrailModeToggle enabled={trailMode} onChange={onTrailModeChange} />
+      <SkelligeModeToggle enabled={skelligeMode} onChange={onSkelligeModeChange} />
 
       {isCampaignActive && (
         <div className="bg-amber-900/30 border border-amber-600/40 rounded-xl p-3">

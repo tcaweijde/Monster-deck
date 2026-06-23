@@ -73,7 +73,13 @@ export interface BoardSlot {
 }
 
 export interface BoardState {
-  slots: [BoardSlot, BoardSlot, BoardSlot]; // always exactly 3
+  slots: [BoardSlot, BoardSlot, BoardSlot]; // always exactly 3 rotating slots
+  /**
+   * Dagon's Lair (FEAT-SKELLIGE-002): a permanent fixed slot that always hosts Dagon.
+   * Present only when the Skellige expansion is enabled.
+   * Never replaced on defeat — Dagon re-activates at the same level.
+   */
+  permanentSlot?: BoardSlot;
 }
 
 // Re-export Wild Hunt types so consumers can import from one place.

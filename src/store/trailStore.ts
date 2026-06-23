@@ -2,7 +2,9 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { WeaknessToken, PlacedWeaknessToken, TerrainType } from '../types';
 import { WEAKNESS_TOKEN_POOL } from '../data/weaknessTokenPool';
+import { getLocations } from '../data/locations';
 import { initWeaknessTokenBoard, drawPlacedToken, redrawPlacedTokenLocation } from '../engine/trail';
+import { useBoardStore } from './boardStore';
 
 interface TrailStore {
   trailModeEnabled: boolean;
@@ -59,7 +61,8 @@ export const useTrailStore = create<TrailStore>()(
 
       startTrailSession: (rng = Math.random) => {
         const { tokenPool } = get();
-        const { board, remainingPool } = initWeaknessTokenBoard(tokenPool, rng);
+        const skelligeEnabled = useBoardStore.getState().dagonsLairEnabled;
+        const { board, remainingPool } = initWeaknessTokenBoard(tokenPool, rng, getLocations(skelligeEnabled));
         set({
           trailModeEnabled: true,
           tokenPool: remainingPool,
@@ -78,7 +81,8 @@ export const useTrailStore = create<TrailStore>()(
         const { weaknessTokenBoard, placementConfirmed } = get();
         const token = weaknessTokenBoard.find((t) => t.id === tokenId);
         if (!token) return;
-        const redrawn = redrawPlacedTokenLocation(token, rng);
+        const skelligeEnabled = useBoardStore.getState().dagonsLairEnabled;
+        const redrawn = redrawPlacedTokenLocation(token, rng, getLocations(skelligeEnabled));
         set({
           weaknessTokenBoard: weaknessTokenBoard.map((t) => (t.id === tokenId ? redrawn : t)),
           // Reset confirmation so the player must re-confirm the new location.
@@ -95,6 +99,7 @@ export const useTrailStore = create<TrailStore>()(
           tokenPool,
           token.terrainType,
           rng,
+          getLocations(useBoardStore.getState().dagonsLairEnabled),
         );
         if (!replacement) {
           console.warn(
@@ -135,7 +140,7 @@ export const useTrailStore = create<TrailStore>()(
 
           const { locationId: _loc, ...bareOldToken } = oldToken;
           const poolWithOld = [...tokenPool, bareOldToken];
-          const { token: newToken, remainingPool } = drawPlacedToken(poolWithOld, terrainType, rng);
+          const { token: newToken, remainingPool } = drawPlacedToken(poolWithOld, terrainType, rng, getLocations(useBoardStore.getState().dagonsLairEnabled));
 
           const newBoard = newToken
             ? weaknessTokenBoard.map((t) => (t.id === oldToken.id ? newToken : t))
@@ -151,7 +156,7 @@ export const useTrailStore = create<TrailStore>()(
           // Full board redraw — used as fallback.
           const returned = weaknessTokenBoard.map(({ locationId: _loc, ...t }) => t);
           const returnedPool = [...tokenPool, ...returned];
-          const { board, remainingPool } = initWeaknessTokenBoard(returnedPool, rng);
+          const { board, remainingPool } = initWeaknessTokenBoard(returnedPool, rng, getLocations(useBoardStore.getState().dagonsLairEnabled));
           set({
             tokenPool: remainingPool,
             weaknessTokenBoard: board,

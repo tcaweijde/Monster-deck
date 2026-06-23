@@ -19,6 +19,12 @@ export function useEncounterHandlers() {
   const boardSlots = useBoardStore((s) => s.board?.slots);
   const handleBoardVictory = useBoardStore((s) => s.handleVictory);
   const clearActiveSlot = useBoardStore((s) => s.clearActiveSlot);
+  const activePermanentSlot = useBoardStore((s) => s.activePermanentSlot);
+  const handlePermanentVictory = useBoardStore((s) => s.handlePermanentVictory);
+  const clearActivePermanentSlot = useBoardStore((s) => s.clearActivePermanentSlot);
+  const permanentSlot = useBoardStore((s) => s.board?.permanentSlot);
+  const randomEncounterActive = useBoardStore((s) => s.randomEncounterActive);
+  const clearRandomEncounter = useBoardStore((s) => s.clearRandomEncounter);
 
   const resetToSetup = useEncounterStore((s) => s.resetToSetup);
 
@@ -32,12 +38,16 @@ export function useEncounterHandlers() {
     ? (activeWildHuntSlotIndex !== null
         ? (wildHuntSlots[activeWildHuntSlotIndex]?.level ?? null)
         : null)
-    : (boardActiveSlotIndex !== null
-        ? (boardSlots?.[boardActiveSlotIndex]?.level ?? null)
-        : null);
+    : activePermanentSlot
+      ? (permanentSlot?.level ?? null)
+      : (boardActiveSlotIndex !== null
+          ? (boardSlots?.[boardActiveSlotIndex]?.level ?? null)
+          : null);
 
   const quitEncounter = () => {
     if (inWildHunt) clearActiveWildHuntSlot();
+    else if (randomEncounterActive) clearRandomEncounter();
+    else if (activePermanentSlot) clearActivePermanentSlot();
     else clearActiveSlot();
     clearPendingEffect();
     resetToSetup();
@@ -48,6 +58,10 @@ export function useEncounterHandlers() {
       const level = wildHuntSlots[activeWildHuntSlotIndex]?.level ?? 1;
       absorbDamage(level);
       defeatWildHuntSlot(activeWildHuntSlotIndex);
+    } else if (randomEncounterActive) {
+      clearRandomEncounter();
+    } else if (activePermanentSlot) {
+      handlePermanentVictory();
     } else {
       const defeatedTerrainType = boardActiveSlotIndex !== null
         ? boardSlots?.[boardActiveSlotIndex]?.locationType

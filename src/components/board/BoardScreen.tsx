@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useBoardStore } from '../../store/boardStore';
 import { useEncounterStore } from '../../store/encounterStore';
 import { useTrailStore } from '../../store/trailStore';
-import { MONSTERS } from '../../data/monsters';
+import { MONSTERS, dagon } from '../../data/monsters';
 import { getMonsterById } from '../../data/monsters';
 import { BoardSlotCard } from './BoardSlotCard';
 import { TrailTokenBoard } from '../trail/TrailTokenBoard';
@@ -10,10 +10,13 @@ import { TrailPreFightModal } from '../trail/TrailPreFightModal';
 import type { PlacedWeaknessToken, TrailCard } from '../../types';
 import type { TrailDeckOptions } from '../../engine/deck';
 import { makeDefaultTrailCards } from '../../engine/trail';
+import { shuffle } from '../../engine/shuffle';
 
 export function BoardScreen() {
   const board = useBoardStore((s) => s.board);
   const setActiveSlot = useBoardStore((s) => s.setActiveSlot);
+  const setActivePermanentSlot = useBoardStore((s) => s.setActivePermanentSlot);
+  const setRandomEncounterActive = useBoardStore((s) => s.setRandomEncounterActive);
   const endGame = useBoardStore((s) => s.endGame);
   const startEncounter = useEncounterStore((s) => s.startEncounter);
 
@@ -25,8 +28,15 @@ export function BoardScreen() {
 
   if (!board) return null;
 
+  const boardMonsterIds = new Set([
+    ...board.slots.map((s) => s.monsterId),
+    dagon.id,
+  ]);
+
+  const randomEncounterCandidates = MONSTERS.filter((m) => !boardMonsterIds.has(m.id));
+
   const getMonsterName = (id: string) =>
-    MONSTERS.find((m) => m.id === id)?.name ?? id;
+    id === dagon.id ? dagon.name : (MONSTERS.find((m) => m.id === id)?.name ?? id);
 
   const handleSlotTap = (index: 0 | 1 | 2) => {
     if (trailModeEnabled) {
@@ -35,6 +45,18 @@ export function BoardScreen() {
       setActiveSlot(index);
       startEncounter(board.slots[index].monsterId);
     }
+  };
+
+  const handlePermanentSlotTap = () => {
+    setActivePermanentSlot();
+    startEncounter(dagon.id);
+  };
+
+  const handleRandomEncounter = () => {
+    if (randomEncounterCandidates.length === 0) return;
+    const monster = shuffle(randomEncounterCandidates)[0];
+    setRandomEncounterActive();
+    startEncounter(monster.id);
   };
 
   const handlePreFightConfirm = (token: PlacedWeaknessToken | null) => {
@@ -85,7 +107,23 @@ export function BoardScreen() {
             onStartEncounter={() => handleSlotTap(i as 0 | 1 | 2)}
           />
         ))}
+        {board.permanentSlot && (
+          <BoardSlotCard
+            slot={board.permanentSlot}
+            monsterName={dagon.name}
+            onStartEncounter={handlePermanentSlotTap}
+            permanent
+          />
+        )}
       </div>
+
+      <button
+        onClick={handleRandomEncounter}
+        disabled={randomEncounterCandidates.length === 0}
+        className="w-full rounded-xl border-2 border-dashed border-stone-600 hover:border-amber-500 disabled:border-stone-700 disabled:opacity-40 py-3 text-sm font-semibold text-stone-300 hover:text-amber-400 disabled:text-stone-500 transition-colors"
+      >
+        ⚔ Random Encounter
+      </button>
 
       {trailModeEnabled && <TrailTokenBoard />}
 

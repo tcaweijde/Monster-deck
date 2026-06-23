@@ -1,8 +1,10 @@
 # Monster Deck — Roadmap
 
 > Digital opponent for The Witcher Old World solo play.
-> Last updated: 2026-06-22 · Living document — update at each release milestone.
+> Last updated: 2026-06-23 · Living document — update at each release milestone.
 > Trail Mode (FEAT-020) fully implemented; all monster ability content authored.
+> Roguelite Run Mode (FEAT-040) added — impact-map-driven release targeting replayable story runs.
+> Quest Mode (FEAT-044, FEAT-045) added — short village quests (7.0) and long political campaigns (7.1).
 
 ---
 
@@ -65,6 +67,23 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | FEAT-010-J | Wild Hunt Character Data | 2.0 | ✅ Done |
 | FEAT-010-K | Monster Proximity Card Bonus | 2.0 | ✅ Done |
 | FEAT-010-L | Defeat Screen & Auto-Detect | 2.0 | 🔲 Todo |
+| FEAT-040 | Roguelite Run Mode — campaign engine (umbrella) | 6.0 | 🔲 Todo |
+| FEAT-040-A | Run Mode Engine | 6.0 | 🔲 Todo |
+| FEAT-040-B | Story Event Cards | 6.0 | 🔲 Todo |
+| FEAT-040-C | Companion NPC System | 6.0 | 🔲 Todo |
+| FEAT-040-D | Run Summary / Trophy Screen | 6.0 | 🔲 Todo |
+| FEAT-040-E | Run Modifiers | 6.1 | 🔲 Todo |
+| FEAT-040-F | Artifacts / Run Relics | 6.1 | 🔲 Todo |
+| FEAT-041 | Rare Monster Variants | 6.2 | 🔲 Todo |
+| FEAT-042 | Meta-progression / Lore Entries | 6.2 | 🔲 Todo |
+| FEAT-043 | Story Puzzle Mode | 6.2 | 🔲 Todo |
+| FEAT-044 | Short Quest Mode | 7.0 | 🔲 Todo |
+| FEAT-044-A | Location Map & World State Engine | 7.0 | 🔲 Todo |
+| FEAT-044-B | Dialogue & Clue Investigation System | 7.0 | 🔲 Todo |
+| FEAT-044-C | Resource Tracking (coin, potions, reputation) | 7.0 | 🔲 Todo |
+| FEAT-044-D | Bribe / Negotiate as Combat Alternative | 7.0 | 🔲 Todo |
+| FEAT-044-E | Branching Climax & Quest Resolution | 7.0 | 🔲 Todo |
+| FEAT-045 | Long Quest Mode | 7.1 | 🔲 Todo |
 
 ---
 
@@ -355,6 +374,267 @@ Umbrella for all campaign engine sub-features. Tracks campaign state (round, boa
 
 ---
 
+## 6.0 — Roguelite Run Mode *(Planned)*
+
+> **Goal:** Make Monster Deck a replayable, story-rich roguelite that feels different every run
+> and rewards exploration with meaningful narrative progression. Each run is a self-contained
+> session — a random sequence of encounters, story events, and rewards — with a persistent
+> companion and a trophy screen that captures the choices made along the way.
+>
+> **Actors:** Solo player (wants fresh self-contained runs) · Group at a table (shared stakes
+> and memorable moments) · Returning player (wants unlockable content that rewards past runs).
+>
+> **Design principle:** Ship the run loop and narrative backbone first (FEAT-040-A through
+> FEAT-040-D); mechanical variance (modifiers, relics) and long-term unlocks follow once the
+> core loop is proven.
+
+### MoSCoW
+
+| Priority | Features |
+|----------|---------|
+| **Must Have** | FEAT-040-A, FEAT-040-B, FEAT-040-C, FEAT-040-D |
+| **Should Have** | FEAT-040-E, FEAT-040-F |
+| **Could Have** | FEAT-041 (content-dependent), FEAT-043 (story puzzle mode — depends on FEAT-040-B) |
+| **Won't Have (this release)** | FEAT-042 (meta-progression — deferred until run loop is stable) |
+
+---
+
+### Phase 1 — Run Loop Foundation *(6.0 MVP)*
+
+> These four features form an indivisible core. The run engine is the container; story events
+> and companions are the narrative engine that makes each run feel different; the trophy screen
+> is the satisfying close of the loop. None of them deliver value without the others.
+
+#### FEAT-040-A — Run Mode Engine *(L)*
+
+- New top-level mode alongside the existing single-encounter mode; player chooses at startup
+- A run is a self-contained session: randomly ordered sequence of **encounters** and
+  **story events** (see FEAT-040-B), drawn from a run-length pool (e.g. 5–8 encounters)
+- Run state tracked in Zustand: current node (encounter / event / reward), run history,
+  companion slot (see FEAT-040-C), accumulated trophies
+- Run state **persisted to `localStorage`** — survives app refresh mid-run
+- On run end (all encounters defeated, or player defeated): navigate to Run Summary (FEAT-040-D)
+- Sits alongside the existing board mode; no existing flow is removed or broken
+
+#### FEAT-040-B — Story Event Cards *(M)*
+
+- A small deck of **narrative event cards** (suggested: 12–16) that fire at random between
+  encounters during a run
+- Each event card presents a short situation and **2–3 decision branches**
+- Branch outcomes affect the remainder of the run — examples:
+  - Modify the next encounter (add a weakness token, adjust starting deck size)
+  - Unlock a companion (gate for FEAT-040-C)
+  - Grant or remove a run trophy
+  - Set a flag that alters a later event's branch options (light branching / callback system)
+- Cards are authored as static data (`eventCards[]`), sampled without replacement per run
+- Event screen replaces the board overview mid-run; player taps a choice, outcome resolves,
+  run advances to next node
+- **Companion unlock events must be present** — at least 3 events that can grant a companion,
+  so the companion slot (FEAT-040-C) is reachable in a typical run
+
+#### FEAT-040-C — Companion NPC System *(M)*
+
+- Each run has **one companion slot**; companions are acquired via story events (FEAT-040-B)
+- Each companion is a named NPC with a **passive fight effect** that applies for every
+  remaining encounter in the run — examples:
+  - *"First discard ability each fight is negated"*
+  - *"Player always goes first in the opening encounter of each round"*
+  - *"Monster deck starts with 1 card already discarded"*
+- Companion is displayed persistently on the run HUD (name + effect summary)
+- If the player already holds a companion when a new one is offered, they must choose to
+  swap or keep — no stacking
+- Passive effects are applied via the existing encounter engine hooks (pre-fight / on-discard);
+  companion data structure: `id`, `name`, `flavourText`, `effectType`, `effectMagnitude?`
+- **Initial roster:** 5–6 companions (enough variety for runs to feel different day-to-day)
+
+#### FEAT-040-D — Run Summary / Trophy Screen *(S)*
+
+- Displayed automatically at run end (victory or defeat)
+- Shows:
+  - **Trophies earned** — encounters defeated and any awarded by story events
+  - **Companion met** — name, portrait placeholder, and passive effect
+  - **Key choices made** — a timeline of story event decisions (branch label only; not full text)
+  - **Run outcome** — victory banner or defeated message
+- No persistence into future runs (meta-progression is FEAT-042, deferred)
+- Share / screenshot affordance: trophy screen is laid out for a single clean screenshot
+
+---
+
+### Phase 2 — Mechanical Variance *(6.1)*
+
+> Once the run loop is live and stable, these features layer in mechanical variety that makes
+> the strategic texture of each run feel distinct. They are deliberately separated from Phase 1
+> to keep launch scope lean — neither is required for the core roguelite experience to work.
+
+#### FEAT-040-E — Run Modifiers *(M)*
+
+- At run start, 1–2 **run modifier cards** are drawn from a pool and applied globally for the
+  entire run — examples:
+  - *"Monster decks are reshuffled every 3 turns"*
+  - *"Deal 2 damage on swipe instead of 1"*
+  - *"All encounter decks start 2 cards smaller"*
+- Modifier cards shown on a "This Run" screen before the first encounter; accessible from
+  the run HUD at any time
+- Authored as static data (`runModifiers[]`); ~10 modifiers in the initial pool
+- Implementation: modifier flags on run state; encounter engine reads them at fight start
+
+#### FEAT-040-F — Artifacts / Run Relics *(M)*
+
+- Rewards available from specific story event outcomes (FEAT-040-B) or as post-encounter
+  bonus drops (low probability)
+- Each artifact **permanently alters one game rule** for the rest of the run — examples:
+  - *"Deal 2 damage on swipe"*
+  - *"Skip the monster's first flip"*
+  - *"Weakness tokens cost 0 — always apply for free"*
+- Player can hold **up to 3 artifacts** simultaneously; a 4th requires discarding one
+- Displayed in the run HUD alongside the companion slot
+- Artifacts stack with run modifiers but not with each other (no duplicate artifact IDs
+  allowed on the same run)
+- Initial pool: 8–10 artifacts
+
+---
+
+### Phase 3 — Content Depth *(6.2)*
+
+> Long-tail content features that reward returning players and deepen the lore of the world.
+> Dependent on Phase 1 being stable and Phase 2 being shipped.
+
+#### FEAT-041 — Rare Monster Variants *(M)*
+
+- A small set of **named rare variants** of existing monsters with a unique deck composition
+  and a short lore entry (2–3 sentences)
+- Unlocked by reaching specific story branch outcomes (e.g., choosing a particular path
+  in a story event triggers the rare variant as the next encounter)
+- Variant monsters use the existing encounter engine; differences are in their card pool and
+  ability text
+- Lore entries displayed on the encounter start screen ("You face *Garkain the Pale*…")
+- Initial set: 3–5 rare variants across existing monster types
+
+#### FEAT-043 — Story Puzzle Mode *(M)*
+
+- A standalone mode presenting **hand-authored puzzles** tied to story moments
+- Each puzzle opens with a narrative scenario (e.g., *"Eskel is bleeding out — raise 3 shields
+  and 2 dodge symbols before he falls"*) with a **turn limit** and a **symbol goal**
+- Symbols (⚔️ damage, 🛡️ defence, dodge, draw-modifier) mirror the physical player card types
+  from the board game (fast attack / strong attack / offensive sign / defensive sign / dodge)
+- Player keeps their **physical cards on the table**; the app acts as a tracker: tap symbols
+  on-screen to log what has been played from the hand
+- Card color context (blue, red, purple, yellow, green) may constrain which cards count toward
+  the combo goal
+- **Single-combo constraint**: all required symbols must be achieved within a contiguous sequence
+  of turns — partial progress resets if the window expires
+- Win / fail resolution shows a narrative branch outcome; failure has a story consequence,
+  not just a retry screen
+- Initial set: 1–2 curated puzzles per monster (covers all 3 existing monsters = ~6 puzzles)
+- Depends on FEAT-040-B (story event system provides the narrative scaffolding)
+
+#### FEAT-042 — Meta-progression / Lore Entries *(L)*
+
+- Permanent unlocks that carry forward across runs: lore entries discovered in one run
+  appear in a **Codex** accessible from the main menu in future runs
+- Lore entries are cosmetic / flavour only — no mechanical advantage in future runs
+- Seed mechanism: run summary (FEAT-040-D) writes a compact run-seed string to
+  `localStorage`; Codex reads and aggregates across seeds to build the lore library
+- Codex UI: scrollable list of unlocked entries grouped by monster / companion / event
+- **Deliberately deferred** — introduces cross-run state complexity; only worth building
+  once the single-run experience is proven and stable
+
+---
+
+## 7.0 — Short Quest Mode *(Planned)*
+
+> Village-scale narrative quests playable in a single 45–60 min session.
+> The app acts as world-master — managing world state, dialogue, investigation, and consequences —
+> while physical cards handle individual player actions.
+> Depends on the Roguelite Run Mode (FEAT-040) story infrastructure being stable.
+
+### MoSCoW
+
+| Priority | Features |
+|----------|---------|
+| **Must Have** | FEAT-044-A, FEAT-044-B, FEAT-044-C, FEAT-044-D, FEAT-044-E |
+| **Should Have** | Co-op group encounter support (multi-player battles) |
+| **Could Have** | 2nd starter quest at launch |
+| **Won't Have (this release)** | Save/resume mid-quest, long-form political arcs (FEAT-045) |
+
+---
+
+### FEAT-044-A — Location Map & World State Engine *(L)*
+
+- Each quest defines **4–6 named locations** (e.g., village square, herbalist's hut, old ruin)
+- Players navigate between locations; each location surfaces available actions contextually
+  based on current world state flags (e.g., "question innkeeper" only available after finding
+  a clue at the mill)
+- World state is a flat key-value store of **quest flags** (booleans + counters) tracked in
+  the Zustand store; actions read and write flags to open/close paths
+- Location UI: simple tappable map or named list — no graphical board rendering
+
+### FEAT-044-B — Dialogue & Clue Investigation System *(M)*
+
+- **Dialogue trees**: tap conversation options when questioning NPCs; available options depend
+  on flags (reputation level, items held, clues already found)
+- **Clue card system**: certain locations surface "investigate" actions that draw from a small
+  clue deck; connecting enough clues unlocks new dialogue branches or skips encounters
+- Both systems share the same flag-read/write infrastructure from FEAT-044-A
+
+### FEAT-044-C — Resource Tracking: Coin, Potions & Reputation *(S)*
+
+- Three tracked resources displayed persistently during a quest session:
+  - **Coin** — integer counter; earned from defeated enemies, spent on bribes/trades
+  - **Potions** — integer counter; found at specific locations, spent for combat buffs or bribes
+  - **Reputation** — integer counter (e.g., 0–5); rises/falls based on quest choices; gates
+    certain dialogue options and determines NPC willingness to deal
+- Resource changes are triggered by quest events and shown with a brief UI flash
+
+### FEAT-044-D — Bribe / Negotiate as Combat Alternative *(S)*
+
+- Before each encounter the app presents a **negotiation screen** (if the enemy type supports it)
+  offering one or more alternatives to fighting: spend coin, spend a potion, or expend reputation
+- Each alternative has a cost and a stated outcome (e.g., "Pay 3 coin → bandit stands down,
+  quest flag `bandit_bribed` set")
+- Outcome may have downstream consequences (bribed bandits may reappear as allies or
+  obstacles later in the quest depending on other flags)
+- Fight option always available as fallback
+
+### FEAT-044-E — Branching Climax & Quest Resolution *(M)*
+
+- Each quest has a **climax scene** reached after sufficient investigation/path completion
+- 2–3 resolution variants determined by accumulated flags (which path was taken, which
+  resources were spent, which characters were helped or harmed)
+- All branches converge at the climax — the outcome text and any mechanical result (bonus
+  trophies, unlocked content) differ by variant
+- Resolution screen shows a short narrative summary of the quest outcome
+- **Starter quest**: "Lift the Curse of Downwarren" — 4 locations, 2 enemy encounters,
+  3 resolution variants
+
+---
+
+## 7.1 — Long Quest Mode *(Planned)*
+
+> Regional-scale political quests spanning multiple sessions with persistent save state.
+> World events triggered by player choices can break pathing, change location actions,
+> and escalate threats — including starting wars or shifting faction power.
+> Depends on Short Quest Mode (FEAT-044) being proven stable.
+
+### FEAT-045 — Long Quest Mode *(XL)*
+
+- Extends the Short Quest engine with **multi-session save state** (`zustand/persist` to
+  `localStorage`): players can pause and resume a quest across separate play sessions
+- **Regional location map**: 10–15 locations across a wider geography; locations can change
+  state permanently (e.g., a village burns down, a road becomes impassable after a faction war)
+- **Escalating world events**: a background event clock advances each time players rest or
+  move between major zones; if ignored too long, threats escalate and close off solution paths
+- **Faction system**: two or more factions with independent reputation tracks; siding with one
+  affects NPC availability and prices across all their locations
+- **Consequence propagation at scale**: a choice early in the quest (e.g., exposing a spy,
+  bribing a count) can trigger a war arc that adds new encounter locations and removes others
+- **Group encounter support**: co-op battles with coordinated multi-player turns, shared
+  resource pool, and combined reputation track
+- Starter long quest: political intrigue arc — players must navigate a brewing conflict between
+  two noble houses while investigating a deeper supernatural threat
+
+---
+
 ## Parked / Future Considerations
 
 | Feature | Why parked |
@@ -363,6 +643,7 @@ Umbrella for all campaign engine sub-features. Tracks campaign state (round, boa
 | Persistence (save/resume mid-encounter) | Low-complexity add (`zustand/persist` middleware), but not a felt pain point yet. Revisit post-1.0. |
 | Visual board map | Graphical board rendering. High effort, low priority — text-based placement is sufficient. |
 | Sound effects | Nice-to-have atmosphere. Not planned. |
+| Meta-progression / Lore Entries (FEAT-042) | Deferred from 6.0 — cross-run state complexity is only worth tackling once the single-run loop (FEAT-040-A through D) is proven stable. Tracked in Phase 3 above. |
 
 ---
 

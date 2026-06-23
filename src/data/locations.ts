@@ -21,9 +21,36 @@ export const LOCATIONS: Location[] = [
   { id: 16, name: 'Dwywod',        type: 'woods',    image: img('dwywod') },
   { id: 17, name: 'Stygga',        type: 'woods',    image: img('stygga') },
   { id: 18, name: 'Ard Modron',    type: 'mountain', image: img('ard-modron') },
+
+  // ── Skellige Expansion (FEAT-SKELLIGE-001) ───────────────────────────────
+  { id: 19, name: 'Ard Skellig',   type: 'woods',    image: img('ard-skellig') },
+  { id: 20, name: 'Eyna',          type: 'water',    image: img('eyna') },
+  { id: 21, name: 'Isle of Mists', type: 'mountain', image: img('isle-of-mists') },
 ];
 
-/** Returns all locations of a given type. There are always exactly 6 per type. */
+/**
+ * Dagon's Lair — a permanent, fixed location used exclusively by the Skellige
+ * expansion's permanent Dagon slot. Not part of the rotating LOCATIONS pool.
+ */
+export const DAGONS_LAIR_LOCATION: Location = {
+  id: 22,
+  name: "Dagon's Lair",
+  type: 'water',
+  image: img('dagons-lair'),
+};
+
+/** Returns all locations of a given type. Base game has 6 per type; Skellige expansion adds 1 per type. */
 export function getLocationsByType(type: LocationType): Location[] {
   return LOCATIONS.filter((l) => l.type === type);
+}
+
+/** Base-game locations only (ids 1–18). */
+export const BASE_LOCATIONS: Location[] = LOCATIONS.filter((l) => l.id <= 18);
+
+/**
+ * Returns the active location pool based on whether the Skellige expansion is enabled.
+ * Base game: 18 locations (6 per type). Skellige: 21 locations (7 per type).
+ */
+export function getLocations(skelligeEnabled: boolean): Location[] {
+  return skelligeEnabled ? LOCATIONS : BASE_LOCATIONS;
 }

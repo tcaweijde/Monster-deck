@@ -19,10 +19,18 @@ const mockBoard: BoardState = {
 let mockBoardState = {
   board: mockBoard as BoardState | null,
   setActiveSlot: mockSetActiveSlot,
+  setActivePermanentSlot: vi.fn(),
+  setRandomEncounterActive: vi.fn(),
   endGame: mockEndGame,
   activeSlotIndex: null,
+  activePermanentSlot: false,
+  dagonsLairEnabled: false,
+  randomEncounterActive: false,
   handleVictory: vi.fn(),
   clearActiveSlot: vi.fn(),
+  handlePermanentVictory: vi.fn(),
+  clearActivePermanentSlot: vi.fn(),
+  clearRandomEncounter: vi.fn(),
 };
 
 vi.mock('../../../store/boardStore', () => ({
@@ -40,7 +48,10 @@ vi.mock('../../../data/monsters', () => ({
     { id: 'griffin',  name: 'Griffin',  level: 2, deckSize: 10, cardPool: [], cardFrontImages: [], baseAbility: { name: 'Dive', description: '', trigger: 'passive' } },
     { id: 'werewolf', name: 'Werewolf', level: 1, deckSize: 10, cardPool: [], cardFrontImages: [], baseAbility: { name: 'Rend', description: '', trigger: 'passive' } },
     { id: 'foglet',   name: 'Foglet',   level: 1, deckSize: 10, cardPool: [], cardFrontImages: [], baseAbility: { name: 'Mist', description: '', trigger: 'passive' } },
+    { id: 'leshen',   name: 'Leshen',   level: 3, deckSize: 10, cardPool: [], cardFrontImages: [], baseAbility: { name: 'Roots', description: '', trigger: 'passive' } },
   ],
+  dagon: { id: 'dagon', name: 'Dagon', level: 2, deckSize: 15, cardPool: [], cardFrontImages: [], baseAbility: { name: 'Ancient Dominion', description: '', trigger: 'passive' } },
+  getMonsterById: (id: string) => undefined,
 }));
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
@@ -83,5 +94,41 @@ describe('BoardScreen', () => {
     fireEvent.click(screen.getAllByRole('button').find(btn => btn.textContent?.includes('Griffin'))!);
     expect(mockSetActiveSlot).toHaveBeenCalledWith(0);
     expect(mockStartEncounter).toHaveBeenCalledWith('griffin');
+  });
+
+  it("renders Dagon's Lair slot when permanentSlot is present on the board", () => {
+    mockBoardState.board = {
+      ...mockBoard,
+      permanentSlot: { monsterId: 'dagon', level: 3, locationType: 'water', locationId: 22, status: 'active' },
+    };
+    render(<BoardScreen />);
+    expect(screen.getByText('Dagon')).toBeInTheDocument();
+  });
+
+  it("tapping Dagon's Lair calls setActivePermanentSlot and startEncounter with dagon", () => {
+    mockBoardState.board = {
+      ...mockBoard,
+      permanentSlot: { monsterId: 'dagon', level: 3, locationType: 'water', locationId: 22, status: 'active' },
+    };
+    render(<BoardScreen />);
+    fireEvent.click(screen.getAllByRole('button').find(btn => btn.textContent?.includes('Dagon'))!);
+    expect(mockBoardState.setActivePermanentSlot).toHaveBeenCalledTimes(1);
+    expect(mockStartEncounter).toHaveBeenCalledWith('dagon');
+  });
+
+  it('renders the Random Encounter button', () => {
+    render(<BoardScreen />);
+    expect(screen.getByText(/Random Encounter/i)).toBeInTheDocument();
+  });
+
+  it('clicking Random Encounter calls setRandomEncounterActive and startEncounter with a non-board monster', () => {
+    render(<BoardScreen />);
+    fireEvent.click(screen.getByText(/Random Encounter/i));
+    expect(mockBoardState.setRandomEncounterActive).toHaveBeenCalledTimes(1);
+    expect(mockStartEncounter).toHaveBeenCalledTimes(1);
+    // The monster started must NOT be one of the board monsters
+    const startedId = mockStartEncounter.mock.calls[0][0] as string;
+    const boardIds = mockBoard.slots.map((s) => s.monsterId);
+    expect(boardIds).not.toContain(startedId);
   });
 });

@@ -1,4 +1,5 @@
 import type { Monster } from '../../types';
+import { dagon } from './dagon';
 import { griffin } from './griffin';
 import { werewolf } from './werewolf';
 import { foglet } from './foglet';
@@ -30,6 +31,9 @@ import { harpy } from './harpy';
 import { barghest } from './barghest';
 
 export const MONSTERS: Monster[] = [griffin, werewolf, foglet, leshen, striga, rotfiend, noonwraith, wyvern, ekimmara, drownersNest, glustyworp, brewess, troll, bruxa, yghern, fiend, nightwraith, whispess, graveHag, waterHag, penitent, weavess, manticore, nekkersNest, arachas, ghoulsNest, archespore, harpy, barghest];
+
+/** Dagon is excluded from the rotating monster pool — he is always hosted at Dagon's Lair (FEAT-SKELLIGE-002). */
+export { dagon };
 
 export function getMonsterById(id: string): Monster | undefined {
   return MONSTERS.find((m) => m.id === id);

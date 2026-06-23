@@ -4,6 +4,7 @@ import { useWildHuntStore } from '../../store/wildHuntStore';
 import { useLegendaryHuntStore } from '../../store/legendaryHuntStore';
 import { useTrailStore } from '../../store/trailStore';
 import { TrailModeToggle } from '../trail/TrailModeToggle';
+import { SkelligeModeToggle } from '../skellige/SkelligeModeToggle';
 
 export function BoardWelcomeScreen() {
   const initNewGame = useBoardStore((s) => s.initNewGame);
@@ -11,8 +12,16 @@ export function BoardWelcomeScreen() {
   const initiateLegendarySetup = useLegendaryHuntStore((s) => s.initiateSetup);
   const resetTrailSession = useTrailStore((s) => s.resetTrailSession);
   const startTrailSession = useTrailStore((s) => s.startTrailSession);
+  const dagonsLairEnabled = useBoardStore((s) => s.dagonsLairEnabled);
+  const enableDagonsLair = useBoardStore((s) => s.enableDagonsLair);
+  const disableDagonsLair = useBoardStore((s) => s.disableDagonsLair);
 
   const [trailMode, setTrailMode] = useState(false);
+
+  const handleSkelligeChange = (enabled: boolean) => {
+    if (enabled) enableDagonsLair();
+    else disableDagonsLair();
+  };
 
   const handleStartGame = () => {
     resetTrailSession();
@@ -26,6 +35,7 @@ export function BoardWelcomeScreen() {
       <p className="text-stone-400 text-center">The Witcher Old World — Solo Play</p>
       <div className="w-full max-w-xs space-y-3">
         <TrailModeToggle enabled={trailMode} onChange={setTrailMode} />
+        <SkelligeModeToggle enabled={dagonsLairEnabled} onChange={handleSkelligeChange} />
         <button
           onClick={handleStartGame}
           className="w-full py-4 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-lg transition-colors"

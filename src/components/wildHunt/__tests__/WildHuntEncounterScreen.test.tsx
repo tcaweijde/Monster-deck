@@ -22,7 +22,7 @@ const mockFlipMonsterCard = vi.fn();
 const mockDiscardOne      = vi.fn();
 const mockPassTurn        = vi.fn();
 
-let mockEncounterState = {
+const mockEncounterState = {
   monster: mockMonster as Monster | null,
   deck: [] as unknown[],
   discardPile: [] as unknown[],

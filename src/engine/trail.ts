@@ -1,4 +1,4 @@
-import type { MonsterCard, TrailCard, TerrainType, WeaknessToken, PlacedWeaknessToken } from '../types';
+import type { MonsterCard, TrailCard, TerrainType, WeaknessToken, PlacedWeaknessToken, Location } from '../types';
 import { LOCATIONS } from '../data/locations';
 
 // ─── Trail card ID convention ─────────────────────────────────────────────────
@@ -73,8 +73,9 @@ export function drawLocationForTerrain(
   terrainType: TerrainType,
   excludeLocationId: number | null = null,
   rng: () => number = Math.random,
+  locations: Location[] = LOCATIONS,
 ): number {
-  const byTerrain = LOCATIONS.filter((l) => l.type === terrainType);
+  const byTerrain = locations.filter((l) => l.type === terrainType);
   const candidates = excludeLocationId !== null
     ? byTerrain.filter((l) => l.id !== excludeLocationId)
     : byTerrain;
@@ -91,10 +92,11 @@ export function drawPlacedToken(
   pool: WeaknessToken[],
   terrainType: TerrainType,
   rng: () => number = Math.random,
+  locations: Location[] = LOCATIONS,
 ): { token: PlacedWeaknessToken | null; remainingPool: WeaknessToken[] } {
   const { token, remainingPool } = drawTokenForTerrain(pool, terrainType, rng);
   if (!token) return { token: null, remainingPool };
-  const locationId = drawLocationForTerrain(terrainType, null, rng);
+  const locationId = drawLocationForTerrain(terrainType, null, rng, locations);
   return { token: { ...token, locationId }, remainingPool };
 }
 
@@ -105,8 +107,9 @@ export function drawPlacedToken(
 export function redrawPlacedTokenLocation(
   token: PlacedWeaknessToken,
   rng: () => number = Math.random,
+  locations: Location[] = LOCATIONS,
 ): PlacedWeaknessToken {
-  const newLocationId = drawLocationForTerrain(token.terrainType, token.locationId, rng);
+  const newLocationId = drawLocationForTerrain(token.terrainType, token.locationId, rng, locations);
   return { ...token, locationId: newLocationId };
 }
 
@@ -118,11 +121,12 @@ export function redrawPlacedTokenLocation(
 export function initWeaknessTokenBoard(
   pool: WeaknessToken[],
   rng: () => number = Math.random,
+  locations: Location[] = LOCATIONS,
 ): { board: PlacedWeaknessToken[]; remainingPool: WeaknessToken[] } {
   let remaining = [...pool];
   const board: PlacedWeaknessToken[] = [];
   for (const terrainType of ALL_TERRAIN_TYPES) {
-    const result = drawPlacedToken(remaining, terrainType, rng);
+    const result = drawPlacedToken(remaining, terrainType, rng, locations);
     if (result.token) {
       board.push(result.token);
       remaining = result.remainingPool;

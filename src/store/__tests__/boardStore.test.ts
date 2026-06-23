@@ -71,7 +71,18 @@ const MOCK_REPLACEMENT_BOARD: BoardState = {
 // Mocks — must be hoisted BEFORE the store import
 // ---------------------------------------------------------------------------
 
-vi.mock('../../data/monsters', () => ({ MONSTERS: MOCK_MONSTERS }));
+vi.mock('../../data/monsters', () => ({
+  MONSTERS: MOCK_MONSTERS,
+  dagon: {
+    id: 'dagon',
+    name: 'Dagon',
+    level: 2,
+    deckSize: 15,
+    baseAbility: { name: 'Ancient Dominion', description: '', trigger: 'passive' },
+    cardPool: [],
+    cardFrontImages: [],
+  },
+}));
 
 let mockInitBoardResult: BoardState = MOCK_BOARD;
 let mockSpawnResult: BoardState = MOCK_REPLACEMENT_BOARD;
@@ -93,18 +104,22 @@ import { useBoardStore } from '../boardStore';
 type RehydrateState = {
   board: BoardState | null;
   activeSlotIndex: 0 | 1 | 2 | null;
+  activePermanentSlot: boolean;
 };
 
 function applyRehydrationGuard(state: RehydrateState | undefined): void {
   if (!state) return;
   if (state.board) {
-    state.board = {
-      slots: state.board.slots.map((slot) =>
-        slot.status === 'encountering' ? { ...slot, status: 'active' } : slot,
-      ) as BoardState['slots'],
-    };
+    const slots = state.board.slots.map((slot) =>
+      slot.status === 'encountering' ? { ...slot, status: 'active' as const } : slot,
+    ) as BoardState['slots'];
+    const permanentSlot = state.board.permanentSlot?.status === 'encountering'
+      ? { ...state.board.permanentSlot, status: 'active' as const }
+      : state.board.permanentSlot;
+    state.board = { slots, permanentSlot };
   }
   state.activeSlotIndex = null;
+  state.activePermanentSlot = false;
 }
 
 // ---------------------------------------------------------------------------
@@ -117,7 +132,7 @@ describe('boardStore', () => {
     mockInitBoardResult = MOCK_BOARD;
     mockSpawnResult = MOCK_REPLACEMENT_BOARD;
     // Reset store to a clean slate between every test
-    useBoardStore.setState({ board: null, activeSlotIndex: null });
+    useBoardStore.setState({ board: null, activeSlotIndex: null, activePermanentSlot: false, dagonsLairEnabled: false, randomEncounterActive: false });
   });
 
   // -------------------------------------------------------------------------
@@ -248,6 +263,83 @@ describe('boardStore', () => {
   });
 
   // -------------------------------------------------------------------------
+  describe("permanent slot actions (Dagon's Lair)", () => {
+    const boardWithPermanent: BoardState = {
+      ...MOCK_BOARD,
+      permanentSlot: makeSlot('dagon', 'water', 22, 3, 'active'),
+    };
+
+    beforeEach(() => {
+      useBoardStore.setState({ board: boardWithPermanent, activePermanentSlot: false });
+    });
+
+    it('setActivePermanentSlot sets permanentSlot status to encountering and activePermanentSlot to true', () => {
+      act(() => { useBoardStore.getState().setActivePermanentSlot(); });
+      expect(useBoardStore.getState().board!.permanentSlot!.status).toBe('encountering');
+      expect(useBoardStore.getState().activePermanentSlot).toBe(true);
+    });
+
+    it('clearActivePermanentSlot reverts permanentSlot to active and clears activePermanentSlot', () => {
+      useBoardStore.setState({ activePermanentSlot: true, board: { ...boardWithPermanent, permanentSlot: makeSlot('dagon', 'water', 22, 3, 'encountering') } });
+      act(() => { useBoardStore.getState().clearActivePermanentSlot(); });
+      expect(useBoardStore.getState().board!.permanentSlot!.status).toBe('active');
+      expect(useBoardStore.getState().activePermanentSlot).toBe(false);
+    });
+
+    it('handlePermanentVictory resets permanentSlot to active without changing level', () => {
+      useBoardStore.setState({ activePermanentSlot: true, board: { ...boardWithPermanent, permanentSlot: makeSlot('dagon', 'water', 22, 3, 'encountering') } });
+      act(() => { useBoardStore.getState().handlePermanentVictory(); });
+      expect(useBoardStore.getState().board!.permanentSlot!.status).toBe('active');
+      expect(useBoardStore.getState().board!.permanentSlot!.level).toBe(3);
+      expect(useBoardStore.getState().activePermanentSlot).toBe(false);
+    });
+
+    it('setActivePermanentSlot does nothing when permanentSlot is absent', () => {
+      useBoardStore.setState({ board: MOCK_BOARD });
+      act(() => { useBoardStore.getState().setActivePermanentSlot(); });
+      expect(useBoardStore.getState().activePermanentSlot).toBe(false);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  describe('enableDagonsLair / disableDagonsLair', () => {
+    it('enableDagonsLair sets dagonsLairEnabled and adds permanentSlot to the board', () => {
+      useBoardStore.setState({ board: MOCK_BOARD, dagonsLairEnabled: false });
+      act(() => { useBoardStore.getState().enableDagonsLair(); });
+      expect(useBoardStore.getState().dagonsLairEnabled).toBe(true);
+      expect(useBoardStore.getState().board!.permanentSlot).toBeDefined();
+      expect(useBoardStore.getState().board!.permanentSlot!.monsterId).toBe('dagon');
+    });
+
+    it('disableDagonsLair unsets dagonsLairEnabled and removes permanentSlot', () => {
+      useBoardStore.setState({ board: { ...MOCK_BOARD, permanentSlot: makeSlot('dagon', 'water', 22, 3) }, dagonsLairEnabled: true });
+      act(() => { useBoardStore.getState().disableDagonsLair(); });
+      expect(useBoardStore.getState().dagonsLairEnabled).toBe(false);
+      expect(useBoardStore.getState().board!.permanentSlot).toBeUndefined();
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  describe('random encounter (FEAT-SKELLIGE-004)', () => {
+    it('setRandomEncounterActive sets randomEncounterActive to true', () => {
+      act(() => { useBoardStore.getState().setRandomEncounterActive(); });
+      expect(useBoardStore.getState().randomEncounterActive).toBe(true);
+    });
+
+    it('clearRandomEncounter resets randomEncounterActive to false', () => {
+      useBoardStore.setState({ randomEncounterActive: true });
+      act(() => { useBoardStore.getState().clearRandomEncounter(); });
+      expect(useBoardStore.getState().randomEncounterActive).toBe(false);
+    });
+
+    it('initNewGame resets randomEncounterActive to false', () => {
+      useBoardStore.setState({ randomEncounterActive: true });
+      act(() => { useBoardStore.getState().initNewGame(); });
+      expect(useBoardStore.getState().randomEncounterActive).toBe(false);
+    });
+  });
+
+  // -------------------------------------------------------------------------
   describe('rehydration guard (EC-4)', () => {
     it('should revert an encountering slot to active', () => {
       const state: RehydrateState = {
@@ -259,9 +351,28 @@ describe('boardStore', () => {
           ],
         },
         activeSlotIndex: 0,
+        activePermanentSlot: false,
       };
       applyRehydrationGuard(state);
       expect(state.board!.slots[0].status).toBe('active');
+    });
+
+    it('should revert an encountering permanentSlot to active', () => {
+      const state: RehydrateState = {
+        board: {
+          slots: [
+            makeSlot('m-a', 'water', 1, 1, 'active'),
+            makeSlot('m-b', 'mountain', 2, 2, 'active'),
+            makeSlot('m-c', 'woods', 6, 3, 'active'),
+          ],
+          permanentSlot: makeSlot('dagon', 'water', 22, 3, 'encountering'),
+        },
+        activeSlotIndex: null,
+        activePermanentSlot: true,
+      };
+      applyRehydrationGuard(state);
+      expect(state.board!.permanentSlot?.status).toBe('active');
+      expect(state.activePermanentSlot).toBe(false);
     });
 
     it('should leave already-active slots unchanged', () => {
@@ -274,6 +385,7 @@ describe('boardStore', () => {
           ],
         },
         activeSlotIndex: null,
+        activePermanentSlot: false,
       };
       applyRehydrationGuard(state);
       state.board!.slots.forEach((slot) => {
@@ -291,6 +403,7 @@ describe('boardStore', () => {
           ],
         },
         activeSlotIndex: 0,
+        activePermanentSlot: false,
       };
       applyRehydrationGuard(state);
       expect(state.activeSlotIndex).toBeNull();
@@ -317,6 +430,13 @@ describe('boardStore', () => {
       expect(typeof result.current.setActiveSlot).toBe('function');
       expect(typeof result.current.clearActiveSlot).toBe('function');
       expect(typeof result.current.handleVictory).toBe('function');
+      expect(typeof result.current.setActivePermanentSlot).toBe('function');
+      expect(typeof result.current.clearActivePermanentSlot).toBe('function');
+      expect(typeof result.current.handlePermanentVictory).toBe('function');
+      expect(typeof result.current.enableDagonsLair).toBe('function');
+      expect(typeof result.current.disableDagonsLair).toBe('function');
+      expect(typeof result.current.setRandomEncounterActive).toBe('function');
+      expect(typeof result.current.clearRandomEncounter).toBe('function');
     });
   });
 });
