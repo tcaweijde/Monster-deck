@@ -30,7 +30,7 @@ import { archespore } from './archespore';
 import { harpy } from './harpy';
 import { barghest } from './barghest';
 
-export const MONSTERS: Monster[] = [griffin, werewolf, foglet, leshen, striga, rotfiend, noonwraith, wyvern, ekimmara, drownersNest, glustyworp, brewess, troll, bruxa, yghern, fiend, nightwraith, whispess, graveHag, waterHag, penitent, weavess, manticore, nekkersNest, arachas, ghoulsNest, archespore, harpy, barghest];
+export const MONSTERS: Monster[] = [griffin, werewolf, foglet, leshen, striga, rotfiend, noonwraith, wyvern, ekimmara, drownersNest, glustyworp, brewess, troll, bruxa, yghern, fiend, nightwraith, whispess, graveHag, waterHag, penitent, weavess, manticore, nekkersNest, arachas, ghoulsNest, archespore, harpy, barghest, dagon];
 
 /** Dagon is excluded from the rotating monster pool — he is always hosted at Dagon's Lair (FEAT-SKELLIGE-002). */
 export { dagon };

@@ -51,7 +51,6 @@ vi.mock('../../../data/monsters', () => ({
     { id: 'leshen',   name: 'Leshen',   level: 3, deckSize: 10, cardPool: [], cardFrontImages: [], baseAbility: { name: 'Roots', description: '', trigger: 'passive' } },
   ],
   dagon: { id: 'dagon', name: 'Dagon', level: 2, deckSize: 15, cardPool: [], cardFrontImages: [], baseAbility: { name: 'Ancient Dominion', description: '', trigger: 'passive' } },
-  getMonsterById: (id: string) => undefined,
 }));
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
@@ -62,6 +61,8 @@ describe('BoardScreen', () => {
     mockSetActiveSlot.mockClear();
     mockEndGame.mockClear();
     mockStartEncounter.mockClear();
+    mockBoardState.setActivePermanentSlot.mockClear();
+    mockBoardState.setRandomEncounterActive.mockClear();
   });
 
   it('renders nothing when board is null', () => {
@@ -121,14 +122,32 @@ describe('BoardScreen', () => {
     expect(screen.getByText(/Random Encounter/i)).toBeInTheDocument();
   });
 
-  it('clicking Random Encounter calls setRandomEncounterActive and startEncounter with a non-board monster', () => {
+  it('clicking Random Encounter opens the level picker', () => {
     render(<BoardScreen />);
     fireEvent.click(screen.getByText(/Random Encounter/i));
+    expect(screen.getByText('Choose the monster level to fight.')).toBeInTheDocument();
+    expect(screen.getByText('Level 1')).toBeInTheDocument();
+    expect(screen.getByText('Level 2')).toBeInTheDocument();
+    expect(screen.getByText('Level 3')).toBeInTheDocument();
+  });
+
+  it('selecting a level calls setRandomEncounterActive and startEncounter with a non-board monster', () => {
+    render(<BoardScreen />);
+    fireEvent.click(screen.getByText(/Random Encounter/i));
+    // leshen is level 3 and not on the board — click Level 3
+    fireEvent.click(screen.getByText('Level 3'));
     expect(mockBoardState.setRandomEncounterActive).toHaveBeenCalledTimes(1);
     expect(mockStartEncounter).toHaveBeenCalledTimes(1);
-    // The monster started must NOT be one of the board monsters
     const startedId = mockStartEncounter.mock.calls[0][0] as string;
     const boardIds = mockBoard.slots.map((s) => s.monsterId);
     expect(boardIds).not.toContain(startedId);
+  });
+
+  it('cancelling the level picker dismisses it without starting an encounter', () => {
+    render(<BoardScreen />);
+    fireEvent.click(screen.getByText(/Random Encounter/i));
+    fireEvent.click(screen.getByText('Cancel'));
+    expect(screen.queryByText('Choose the monster level to fight.')).not.toBeInTheDocument();
+    expect(mockBoardState.setRandomEncounterActive).not.toHaveBeenCalled();
   });
 });
