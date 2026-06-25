@@ -31,6 +31,8 @@ const slideUp: Variants = {
 export default function App() {
   const board = useBoardStore((s) => s.board);
   const activeSlotIndex = useBoardStore((s) => s.activeSlotIndex);
+  const activePermanentSlot = useBoardStore((s) => s.activePermanentSlot);
+  const randomEncounterActive = useBoardStore((s) => s.randomEncounterActive);
   const wildHuntPhase = useWildHuntStore((s) => s.phase);
   const legendaryPhase = useLegendaryHuntStore((s) => s.phase);
   const showMonsters = useWildHuntStore((s) => s.showMonsters);
@@ -83,7 +85,7 @@ export default function App() {
         ? 'welcome'
         : trailPlacementPending
           ? 'trail-placement'
-          : activeSlotIndex !== null
+          : (activeSlotIndex !== null || activePermanentSlot || randomEncounterActive)
             ? 'encounter'
             : 'board');
 

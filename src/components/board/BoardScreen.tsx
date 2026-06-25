@@ -7,7 +7,7 @@ import { getMonsterById } from '../../data/monsters';
 import { BoardSlotCard } from './BoardSlotCard';
 import { TrailTokenBoard } from '../trail/TrailTokenBoard';
 import { TrailPreFightModal } from '../trail/TrailPreFightModal';
-import type { PlacedWeaknessToken, TrailCard } from '../../types';
+import type { PlacedWeaknessToken, Monster, TrailCard } from '../../types';
 import type { TrailDeckOptions } from '../../engine/deck';
 import { makeDefaultTrailCards } from '../../engine/trail';
 import { shuffle } from '../../engine/shuffle';
@@ -25,6 +25,7 @@ export function BoardScreen() {
   const setPendingEffect = useTrailStore((s) => s.setPendingEffect);
 
   const [pendingSlotIndex, setPendingSlotIndex] = useState<0 | 1 | 2 | null>(null);
+  const [showLevelPicker, setShowLevelPicker] = useState(false);
 
   if (!board) return null;
 
@@ -54,7 +55,14 @@ export function BoardScreen() {
 
   const handleRandomEncounter = () => {
     if (randomEncounterCandidates.length === 0) return;
-    const monster = shuffle(randomEncounterCandidates)[0];
+    setShowLevelPicker(true);
+  };
+
+  const handleLevelSelected = (level: 1 | 2 | 3) => {
+    const candidates = randomEncounterCandidates.filter((m) => m.level === level);
+    if (candidates.length === 0) return;
+    const monster = shuffle(candidates)[0];
+    setShowLevelPicker(false);
     setRandomEncounterActive();
     startEncounter(monster.id);
   };
@@ -127,6 +135,14 @@ export function BoardScreen() {
 
       {trailModeEnabled && <TrailTokenBoard />}
 
+      {showLevelPicker && (
+        <RandomEncounterLevelModal
+          candidates={randomEncounterCandidates}
+          onSelect={handleLevelSelected}
+          onCancel={() => setShowLevelPicker(false)}
+        />
+      )}
+
       {pendingSlotIndex !== null && (
         <TrailPreFightModal
           heldTokens={weaknessTokensHeld}
@@ -134,6 +150,57 @@ export function BoardScreen() {
           onCancel={() => setPendingSlotIndex(null)}
         />
       )}
+    </div>
+  );
+}
+
+// ─── RandomEncounterLevelModal ────────────────────────────────────────────────
+
+const LEVEL_LABELS: Record<1 | 2 | 3, string> = { 1: 'Level 1', 2: 'Level 2', 3: 'Level 3' };
+
+function RandomEncounterLevelModal({
+  candidates,
+  onSelect,
+  onCancel,
+}: {
+  candidates: Monster[];
+  onSelect: (level: 1 | 2 | 3) => void;
+  onCancel: () => void;
+}) {
+  const countByLevel = (level: 1 | 2 | 3) => candidates.filter((m) => m.level === level).length;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 px-4 pb-8">
+      <div className="w-full max-w-sm rounded-2xl bg-stone-900 border border-stone-700 p-5 space-y-4">
+        <div>
+          <h2 className="text-amber-400 font-bold text-lg">Random Encounter</h2>
+          <p className="text-stone-400 text-sm mt-1">Choose the monster level to fight.</p>
+        </div>
+        <div className="space-y-2">
+          {([1, 2, 3] as const).map((level) => {
+            const count = countByLevel(level);
+            return (
+              <button
+                key={level}
+                onClick={() => onSelect(level)}
+                disabled={count === 0}
+                className="w-full flex items-center justify-between rounded-xl border border-stone-600 px-4 py-3 text-left transition-colors hover:border-amber-500 hover:text-amber-300 disabled:opacity-30 disabled:cursor-not-allowed text-stone-200"
+              >
+                <span className="font-semibold">{LEVEL_LABELS[level]}</span>
+                <span className="text-stone-400 text-sm">
+                  {count} {count === 1 ? 'monster' : 'monsters'} available
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <button
+          onClick={onCancel}
+          className="w-full py-2 text-stone-400 text-sm underline underline-offset-2 hover:text-stone-300 transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 }

@@ -43,9 +43,9 @@ encounter setup, card flipping, damage tracking, ability resolution, and board m
 | FEAT-020-F | Weakness Effect Pre-Fight | 3.0 | ✅ Done |
 | FEAT-020-G | Weakness Post-Defeat Reset | 3.0 | ✅ Done |
 | FEAT-020-H | Weakness Token Data Model | 3.0 | ✅ Done |
-| FEAT-SKELLIGE-001 | Skellige Locations | 5.0 | 🔲 Todo |
-| FEAT-SKELLIGE-002 | Dagon's Lair | 5.0 | 🔲 Todo |
-| FEAT-SKELLIGE-003 | Dagon Monster Data | 5.0 | 🔲 Todo |
+| FEAT-SKELLIGE-001 | Skellige Locations | 5.0 | ✅ Done |
+| FEAT-SKELLIGE-002 | Dagon's Lair | 5.0 | ✅ Done |
+| FEAT-SKELLIGE-003 | Dagon Monster Data | 5.0 | ✅ Done |
 | FEAT-SKELLIGE-004 | Random Encounter | 5.0 | 🔲 Todo |
 | FEAT-030 | Legendary Hunt — Campaign Engine (umbrella) | 3.0 | ✅ Done |
 | FEAT-030-A | Campaign Setup | 3.0 | ✅ Done |
